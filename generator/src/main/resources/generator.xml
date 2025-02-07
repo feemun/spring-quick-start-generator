@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<setting xmlns="http://www.w3school.com.cn"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.wenka.top/xsd/generator-1.0.0.xsd">
+
+  <properties>
+    <precision>high</precision>
+    <author>catfish</author>
+    <jdbc.driver>com.mysql.cj.jdbc.Driver</jdbc.driver>
+    <jdbc.url>jdbc:mysql://intel-nuc:3306/map_oxygen?useUnicode=true&amp;characterEncoding=utf-8&amp;serverTimezone=Asia/Shanghai</jdbc.url>
+    <jdbc.username>root</jdbc.username>
+    <jdbc.password>my-secret-pw</jdbc.password>
+    <generate-level>controller</generate-level>
+
+
+    <parent.package>cloud.catfish.mbg</parent.package>
+
+    <!-- aaa  -->
+    <dao.package>mapper</dao.package>
+
+    <!-- aaa -->
+    <service.package>service</service.package>
+
+    <!-- aaa -->
+    <controller.package>controller</controller.package>
+
+    <!-- 生成目录 -->
+    <module.path>C:\Users\qiupan\Documents\GitHub\mdsc-generator\temp</module.path>
+
+    <!-- xml路径 -->
+    <xml.path>mappers</xml.path>
+
+    <!--  -->
+    <base-model>cloud.catfish.model.BaseModel</base-model>
+    <ignore-column>UPDATE_TIME,CREATE_TIME</ignore-column>
+    <id-util>com.mall.commons.util.IDUtil.bulidId()</id-util>
+
+    <!-- 通用响应 -->
+    <result-model>cloud.catfish.api.CommonResult</result-model>
+  </properties>
+
+  <tables>
+    <table table-name="ums_admin" class-name="UmsAdmin" />
+  </tables>
+
+</setting>

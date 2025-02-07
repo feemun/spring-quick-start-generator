@@ -1,0 +1,47 @@
+package ${DaoPackage};
+
+import ${ModelName};
+#if(${multiConditionQuery})
+import ${ModelPoName};
+#end
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Repository;
+import java.util.List;
+
+@Mapper
+@Repository
+public interface ${DaoSimpleName} {
+
+    /**
+     * 根据主键删除${tableRemark}
+     */
+    int deleteByPrimaryKey(${PkType} ${PkName});
+
+    /**
+     * 增加
+     */
+    int insertSelective(${ModelSimpleName} record);
+
+    /**
+    * 根据主键查询
+    */
+    ${ModelSimpleName} selectByPrimaryKey(${PkType} ${PkName});
+
+    /**
+     * 根据条件查询${tableRemark}
+     */
+    ${ModelSimpleName} selectBySelective(#if(${multiConditionQuery})${ModelPoSimpleName}#else${ModelSimpleName}#end record);
+
+    /**
+     * 根据主键修改${tableRemark}
+     */
+    int updateByPrimaryKeySelective(${ModelSimpleName} record);
+
+    /**
+     * 根据条件查询全部${tableRemark}
+     *
+     * @return
+     */
+    List<${ModelSimpleName}> selectList(#if(${multiConditionQuery})${ModelPoSimpleName}#else${ModelSimpleName}#end record);
+
+}
