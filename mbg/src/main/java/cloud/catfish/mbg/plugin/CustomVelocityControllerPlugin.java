@@ -64,7 +64,6 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
         // 接口
         context.put("ModelSimpleName", entityName);
         context.put("apiBaseUrl", "/" + entityName);
-        context.put("apiBaseUrl", "/" + entityName);
         context.put("SimplResponseModel", "CommonResult");
 
 

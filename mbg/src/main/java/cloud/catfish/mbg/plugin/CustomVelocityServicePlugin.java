@@ -1,5 +1,6 @@
 package cloud.catfish.mbg.plugin;
 
+import cloud.catfish.mbg.util.StringHelper;
 import cloud.catfish.mbg.util.VelocityUtil;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -42,14 +43,28 @@ public class CustomVelocityServicePlugin extends PluginAdapter {
     }
 
     private void generateControllerAndService(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-        String basePackagePath = "mbg";
+        String basePackagePath = "mbg/src/main/java/cloud/catfish/mbg/service";
 
         String entityName = topLevelClass.getType().getShortName();
         String packageName = topLevelClass.getType().getPackageName();
 
         VelocityContext context = new VelocityContext();
+
+        // 导包
+        context.put("ServicePackage", packageName.replace(".model", ".service"));
+        context.put("modelPackage", packageName);
+
+        // 类名
+        String serviceClassName = "I" + entityName + "Service";
+        context.put("ServiceClassName", serviceClassName);
+
+        // 成员变量
+        context.put("ServiceVariableName", StringHelper.firstCharToLower(entityName));
+
+        // 接口
         context.put("ModelSimpleName", entityName);
-        context.put("servicePackage", packageName.replace(".model", ".service"));
+        context.put("apiBaseUrl", "/" + entityName);
+        context.put("apiBaseUrl", "/" + entityName);
         context.put("SimplResponseModel", "CommonResult");
 
         // 对于服务层也执行类似的操作
@@ -59,6 +74,6 @@ public class CustomVelocityServicePlugin extends PluginAdapter {
         System.out.println(writer.toString());
 
         // 生成 Service 文件
-        VelocityUtil.processTemplate(writer, basePackagePath, entityName + ".java");
+        VelocityUtil.processTemplate(writer, basePackagePath, serviceClassName + ".java");
     }
 }
