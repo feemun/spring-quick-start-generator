@@ -9,8 +9,6 @@
     <version>1.0.0</version>
     <packaging>pom</packaging>
     <modules>
-        <module>temp</module>
-        <module>generator</module>
         <module>common</module>
         <module>mbg</module>
     </modules>

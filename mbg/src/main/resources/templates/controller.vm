@@ -25,7 +25,7 @@ import cloud.catfish.api.CommonPageReq;
 public class ${ControllerSimpleName} {
 
     @Autowired
-    private ${ServiceSimpleName} ${ServiceVariableName};
+    private ${ServiceClassName} ${ServiceVariableName};
 
     @Operation(summary = "分页条件查询")
     @PostMapping("/page")

@@ -1,5 +1,7 @@
 package cloud.catfish.mbg.plugin;
 
+import cloud.catfish.mbg.util.StringHelper;
+import cloud.catfish.mbg.util.VelocityUtil;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
@@ -41,34 +43,39 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
     }
 
     private void generateControllerAndService(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+        String basePackagePath = "mbg/src/main/java/cloud/catfish/mbg/controller";
+
         String entityName = topLevelClass.getType().getShortName();
         String packageName = topLevelClass.getType().getPackageName();
 
         VelocityContext context = new VelocityContext();
-        context.put("ModelSimpleName", entityName);
-        context.put("controllerPackage", packageName.replace(".model", ".controller"));
-        context.put("servicePackage", packageName.replace(".model", ".service"));
-        context.put("serviceImplPackage", packageName.replace(".model", ".service.impl"));
-        context.put("apiBaseUrl", "/" + entityName);
 
+        // 导包
+        context.put("servicePackage", packageName.replace(".model", ".service"));
+        context.put("ControllerPackage", packageName.replace(".model", ".controller"));
+
+        // 类名
+        context.put("ControllerSimpleName", entityName + "Controller");
+
+        // 成员变量
+        context.put("ServiceClassName", "I" + entityName);
+        context.put("ServiceVariableName", StringHelper.firstCharToLower(entityName));
+
+        // 接口
+        context.put("ModelSimpleName", entityName);
+        context.put("apiBaseUrl", "/" + entityName);
+        context.put("apiBaseUrl", "/" + entityName);
         context.put("SimplResponseModel", "CommonResult");
+
 
         StringWriter writer = new StringWriter();
         Template controllerTemplate = velocityEngine.getTemplate("templates/controller.vm");
         controllerTemplate.merge(context, writer);
 
         // 在这里你可以选择将生成的字符串写入文件或以其他方式处理
-        System.out.println(writer.toString());
+        System.out.println(writer);
 
-        // 对于服务层也执行类似的操作
-        writer = new StringWriter();
-        Template serviceTemplate = velocityEngine.getTemplate("templates/service.vm");
-        serviceTemplate.merge(context, writer);
-        System.out.println(writer.toString());
-
-        writer = new StringWriter();
-        Template serviceImplTemplate = velocityEngine.getTemplate("templates/serviceImpl.vm");
-        serviceImplTemplate.merge(context, writer);
-        System.out.println(writer.toString());
+        // 生成 Controller 文件
+        VelocityUtil.processTemplate(writer, basePackagePath, entityName + "Controller.java");
     }
 }

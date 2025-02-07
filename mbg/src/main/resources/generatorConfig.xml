@@ -25,7 +25,7 @@
         <!-- lombok no getter, setter Plugin -->
         <plugin type="cloud.catfish.mbg.plugin.NoGetterSetterPlugin"/>
 
-        <!-- controller service Plugin -->
+        <!-- controller generator Plugin -->
         <plugin type="cloud.catfish.mbg.plugin.CustomVelocityControllerPlugin"/>
 
         <!-- lombok custom serializable Plugin -->
