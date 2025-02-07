@@ -58,7 +58,7 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
         context.put("ControllerSimpleName", entityName + "Controller");
 
         // 成员变量
-        context.put("ServiceClassName", "I" + entityName);
+        context.put("ServiceClassName", "I" + entityName + "Service");
         context.put("ServiceVariableName", StringHelper.firstCharToLower(entityName));
 
         // 接口

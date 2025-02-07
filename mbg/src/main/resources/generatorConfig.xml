@@ -32,7 +32,7 @@
         <plugin type="cloud.catfish.mbg.plugin.CustomVelocityServicePlugin"/>
 
         <!-- service impl generator Plugin -->
-<!--        <plugin type="cloud.catfish.mbg.plugin.CustomVelocityServiceImplPlugin"/>-->
+        <plugin type="cloud.catfish.mbg.plugin.CustomVelocityServiceImplPlugin"/>
 
         <!-- lombok custom serializable Plugin -->
         <plugin type="cloud.catfish.mbg.plugin.CustomSerializablePlugin"/>
