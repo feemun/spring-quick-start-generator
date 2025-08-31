@@ -25,14 +25,22 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
     /**
      * 分页查询
      *
-     * @param pageNum  当前页码
-     * @param pageSize 每页显示数量
+     * @param pageNum   当前页码
+     * @param pageSize  每页显示数量
+     * @param condition 查询条件
      * @return 查询结果列表
      */
-    public List<${ModelSimpleName}> page(Integer pageNum, Integer pageSize) {
+    public List<${ModelSimpleName}> page(Integer pageNum, Integer pageSize, ${ModelSimpleName} condition) {
         PageHelper.startPage(pageNum, pageSize);
         ${ModelSimpleName}Example example = new ${ModelSimpleName}Example();
-        example.createCriteria();
+        ${ModelSimpleName}Example.Criteria criteria = example.createCriteria();
+        
+        // 如果有查询条件，则添加到criteria中
+        if (condition != null) {
+            // 这里需要根据实际的字段添加条件
+            // 示例: if (condition.getName() != null) criteria.andNameLike("%" + condition.getName() + "%");
+        }
+        
         return ${DaoVariableName}.selectByExample(example);
     }
 

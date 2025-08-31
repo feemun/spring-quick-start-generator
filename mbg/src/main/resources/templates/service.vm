@@ -15,11 +15,12 @@ public interface ${ServiceClassName} {
     /**
      * 分页查询后台
      *
-     * @param pageNum  当前页码
-     * @param pageSize 每页显示数量
+     * @param pageNum   当前页码
+     * @param pageSize  每页显示数量
+     * @param condition 查询条件
      * @return 查询结果列表
      */
-    List<${ModelSimpleName}> page(Integer pageNum, Integer pageSize);
+    List<${ModelSimpleName}> page(Integer pageNum, Integer pageSize, ${ModelSimpleName} condition);
 
     /**
      * 根据主键查询
