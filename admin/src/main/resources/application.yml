@@ -36,5 +36,5 @@ springdoc:
     enabled: true
   group-configs:
     - group: 'default'
-      packages-to-scan: cloud.catfish.admin.controller
+      packages-to-scan: cloud.catfish.admin.controller,cloud.catfish.mbg.controller
   default-flat-param-object: false
