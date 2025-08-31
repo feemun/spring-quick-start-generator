@@ -54,6 +54,7 @@ public class CustomVelocityServiceImplPlugin extends PluginAdapter {
         context.put("ServicePackage", packageName.replace(".model", ".service"));
         context.put("modelPackage", packageName);
         context.put("ServiceImplPackage", packageName.replace(".model", ".service") + ".impl");
+        context.put("MapperPackage", packageName.replace(".model", ".mapper"));
 
         // 类名
         String serviceClassName = "I" + entityName + "Service";

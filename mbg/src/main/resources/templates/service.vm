@@ -1,6 +1,6 @@
 package ${ServicePackage};
 
-import ${modelPackage};
+import ${modelPackage}.${ModelSimpleName};
 #if(${multiConditionQuery})
 import ${ModelPoName};
 #end

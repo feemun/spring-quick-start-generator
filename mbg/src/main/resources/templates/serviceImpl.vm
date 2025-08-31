@@ -1,13 +1,10 @@
 package ${ServiceImplPackage};
 
 import com.github.pagehelper.PageHelper;
-import ${modelPackage};
-import ${modelPackage}Example;
-#if(${multiConditionQuery})
-import ${ModelPoName};
-#end
-import ${DaoName};
-import ${ServiceName};
+import ${modelPackage}.${ModelSimpleName};
+import ${modelPackage}.${ModelSimpleName}Example;
+import ${MapperPackage}.${DaoSimpleName};
+import ${ServicePackage}.${ServiceSimpleName};
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
