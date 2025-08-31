@@ -51,6 +51,7 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
         VelocityContext context = new VelocityContext();
 
         // 导包
+        context.put("packageName", packageName);
         context.put("servicePackage", packageName.replace(".model", ".service"));
         context.put("ControllerPackage", packageName.replace(".model", ".controller"));
 

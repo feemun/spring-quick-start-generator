@@ -1,21 +1,18 @@
 package ${ControllerPackage};
 
-import ${ModelName};
-#if(${multiConditionQuery})
-import ${ModelPoName};
-#end
-import ${servicePackage};
-import ${responseModel};
+import ${packageName}.${ModelSimpleName};
+import cloud.catfish.api.CommonResult;
+import ${servicePackage}.${ServiceClassName};
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import cloud.catfish.api.CommonPage;
 import cloud.catfish.api.CommonPageReq;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * @description: ${tableRemark}控制层
