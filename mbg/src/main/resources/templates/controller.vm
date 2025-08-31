@@ -5,14 +5,21 @@ import cloud.catfish.api.CommonResult;
 import ${servicePackage}.${ServiceClassName};
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import cloud.catfish.api.CommonPage;
 import cloud.catfish.api.CommonPageReq;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 /**
  * @description: ${tableRemark}控制层
@@ -26,82 +33,130 @@ public class ${ControllerSimpleName} {
     @Autowired
     private ${ServiceClassName} ${ServiceVariableName};
 
-    @Operation(summary = "分页条件查询")
-    @PostMapping("/page")
-    public ${SimplResponseModel}<CommonPage<${ModelSimpleName}>> page(@RequestBody CommonPageReq<${ModelSimpleName}> req) {
+    @Operation(summary = "分页条件查询", description = "根据条件分页查询${ModelSimpleName}列表")
+    @PostMapping("/search")
+    public ResponseEntity<${SimplResponseModel}<CommonPage<${ModelSimpleName}>>> search(@Valid @RequestBody CommonPageReq<${ModelSimpleName}> req) {
         List<${ModelSimpleName}> lst = ${ServiceVariableName}.page(req.getCurrentPage(), req.getPageSize(), req.getCondition());
-        return ${SimplResponseModel}.success(CommonPage.restPage(lst));
+        return ResponseEntity.ok(${SimplResponseModel}.success(CommonPage.restPage(lst)));
     }
 
-    @Operation(summary = "根据主键查询")
+    @Operation(summary = "根据主键查询", description = "根据ID查询单个${ModelSimpleName}")
     @GetMapping("/{id}")
-    public ${SimplResponseModel}<${ModelSimpleName}> getById(@PathVariable("id") Long id) {
-        return ${SimplResponseModel}.success(${ServiceVariableName}.selectByPrimaryKey(id));
+    public ResponseEntity<${SimplResponseModel}<${ModelSimpleName}>> getById(@PathVariable("id") Long id) {
+        ${ModelSimpleName} result = ${ServiceVariableName}.selectByPrimaryKey(id);
+        if (result == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(${SimplResponseModel}.failed("资源不存在"));
+        }
+        return ResponseEntity.ok(${SimplResponseModel}.success(result));
     }
 
-    @Operation(summary = "根据主键更新")
-    @PutMapping("/updateById")
-    public ${SimplResponseModel}<Boolean> updateByPrimaryKeySelective(@RequestBody ${ModelSimpleName} record) {
+    @Operation(summary = "根据主键更新", description = "更新${ModelSimpleName}信息")
+    @PutMapping("/{id}")
+    public ResponseEntity<${SimplResponseModel}<Boolean>> update(@PathVariable("id") Long id, @Valid @RequestBody ${ModelSimpleName} record) {
+        record.setId(id); // 确保ID一致
         Boolean success = ${ServiceVariableName}.updateByPrimaryKeySelective(record);
-        return success ? ${SimplResponseModel}.success(success) : ${SimplResponseModel}.failed();
-    }
-
-    @Operation(summary = "根据条件更新")
-    @PostMapping("/updateByExample")
-    public ${SimplResponseModel}<Integer> updateByExampleSelective(@RequestBody ${ModelSimpleName} record) {
-        Integer rowsAffected = ${ServiceVariableName}.updateByExampleSelective(record);
-        log.info("Update {} row(s) by condition.", rowsAffected);
-        return ${SimplResponseModel}.success(rowsAffected);
-    }
-
-    @Operation(summary = "根据主键删除")
-    @DeleteMapping("/delete/{id}")
-    public ${SimplResponseModel}<Boolean> deleteByPrimaryKey(@PathVariable("id") Long id) {
-        Boolean success = ${ServiceVariableName}.deleteByPrimaryKey(id);
-        return success ? ${SimplResponseModel}.success(success) : ${SimplResponseModel}.failed();
-    }
-
-    @Operation(summary = "根据条件删除")
-    @PostMapping("/deleteByExample")
-    public ${SimplResponseModel}<Integer> deleteByExample(@RequestBody ${ModelSimpleName} record) {
-        Integer rowsAffected = ${ServiceVariableName}.deleteByExample(record);
-        log.info("Delete {} row(s) by condition.", rowsAffected);
-        return ${SimplResponseModel}.success(rowsAffected);
-    }
-
-    @Operation(summary = "新增")
-    @PostMapping("/insert")
-    public ${SimplResponseModel}<Boolean> insertSelective(@RequestBody ${ModelSimpleName} record) {
-        Boolean success = ${ServiceVariableName}.insertSelective(record);
-        return success ? ${SimplResponseModel}.success(success) : ${SimplResponseModel}.failed();
-    }
-
-    @Operation(summary = "Excel导入")
-    @PostMapping("/import")
-    public ${SimplResponseModel}<Boolean> importExcel(@RequestParam("file") MultipartFile file) {
-        try {
-            // 这里应该添加Excel文件解析和数据导入的逻辑
-            // 示例：List<${ModelSimpleName}> records = excelService.parseExcel(file, ${ModelSimpleName}.class);
-            // Boolean success = ${ServiceVariableName}.batchInsert(records);
-            return ${SimplResponseModel}.success(true);
-        } catch (Exception e) {
-            log.error("Import Excel failed: {}", e.getMessage(), e);
-            return ${SimplResponseModel}.failed("导入Excel失败: " + e.getMessage());
+        if (success) {
+            return ResponseEntity.ok(${SimplResponseModel}.success(true));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(${SimplResponseModel}.failed("更新失败，资源可能不存在"));
         }
     }
 
-    @Operation(summary = "导出Excel")
-    @GetMapping("/export")
-    public void exportExcel(HttpServletResponse response) {
+    @Operation(summary = "根据条件批量更新", description = "根据条件批量更新${ModelSimpleName}信息")
+    @PutMapping("/batch")
+    public ResponseEntity<${SimplResponseModel}<Integer>> batchUpdate(@Valid @RequestBody ${ModelSimpleName} record) {
+        Integer rowsAffected = ${ServiceVariableName}.updateByExampleSelective(record);
+        log.info("Updated {} row(s) by condition.", rowsAffected);
+        return ResponseEntity.ok(${SimplResponseModel}.success(rowsAffected));
+    }
+
+    @Operation(summary = "根据主键删除", description = "删除单个${ModelSimpleName}")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<${SimplResponseModel}<Boolean>> deleteById(@PathVariable("id") Long id) {
+        Boolean success = ${ServiceVariableName}.deleteByPrimaryKey(id);
+        if (success) {
+            return ResponseEntity.ok(${SimplResponseModel}.success(true));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(${SimplResponseModel}.failed("删除失败，资源可能不存在"));
+        }
+    }
+
+    @Operation(summary = "根据条件批量删除", description = "根据条件批量删除${ModelSimpleName}")
+    @DeleteMapping("/batch")
+    public ResponseEntity<${SimplResponseModel}<Integer>> batchDelete(@Valid @RequestBody ${ModelSimpleName} record) {
+        Integer rowsAffected = ${ServiceVariableName}.deleteByExample(record);
+        log.info("Deleted {} row(s) by condition.", rowsAffected);
+        return ResponseEntity.ok(${SimplResponseModel}.success(rowsAffected));
+    }
+
+    @Operation(summary = "创建新记录", description = "创建新的${ModelSimpleName}")
+    @PostMapping
+    public ResponseEntity<${SimplResponseModel}<Boolean>> create(@Valid @RequestBody ${ModelSimpleName} record) {
+        Boolean success = ${ServiceVariableName}.insertSelective(record);
+        if (success) {
+            return ResponseEntity.status(HttpStatus.CREATED)
+                .body(${SimplResponseModel}.success(true));
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(${SimplResponseModel}.failed("创建失败"));
+        }
+    }
+
+    @Operation(summary = "Excel批量导入", description = "通过Excel文件批量导入${ModelSimpleName}数据")
+    @PostMapping("/import")
+    public ResponseEntity<${SimplResponseModel}<Boolean>> importExcel(@RequestParam("file") MultipartFile file) {
         try {
-            // 这里应该添加数据查询和Excel导出的逻辑
-            // 示例：List<${ModelSimpleName}> records = ${ServiceVariableName}.selectAll();
-            // excelService.exportExcel(response, records, "${ModelSimpleName}数据");
-            response.setContentType("application/vnd.ms-excel");
+            if (file.isEmpty()) {
+                return ResponseEntity.badRequest()
+                    .body(${SimplResponseModel}.failed("上传文件为空"));
+            }
+            
+            String originalFilename = file.getOriginalFilename();
+            if (originalFilename == null || (!originalFilename.endsWith(".xlsx") && !originalFilename.endsWith(".xls"))) {
+                return ResponseEntity.badRequest()
+                    .body(${SimplResponseModel}.failed("文件格式不正确，仅支持.xlsx和.xls格式"));
+            }
+            
+            // 这里应该添加Excel文件解析和数据导入的逻辑
+            // 示例：List<${ModelSimpleName}> records = excelService.parseExcel(file, ${ModelSimpleName}.class);
+            // Boolean success = ${ServiceVariableName}.batchInsert(records);
+            
+            return ResponseEntity.ok(${SimplResponseModel}.success(true));
+        } catch (Exception e) {
+            log.error("Import Excel failed: {}", e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(${SimplResponseModel}.failed("导入Excel失败: " + e.getMessage()));
+        }
+    }
+
+    @Operation(summary = "导出Excel", description = "导出${ModelSimpleName}数据到Excel文件")
+    @GetMapping("/export")
+    public void exportExcel(HttpServletResponse response, @RequestParam(required = false) ${ModelSimpleName} condition) {
+        try {
+            // 设置响应头信息
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
             response.setHeader("Content-Disposition", "attachment;filename=${ModelSimpleName}数据.xlsx");
+            
+            // 这里应该添加数据查询和Excel导出的逻辑
+            // 如果condition不为空，则按条件查询
+            // 示例：List<${ModelSimpleName}> records = condition != null ? 
+            //     ${ServiceVariableName}.selectByExample(condition) : ${ServiceVariableName}.selectAll();
+            // excelService.exportExcel(response, records, "${ModelSimpleName}数据");
+            
             // 导出逻辑实现...
         } catch (Exception e) {
             log.error("Export Excel failed: {}", e.getMessage(), e);
+            try {
+                response.reset();
+                response.setContentType("application/json");
+                response.setCharacterEncoding("utf-8");
+                response.getWriter().println("导出Excel失败: " + e.getMessage());
+            } catch (Exception ex) {
+                log.error("Error sending export failure response", ex);
+            }
         }
     }
 
