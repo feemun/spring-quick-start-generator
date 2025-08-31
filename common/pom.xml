@@ -10,5 +10,6 @@
 
     <artifactId>common</artifactId>
     <name>common</name>
+    <version>1.0.0</version>
 
 </project>

@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: spring-quick-start
+  profiles:
+    active: dev #默认为开发环境
+  servlet:
+    multipart:
+      enabled: true #开启文件上传
+      max-file-size: 10MB #限制文件上传大小为10M
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+mybatis:
+  mapper-locations:
+    - classpath:dao/*.xml
+    - classpath*:cloud/catfish/mbg/mapper/*.xml
+
+logging:
+  level:
+    root: debug
+
+
+springdoc:
+  swagger-ui:
+    # 修改Swagger UI路径
+    path: /swagger-ui.html
+    # 开启Swagger UI界面
+    enabled: true
+    # 用于配置tag和operation的展开方式，这里配置为都不展开
+    doc-expansion: 'none'
+  api-docs:
+    # 修改api-docs路径
+    path: /v3/api-docs
+    # 开启api-docs
+    enabled: true
+  group-configs:
+    - group: 'default'
+      packages-to-scan: cloud.catfish.admin.controller
+  default-flat-param-object: false
