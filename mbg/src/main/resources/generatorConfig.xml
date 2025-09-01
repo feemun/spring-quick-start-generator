@@ -13,17 +13,18 @@
         <!-- 配置生成Java文件的编码 -->
         <property name="javaFileEncoding" value="UTF-8"/>
 
-        <!-- LocalDateTime Serializable Plugin -->
-        <plugin type="cloud.catfish.mbg.plugin.LocalDateTimeSerializablePlugin"/>
-
-        <!-- LocalDateTime Deserializable Plugin -->
-        <plugin type="cloud.catfish.mbg.plugin.LocalDateTimeDeserializablePlugin"/>
+        <!-- Unified Domain Model Plugin (replaces LocalDateTime Serializable, Deserializable, and NoGetterSetter plugins) -->
+        <plugin type="cloud.catfish.mbg.plugin.DomainModelPlugin">
+            <property name="enableJsonFormat" value="true"/>
+            <property name="enableDateTimeFormat" value="true"/>
+            <property name="generateGetters" value="false"/>
+            <property name="generateSetters" value="false"/>
+            <property name="dateTimePattern" value="yyyy-MM-dd HH:mm:ss"/>
+            <property name="timezone" value="GMT+8"/>
+        </plugin>
 
         <!-- lombok annotation Plugin -->
         <plugin type="cloud.catfish.mbg.plugin.LombokAnnotationPlugin"/>
-
-        <!-- lombok no getter, setter Plugin -->
-        <plugin type="cloud.catfish.mbg.plugin.NoGetterSetterPlugin"/>
 
         <!-- controller generator Plugin -->
         <plugin type="cloud.catfish.mbg.plugin.CustomVelocityControllerPlugin"/>
