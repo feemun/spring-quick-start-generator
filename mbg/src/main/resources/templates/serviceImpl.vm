@@ -105,5 +105,25 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
    public Boolean insertSelective(${ModelSimpleName} record) {
        return ${DaoVariableName}.insertSelective(record) > 0;
    }
+   
+   /**
+    * 批量新增
+    *
+    * @param records 批量新增的数据对象列表
+    * @return 是否新增成功
+    */
+   public Boolean batchInsert(List<${ModelSimpleName}> records) {
+       if (records == null || records.isEmpty()) {
+           return false;
+       }
+       
+       boolean success = true;
+       for (${ModelSimpleName} record : records) {
+           if (${DaoVariableName}.insertSelective(record) <= 0) {
+               success = false;
+           }
+       }
+       return success;
+   }
 
 }
