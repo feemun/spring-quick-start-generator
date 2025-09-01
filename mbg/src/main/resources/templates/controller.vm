@@ -18,8 +18,7 @@ import cloud.catfish.api.CommonPageReq;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.annotation.Resource;
-import com.littlenb.snowflake.sequence.IdGenerator;
-import com.littlenb.snowflake.support.SnowflakeFactory;
+import cloud.catfish.common.util.SnowflakeUtil;
 
 @Tag(name = "${ModelSimpleName} API", description = "${ModelSimpleName}相关的增删改查操作")
 @RestController
@@ -98,7 +97,7 @@ public class ${ControllerSimpleName} {
     @PostMapping
     public ResponseEntity<${ModelSimpleName}> create(@Valid @RequestBody ${ModelSimpleName} record) {
         // 使用Twitter Snowflake算法生成ID
-        Long snowflakeId = SnowflakeFactory.create(0, 0).nextId();
+        Long snowflakeId = SnowflakeUtil.nextId();
         record.setId(snowflakeId);
         
         Boolean success = ${ServiceVariableName}.insertSelective(record);
@@ -128,7 +127,7 @@ public class ${ControllerSimpleName} {
             // 
             // // 为每条记录生成Snowflake ID
             // for (${ModelSimpleName} record : records) {
-            //     record.setId(SnowflakeFactory.create(0, 0).nextId());
+            //     record.setId(SnowflakeUtil.nextId());
             // }
             // 
             // Boolean success = ${ServiceVariableName}.batchInsert(records);

@@ -13,11 +13,6 @@
     <version>1.0.0</version>
 
     <dependencies>
-        <!-- Twitter Snowflake ID Generator -->
-        <dependency>
-            <groupId>com.littlenb</groupId>
-            <artifactId>snowflake</artifactId>
-            <version>1.0.5</version>
-        </dependency>
+        <!-- No external dependencies needed for Snowflake ID generation -->
     </dependencies>
 </project>
