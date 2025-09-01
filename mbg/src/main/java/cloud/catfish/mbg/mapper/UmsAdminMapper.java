@@ -1,7 +1,5 @@
 package cloud.catfish.mbg.mapper;
 
-import cloud.catfish.mbg.model.UmsAdmin;
-import cloud.catfish.mbg.model.UmsAdminExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
