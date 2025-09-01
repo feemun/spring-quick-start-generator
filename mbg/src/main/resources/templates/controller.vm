@@ -108,36 +108,22 @@ public class ${ControllerSimpleName} {
         }
     }
 
+
+
     @Operation(summary = "Excel批量导入", description = "通过Excel文件批量导入${ModelSimpleName}数据")
     @PostMapping("/import")
     public ResponseEntity<String> importExcel(@RequestParam("file") MultipartFile file) {
         try {
-            if (file.isEmpty()) {
-                return ResponseEntity.badRequest().build();
-            }
-            
-            String originalFilename = file.getOriginalFilename();
-            if (originalFilename == null || (!originalFilename.endsWith(".xlsx") && !originalFilename.endsWith(".xls"))) {
-                return ResponseEntity.badRequest().body("文件格式不正确，仅支持.xlsx和.xls格式");
-            }
-            
-            // 这里应该添加Excel文件解析和数据导入的逻辑
-            // 示例代码：
-            // List<${ModelSimpleName}> records = excelService.parseExcel(file, ${ModelSimpleName}.class);
-            // 
-            // // 为每条记录生成Snowflake ID
-            // for (${ModelSimpleName} record : records) {
-            //     record.setId(SnowflakeUtil.nextId());
-            // }
-            // 
-            // Boolean success = ${ServiceVariableName}.batchInsert(records);
-            // if (!success) {
-            //     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("部分数据导入失败");
-            // }
-            
-            return ResponseEntity.ok("导入成功");
+            // 委托给服务层处理所有业务逻辑
+            String result = ${ServiceVariableName}.importExcel(file);
+            return ResponseEntity.ok(result);
+        } catch (IllegalArgumentException e) {
+            // 参数验证异常，返回400错误
+            log.warn("Excel导入参数错误: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
-            log.error("Import Excel failed: {}", e.getMessage(), e);
+            // 其他异常，返回500错误
+            log.error("Excel导入失败: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("导入Excel失败: " + e.getMessage());
         }
     }

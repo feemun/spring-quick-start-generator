@@ -85,5 +85,14 @@ public interface ${ServiceClassName} {
      * @return 是否新增成功
      */
     Boolean batchInsertSelective(List<${ModelSimpleName}> records);
+    
+    /**
+     * Excel文件导入处理
+     *
+     * @param file Excel文件
+     * @return 导入结果信息
+     * @throws Exception 导入过程中的异常
+     */
+    String importExcel(org.springframework.web.multipart.MultipartFile file) throws Exception;
 
 }
