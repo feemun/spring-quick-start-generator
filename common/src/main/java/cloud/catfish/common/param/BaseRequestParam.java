@@ -1,4 +1,4 @@
-package cloud.catfish.mbg.model.param;
+package cloud.catfish.common.param;
 
 import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
