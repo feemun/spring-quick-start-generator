@@ -38,6 +38,18 @@
             <property name="swaggerDescriptionSuffix" value=" VO"/>
         </plugin>
 
+        <!-- RequestParam generator Plugin -->
+        <plugin type="cloud.catfish.mbg.plugin.RequestParamGeneratorPlugin">
+            <property name="requestParamPackage" value="cloud.catfish.mbg.model.param"/>
+            <property name="requestParamTargetProject" value="mbg/src/main/java"/>
+            <property name="enableValidation" value="true"/>
+            <property name="enablePagination" value="true"/>
+            <property name="enableSorting" value="true"/>
+            <property name="enableSwagger" value="true"/>
+            <property name="enableDateRange" value="true"/>
+            <property name="swaggerDescriptionSuffix" value=" Request Parameters"/>
+        </plugin>
+
         <!-- controller generator Plugin -->
         <plugin type="cloud.catfish.mbg.plugin.CustomVelocityControllerPlugin"/>
 
