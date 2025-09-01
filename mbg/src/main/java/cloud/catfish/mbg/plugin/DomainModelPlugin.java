@@ -31,19 +31,22 @@ import java.util.List;
  * 
  * <p><strong>Configuration Properties:</strong></p>
  * <ul>
- *   <li><code>enableJsonFormat</code> - Enable @JsonFormat annotations (default: true)</li>
- *   <li><code>enableDateTimeFormat</code> - Enable @DateTimeFormat annotations (default: true)</li>
+ *   <li><code>enableJsonFormat</code> - Enable @JsonFormat annotations (default: false)</li>
+ *   <li><code>enableDateTimeFormat</code> - Enable @DateTimeFormat annotations (default: false)</li>
  *   <li><code>generateGetters</code> - Generate getter methods (default: true)</li>
  *   <li><code>generateSetters</code> - Generate setter methods (default: true)</li>
  *   <li><code>dateTimePattern</code> - Date/time pattern (default: "yyyy-MM-dd HH:mm:ss")</li>
  *   <li><code>timezone</code> - Timezone for JSON format (default: "GMT+8")</li>
  * </ul>
  * 
+ * <p><strong>Note:</strong> Date/time format annotations are disabled by default since the VO generator plugin 
+ * now handles these annotations automatically in generated VO classes.</p>
+ * 
  * <p><strong>Usage Example:</strong></p>
  * <pre>
  * &lt;plugin type="cloud.catfish.mbg.plugin.DomainModelPlugin"&gt;
- *     &lt;property name="enableJsonFormat" value="true"/&gt;
- *     &lt;property name="enableDateTimeFormat" value="true"/&gt;
+ *     &lt;property name="enableJsonFormat" value="false"/&gt;
+ *     &lt;property name="enableDateTimeFormat" value="false"/&gt;
  *     &lt;property name="generateGetters" value="false"/&gt;
  *     &lt;property name="generateSetters" value="false"/&gt;
  *     &lt;property name="dateTimePattern" value="yyyy-MM-dd HH:mm:ss"/&gt;
@@ -74,8 +77,8 @@ public class DomainModelPlugin extends PluginAdapter {
     private static final String DATE_TIME_FORMAT_CLASS = "org.springframework.format.annotation.DateTimeFormat";
     
     // Configuration fields
-    private boolean enableJsonFormat = true;
-    private boolean enableDateTimeFormat = true;
+    private boolean enableJsonFormat = false;
+    private boolean enableDateTimeFormat = false;
     private boolean generateGetters = true;
     private boolean generateSetters = true;
     private String dateTimePattern = DEFAULT_DATE_TIME_PATTERN;
@@ -105,8 +108,8 @@ public class DomainModelPlugin extends PluginAdapter {
      */
     private void parseConfigurationProperties() {
         if (properties != null) {
-            enableJsonFormat = Boolean.parseBoolean(properties.getProperty(ENABLE_JSON_FORMAT, "true"));
-            enableDateTimeFormat = Boolean.parseBoolean(properties.getProperty(ENABLE_DATE_TIME_FORMAT, "true"));
+            enableJsonFormat = Boolean.parseBoolean(properties.getProperty(ENABLE_JSON_FORMAT, "false"));
+            enableDateTimeFormat = Boolean.parseBoolean(properties.getProperty(ENABLE_DATE_TIME_FORMAT, "false"));
             generateGetters = Boolean.parseBoolean(properties.getProperty(GENERATE_GETTERS, "true"));
             generateSetters = Boolean.parseBoolean(properties.getProperty(GENERATE_SETTERS, "true"));
             dateTimePattern = properties.getProperty(DATE_TIME_PATTERN, DEFAULT_DATE_TIME_PATTERN);
@@ -119,16 +122,6 @@ public class DomainModelPlugin extends PluginAdapter {
                                      IntrospectedColumn introspectedColumn, 
                                      IntrospectedTable introspectedTable, 
                                      ModelClassType modelClassType) {
-        
-        if (isDateTimeType(introspectedColumn)) {
-            try {
-                addDateTimeAnnotations(field, topLevelClass);
-            } catch (Exception e) {
-                System.err.println("Warning: Failed to add date/time annotations to field " 
-                    + field.getName() + ": " + e.getMessage());
-            }
-        }
-        
         return super.modelFieldGenerated(field, topLevelClass, introspectedColumn, introspectedTable, modelClassType);
     }
 
@@ -148,22 +141,6 @@ public class DomainModelPlugin extends PluginAdapter {
                                             ModelClassType modelClassType) {
         // Return false to disable setter generation if configured
         return generateSetters;
-    }
-    
-    /**
-     * Adds date/time annotations to the specified field based on configuration.
-     * 
-     * @param field the field to add annotations to
-     * @param topLevelClass the class containing the field
-     */
-    private void addDateTimeAnnotations(Field field, TopLevelClass topLevelClass) {
-        if (enableJsonFormat) {
-            addJsonFormatAnnotation(field, topLevelClass);
-        }
-        
-        if (enableDateTimeFormat) {
-            addDateTimeFormatAnnotation(field, topLevelClass);
-        }
     }
     
     /**

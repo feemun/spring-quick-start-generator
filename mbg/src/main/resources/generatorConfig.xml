@@ -26,6 +26,18 @@
         <!-- lombok annotation Plugin -->
         <plugin type="cloud.catfish.mbg.plugin.LombokAnnotationPlugin"/>
 
+        <!-- VO generator Plugin -->
+        <plugin type="cloud.catfish.mbg.plugin.VoGeneratorPlugin">
+            <property name="voPackage" value="cloud.catfish.mbg.model.vo"/>
+            <property name="mapperPackage" value="cloud.catfish.mbg.mapper.vo"/>
+            <property name="voTargetProject" value="mbg/src/main/java"/>
+            <property name="mapperTargetProject" value="mbg/src/main/java"/>
+            <property name="enableMappers" value="true"/>
+            <property name="mapperComponentModel" value="spring"/>
+            <property name="enableSwagger" value="true"/>
+            <property name="swaggerDescriptionSuffix" value=" VO"/>
+        </plugin>
+
         <!-- controller generator Plugin -->
         <plugin type="cloud.catfish.mbg.plugin.CustomVelocityControllerPlugin"/>
 
