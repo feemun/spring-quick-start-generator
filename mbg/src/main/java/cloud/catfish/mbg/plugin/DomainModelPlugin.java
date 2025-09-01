@@ -61,8 +61,6 @@ import java.util.List;
 public class DomainModelPlugin extends PluginAdapter {
 
     // Configuration property keys
-    private static final String ENABLE_JSON_FORMAT = "enableJsonFormat";
-    private static final String ENABLE_DATE_TIME_FORMAT = "enableDateTimeFormat";
     private static final String GENERATE_GETTERS = "generateGetters";
     private static final String GENERATE_SETTERS = "generateSetters";
     private static final String DATE_TIME_PATTERN = "dateTimePattern";
@@ -72,13 +70,7 @@ public class DomainModelPlugin extends PluginAdapter {
     private static final String DEFAULT_DATE_TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
     private static final String DEFAULT_TIMEZONE = "GMT+8";
     
-    // Annotation class names
-    private static final String JSON_FORMAT_CLASS = "com.fasterxml.jackson.annotation.JsonFormat";
-    private static final String DATE_TIME_FORMAT_CLASS = "org.springframework.format.annotation.DateTimeFormat";
-    
     // Configuration fields
-    private boolean enableJsonFormat = false;
-    private boolean enableDateTimeFormat = false;
     private boolean generateGetters = true;
     private boolean generateSetters = true;
     private String dateTimePattern = DEFAULT_DATE_TIME_PATTERN;
@@ -108,8 +100,6 @@ public class DomainModelPlugin extends PluginAdapter {
      */
     private void parseConfigurationProperties() {
         if (properties != null) {
-            enableJsonFormat = Boolean.parseBoolean(properties.getProperty(ENABLE_JSON_FORMAT, "false"));
-            enableDateTimeFormat = Boolean.parseBoolean(properties.getProperty(ENABLE_DATE_TIME_FORMAT, "false"));
             generateGetters = Boolean.parseBoolean(properties.getProperty(GENERATE_GETTERS, "true"));
             generateSetters = Boolean.parseBoolean(properties.getProperty(GENERATE_SETTERS, "true"));
             dateTimePattern = properties.getProperty(DATE_TIME_PATTERN, DEFAULT_DATE_TIME_PATTERN);
@@ -142,42 +132,5 @@ public class DomainModelPlugin extends PluginAdapter {
         // Return false to disable setter generation if configured
         return generateSetters;
     }
-    
-    /**
-     * Adds @JsonFormat annotation for JSON serialization.
-     * 
-     * @param field the field to add the annotation to
-     * @param topLevelClass the class containing the field
-     */
-    private void addJsonFormatAnnotation(Field field, TopLevelClass topLevelClass) {
-        String annotation = String.format("@JsonFormat(pattern = \"%s\", timezone = \"%s\")", 
-                                         dateTimePattern, timezone);
-        field.addAnnotation(annotation);
-        topLevelClass.addImportedType(new FullyQualifiedJavaType(JSON_FORMAT_CLASS));
-    }
-    
-    /**
-     * Adds @DateTimeFormat annotation for Spring MVC binding.
-     * 
-     * @param field the field to add the annotation to
-     * @param topLevelClass the class containing the field
-     */
-    private void addDateTimeFormatAnnotation(Field field, TopLevelClass topLevelClass) {
-        String annotation = String.format("@DateTimeFormat(pattern = \"%s\")", dateTimePattern);
-        field.addAnnotation(annotation);
-        topLevelClass.addImportedType(new FullyQualifiedJavaType(DATE_TIME_FORMAT_CLASS));
-    }
-    
-    /**
-     * Determines if the given column represents a date/time type.
-     * 
-     * @param column the database column to check
-     * @return true if the column is a date/time type, false otherwise
-     */
-    private boolean isDateTimeType(IntrospectedColumn column) {
-        String typeName = column.getJdbcTypeName();
-        return "DATE".equalsIgnoreCase(typeName) 
-            || "TIME".equalsIgnoreCase(typeName) 
-            || "TIMESTAMP".equalsIgnoreCase(typeName);
-    }
+
 }
