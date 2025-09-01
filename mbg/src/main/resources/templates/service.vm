@@ -77,5 +77,13 @@ public interface ${ServiceClassName} {
      * @return 是否新增成功
      */
     Boolean batchInsert(List<${ModelSimpleName}> records);
+    
+    /**
+     * 批量选择性新增（忽略null值）
+     *
+     * @param records 批量新增的数据对象列表
+     * @return 是否新增成功
+     */
+    Boolean batchInsertSelective(List<${ModelSimpleName}> records);
 
 }
