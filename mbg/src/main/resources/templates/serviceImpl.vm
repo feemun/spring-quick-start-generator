@@ -5,6 +5,7 @@ import ${modelPackage}.${ModelSimpleName};
 import ${modelPackage}.${ModelSimpleName}Example;
 import ${MapperPackage}.${DaoSimpleName};
 import ${ServicePackage}.${ServiceSimpleName};
+import ${modelPackage}.param.${ModelSimpleName}RequestParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,21 +27,19 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
     /**
      * 分页查询
      *
-     * @param pageNum   当前页码
-     * @param pageSize  每页显示数量
-     * @param condition 查询条件
+     * @param requestParam 查询参数，包含分页信息和查询条件
      * @return 查询结果列表
      */
-    public List<${ModelSimpleName}> page(Integer pageNum, Integer pageSize, ${ModelSimpleName} condition) {
-        PageHelper.startPage(pageNum, pageSize);
+    public List<${ModelSimpleName}> page(${ModelSimpleName}RequestParam requestParam) {
+        PageHelper.startPage(requestParam.getPage(), requestParam.getSize());
         ${ModelSimpleName}Example example = new ${ModelSimpleName}Example();
         ${ModelSimpleName}Example.Criteria criteria = example.createCriteria();
         
         // 如果有查询条件，则添加到criteria中
-        if (condition != null) {
-            // 这里需要根据实际的字段添加条件
-            // 示例: if (condition.getName() != null) criteria.andNameLike("%" + condition.getName() + "%");
-        }
+        // 这里需要根据实际的字段添加条件
+        // 示例: if (requestParam.getName() != null) {
+        //     criteria.andNameLike("%" + requestParam.getName() + "%");
+        // }
         
         return ${DaoVariableName}.selectByExample(example);
     }

@@ -14,7 +14,7 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import cloud.catfish.api.CommonPageReq;
+import ${packageName}.param.${ModelSimpleName}RequestParam;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.annotation.Resource;
@@ -31,8 +31,8 @@ public class ${ControllerSimpleName} {
 
     @Operation(summary = "分页条件查询", description = "根据条件分页查询${ModelSimpleName}列表")
     @PostMapping("/search")
-    public ResponseEntity<Page<${ModelSimpleName}>> search(@Valid @RequestBody CommonPageReq<${ModelSimpleName}> req) {
-        List<${ModelSimpleName}> lst = ${ServiceVariableName}.page(req.getCurrentPage(), req.getPageSize(), req.getCondition());
+    public ResponseEntity<Page<${ModelSimpleName}>> search(@Valid @RequestBody ${ModelSimpleName}RequestParam req) {
+        List<${ModelSimpleName}> lst = ${ServiceVariableName}.page(req);
         PageInfo<${ModelSimpleName}> pageInfo = new PageInfo<>(lst);
         
         Page<${ModelSimpleName}> page = new PageImpl<>(

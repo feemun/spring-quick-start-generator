@@ -54,6 +54,7 @@ public class CustomVelocityServicePlugin extends PluginAdapter {
     // Naming Convention Constants
     private static final String SERVICE_CLASS_PREFIX = "I";
     private static final String SERVICE_CLASS_SUFFIX = "Service";
+    private static final String REQUEST_PARAM_CLASS_SUFFIX = "RequestParam";
     private static final String DEFAULT_RESPONSE_MODEL = "CommonResult";
     private static final String API_BASE_URL_PREFIX = "/";
     
@@ -196,6 +197,7 @@ public class CustomVelocityServicePlugin extends PluginAdapter {
         
         // Model and API configuration
         context.put("ModelSimpleName", entityName);
+        context.put("RequestParamClassName", entityName + REQUEST_PARAM_CLASS_SUFFIX);
         context.put("apiBaseUrl", generateApiBaseUrl(entityName));
         context.put("SimplResponseModel", responseModel);
         

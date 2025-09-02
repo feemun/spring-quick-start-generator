@@ -47,9 +47,11 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
     private static final String MODEL_PACKAGE_SUFFIX = ".model";
     private static final String SERVICE_PACKAGE_SUFFIX = ".service";
     private static final String CONTROLLER_PACKAGE_SUFFIX = ".controller";
+    private static final String PARAM_PACKAGE_SUFFIX = ".model.param";
     private static final String CONTROLLER_CLASS_SUFFIX = "Controller";
     private static final String SERVICE_INTERFACE_PREFIX = "I";
     private static final String SERVICE_CLASS_SUFFIX = "Service";
+    private static final String REQUEST_PARAM_CLASS_SUFFIX = "RequestParam";
     private static final String DEFAULT_RESPONSE_MODEL = "CommonResult";
     
     // Configuration properties
@@ -221,6 +223,7 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
         context.put("ControllerSimpleName", entityName + CONTROLLER_CLASS_SUFFIX);
         context.put("ServiceClassName", SERVICE_INTERFACE_PREFIX + entityName + SERVICE_CLASS_SUFFIX);
         context.put("ModelSimpleName", entityName);
+        context.put("RequestParamClassName", entityName + REQUEST_PARAM_CLASS_SUFFIX);
         
         // Variable names
         context.put("ServiceVariableName", StringHelper.firstCharToLower(entityName));

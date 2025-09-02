@@ -58,6 +58,7 @@ public class CustomVelocityServiceImplPlugin extends PluginAdapter {
     private static final String SERVICE_CLASS_SUFFIX = "Service";
     private static final String SERVICE_IMPL_CLASS_SUFFIX = "ServiceImpl";
     private static final String MAPPER_CLASS_SUFFIX = "Mapper";
+    private static final String REQUEST_PARAM_CLASS_SUFFIX = "RequestParam";
     private static final String DEFAULT_RESPONSE_MODEL = "CommonResult";
     
     // Configuration Properties
@@ -203,6 +204,7 @@ public class CustomVelocityServiceImplPlugin extends PluginAdapter {
         
         // Model and response configuration
         context.put("ModelSimpleName", entityName);
+        context.put("RequestParamClassName", entityName + REQUEST_PARAM_CLASS_SUFFIX);
         context.put("SimplResponseModel", responseModel);
         
         if (enableDebugOutput) {
