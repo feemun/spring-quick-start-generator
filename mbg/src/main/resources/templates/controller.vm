@@ -69,9 +69,11 @@ public class ${ControllerSimpleName} {
 #if($hasPrimaryKey)
     @Operation(summary = "根据主键删除", description = "删除单个${ModelSimpleName}")
     @DeleteMapping("/${primaryKeyPathVariables}")
-    public ResponseEntity<Void> deleteByPrimaryKey(${primaryKeyMethodParams}) {
-        ${ServiceVariableName}.deleteByPrimaryKey(${primaryKeyServiceCallParams});
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<Boolean> deleteByPrimaryKey(${primaryKeyMethodParams}) {
+        Boolean success = ${ServiceVariableName}.deleteByPrimaryKey(${primaryKeyServiceCallParams});
+        log.info(success ? "Successfully deleted ${ModelSimpleName} with primary key: ${primaryKeyServiceCallParams}" 
+                        : "Failed to delete ${ModelSimpleName} with primary key: ${primaryKeyServiceCallParams}");
+        return ResponseEntity.ok(success);
     }
 #end
 
@@ -93,8 +95,6 @@ public class ${ControllerSimpleName} {
         ${ServiceVariableName}.insertSelective(record);
         return ResponseEntity.status(HttpStatus.CREATED).body(record);
     }
-
-
 
     @Operation(summary = "Excel批量导入", description = "通过Excel文件批量导入${ModelSimpleName}数据")
     @PostMapping("/import")
