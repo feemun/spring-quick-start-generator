@@ -34,60 +34,31 @@ public class ${ControllerSimpleName} {
         return ResponseEntity.ok(page);
     }
 
+#if($hasPrimaryKey)
     /**
      * 根据主键查询
      *
-#if($hasSinglePrimaryKey)
-     * @param ${primaryKeyJavaProperty} 主键
-#elseif($hasCompositePrimaryKey)
-#foreach($prop in $primaryKeyJavaProperties)
-     * @param ${prop} 主键字段${foreach.index}
-#end
-#else
-     * @param id 主键ID
+#foreach($prop in $primaryKeyProperties)
+     * @param ${prop} 主键字段
 #end
      * @return 查询结果
      */
     @Operation(summary = "根据主键查询", description = "根据ID查询单个${ModelSimpleName}")
-#if($hasSinglePrimaryKey)
-    @GetMapping("/${primaryKeyPathVariable}")
-    public ResponseEntity<${VoClassName}> selectByPrimaryKey(@PathVariable ${primaryKeyMethodParam}) {
-        ${VoClassName} result = ${ServiceVariableName}.selectByPrimaryKey(${primaryKeyServiceCall});
-#elseif($hasCompositePrimaryKey)
     @GetMapping("/${primaryKeyPathVariables}")
     public ResponseEntity<${VoClassName}> selectByPrimaryKey(${primaryKeyMethodParams}) {
         ${VoClassName} result = ${ServiceVariableName}.selectByPrimaryKey(${primaryKeyServiceCallParams});
-#else
-    @GetMapping("/{id}")
-    public ResponseEntity<${VoClassName}> selectByPrimaryKey(@PathVariable Long id) {
-        ${VoClassName} result = ${ServiceVariableName}.selectByPrimaryKey(id);
-#end
         if (result != null) {
             return ResponseEntity.ok(result);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+#end
 
     @Operation(summary = "根据主键更新", description = "更新${ModelSimpleName}信息")
-#if($hasSinglePrimaryKey)
-    @PutMapping("/${primaryKeyPathVariable}")
-    public ResponseEntity<Void> updateByPrimaryKeySelective(@PathVariable ${primaryKeyMethodParam}, @Valid @RequestBody ${ModelSimpleName} record) {
-        record.set${primaryKeyJavaProperty.substring(0,1).toUpperCase()}${primaryKeyJavaProperty.substring(1)}(${primaryKeyJavaProperty}); // 确保主键一致
+    @PutMapping("")
+    public ResponseEntity<Void> updateByPrimaryKeySelective(@Valid @RequestBody ${ModelSimpleName} record) {
         Boolean success = ${ServiceVariableName}.updateByPrimaryKeySelective(record);
-#elseif($hasCompositePrimaryKey)
-    @PutMapping("/${primaryKeyPathVariables}")
-    public ResponseEntity<Void> updateByPrimaryKeySelective(${primaryKeyMethodParams}, @Valid @RequestBody ${ModelSimpleName} record) {
-#foreach($prop in $primaryKeyJavaProperties)
-        record.set${prop.substring(0,1).toUpperCase()}${prop.substring(1)}(${prop}); // 确保主键一致
-#end
-        Boolean success = ${ServiceVariableName}.updateByPrimaryKeySelective(record);
-#else
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateByPrimaryKeySelective(@PathVariable("id") Long id, @Valid @RequestBody ${ModelSimpleName} record) {
-        record.setId(id); // 确保ID一致
-        Boolean success = ${ServiceVariableName}.updateByPrimaryKeySelective(record);
-#end
         if (success) {
             return ResponseEntity.ok().build();
         } else {
@@ -103,26 +74,18 @@ public class ${ControllerSimpleName} {
         return ResponseEntity.ok(rowsAffected);
     }
 
+#if($hasPrimaryKey)
     @Operation(summary = "根据主键删除", description = "删除单个${ModelSimpleName}")
-#if($hasSinglePrimaryKey)
-    @DeleteMapping("/${primaryKeyPathVariable}")
-    public ResponseEntity<Void> deleteByPrimaryKey(@PathVariable ${primaryKeyMethodParam}) {
-        Boolean success = ${ServiceVariableName}.deleteByPrimaryKey(${primaryKeyServiceCall});
-#elseif($hasCompositePrimaryKey)
     @DeleteMapping("/${primaryKeyPathVariables}")
     public ResponseEntity<Void> deleteByPrimaryKey(${primaryKeyMethodParams}) {
         Boolean success = ${ServiceVariableName}.deleteByPrimaryKey(${primaryKeyServiceCallParams});
-#else
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteByPrimaryKey(@PathVariable("id") Long id) {
-        Boolean success = ${ServiceVariableName}.deleteByPrimaryKey(id);
-#end
         if (success) {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+#end
 
     @Operation(summary = "根据条件批量删除", description = "根据条件批量删除${ModelSimpleName}")
     @DeleteMapping("/batch")

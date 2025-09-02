@@ -258,61 +258,49 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
         List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
         
         if (primaryKeyColumns != null && !primaryKeyColumns.isEmpty()) {
-            // Single primary key case
-            if (primaryKeyColumns.size() == 1) {
-                IntrospectedColumn pkColumn = primaryKeyColumns.get(0);
-                context.put("hasSinglePrimaryKey", true);
-                context.put("hasCompositePrimaryKey", false);
-                context.put("primaryKeyJavaProperty", pkColumn.getJavaProperty());
-                context.put("primaryKeyJavaType", pkColumn.getFullyQualifiedJavaType().getShortName());
-                context.put("primaryKeyPathVariable", "{" + pkColumn.getJavaProperty() + "}");
-                context.put("primaryKeyMethodParam", pkColumn.getFullyQualifiedJavaType().getShortName() + " " + pkColumn.getJavaProperty());
-                context.put("primaryKeyServiceCall", pkColumn.getJavaProperty());
-            } else {
-                // Composite primary key case
-                context.put("hasSinglePrimaryKey", false);
-                context.put("hasCompositePrimaryKey", true);
+            context.put("hasPrimaryKey", true);
+            context.put("primaryKeyType", primaryKeyColumns.get(0).getFullyQualifiedJavaType().getShortName());
+            context.put("primaryKeyProperty", primaryKeyColumns.get(0).getJavaProperty());
+            context.put("primaryKeyColumn", primaryKeyColumns.get(0).getActualColumnName());
+            
+            // Extract primary key properties for template iteration
+            List<String> pkProperties = primaryKeyColumns.stream()
+                .map(IntrospectedColumn::getJavaProperty)
+                .collect(Collectors.toList());
+            
+            List<String> pkTypes = primaryKeyColumns.stream()
+                .map(col -> col.getFullyQualifiedJavaType().getShortName())
+                .collect(Collectors.toList());
+            
+            context.put("primaryKeyTypes", pkTypes);
+            context.put("primaryKeyProperties", pkProperties);
+            
+            // Generate unified method parameters for all primary key scenarios
+            StringBuilder methodParams = new StringBuilder();
+            StringBuilder serviceCallParams = new StringBuilder();
+            StringBuilder pathVariables = new StringBuilder();
+            
+            for (int i = 0; i < primaryKeyColumns.size(); i++) {
+                IntrospectedColumn col = primaryKeyColumns.get(i);
+                String paramType = col.getFullyQualifiedJavaType().getShortName();
+                String paramName = col.getJavaProperty();
                 
-                // Create lists for template iteration
-                List<String> pkJavaProperties = primaryKeyColumns.stream()
-                    .map(IntrospectedColumn::getJavaProperty)
-                    .collect(Collectors.toList());
+                if (i > 0) {
+                    methodParams.append(", ");
+                    serviceCallParams.append(", ");
+                    pathVariables.append("/");
+                }
                 
-                List<String> pkJavaTypes = primaryKeyColumns.stream()
-                    .map(col -> col.getFullyQualifiedJavaType().getShortName())
-                    .collect(Collectors.toList());
-                
-                // Path variables: {id1}/{id2}/{id3}
-                String pathVariables = primaryKeyColumns.stream()
-                    .map(col -> "{" + col.getJavaProperty() + "}")
-                    .collect(Collectors.joining("/"));
-                
-                // Method parameters: Long id1, String id2, Integer id3
-                String methodParams = primaryKeyColumns.stream()
-                    .map(col -> col.getFullyQualifiedJavaType().getShortName() + " " + col.getJavaProperty())
-                    .collect(Collectors.joining(", "));
-                
-                // Service call parameters: id1, id2, id3
-                String serviceCallParams = primaryKeyColumns.stream()
-                    .map(IntrospectedColumn::getJavaProperty)
-                    .collect(Collectors.joining(", "));
-                
-                context.put("primaryKeyColumns", primaryKeyColumns);
-                context.put("primaryKeyJavaProperties", pkJavaProperties);
-                context.put("primaryKeyJavaTypes", pkJavaTypes);
-                context.put("primaryKeyPathVariables", pathVariables);
-                context.put("primaryKeyMethodParams", methodParams);
-                context.put("primaryKeyServiceCallParams", serviceCallParams);
+                methodParams.append("@PathVariable ").append(paramType).append(" ").append(paramName);
+                serviceCallParams.append(paramName);
+                pathVariables.append("{").append(paramName).append("}");
             }
+            
+            context.put("primaryKeyMethodParams", methodParams.toString());
+            context.put("primaryKeyServiceCallParams", serviceCallParams.toString());
+            context.put("primaryKeyPathVariables", pathVariables.toString());
         } else {
-            // No primary key case (should be rare)
-            context.put("hasSinglePrimaryKey", false);
-            context.put("hasCompositePrimaryKey", false);
-            context.put("primaryKeyJavaProperty", "id");
-            context.put("primaryKeyJavaType", "Long");
-            context.put("primaryKeyPathVariable", "{id}");
-            context.put("primaryKeyMethodParam", "Long id");
-            context.put("primaryKeyServiceCall", "id");
+            context.put("hasPrimaryKey", false);
         }
     }
     

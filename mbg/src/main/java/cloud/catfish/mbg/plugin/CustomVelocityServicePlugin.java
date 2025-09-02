@@ -289,54 +289,41 @@ public class CustomVelocityServicePlugin extends PluginAdapter {
             context.put("primaryKeyProperty", primaryKeyColumn.getJavaProperty());
             context.put("primaryKeyColumn", primaryKeyColumn.getActualColumnName());
             
-            // Multiple primary keys support
+            // Unified primary key support - treat single key as special case of multiple keys
             context.put("hasPrimaryKey", true);
-            context.put("hasSinglePrimaryKey", primaryKeyColumns.size() == 1);
-            context.put("hasCompositePrimaryKey", primaryKeyColumns.size() > 1);
             
-            if (primaryKeyColumns.size() > 1) {
-                List<String> pkTypes = primaryKeyColumns.stream()
-                    .map(col -> col.getFullyQualifiedJavaType().getShortName())
-                    .collect(Collectors.toList());
-                List<String> pkProperties = primaryKeyColumns.stream()
-                    .map(IntrospectedColumn::getJavaProperty)
-                    .collect(Collectors.toList());
-                    
-                context.put("primaryKeyTypes", pkTypes);
-                context.put("primaryKeyProperties", pkProperties);
+            List<String> pkTypes = primaryKeyColumns.stream()
+                .map(col -> col.getFullyQualifiedJavaType().getShortName())
+                .collect(Collectors.toList());
+            List<String> pkProperties = primaryKeyColumns.stream()
+                .map(IntrospectedColumn::getJavaProperty)
+                .collect(Collectors.toList());
                 
-                // Generate method parameters for composite primary keys
-                StringBuilder methodParams = new StringBuilder();
-                StringBuilder serviceCallParams = new StringBuilder();
+            context.put("primaryKeyTypes", pkTypes);
+            context.put("primaryKeyProperties", pkProperties);
+            
+            // Generate unified method parameters for all primary key scenarios
+            StringBuilder methodParams = new StringBuilder();
+            StringBuilder serviceCallParams = new StringBuilder();
+            
+            for (int i = 0; i < primaryKeyColumns.size(); i++) {
+                IntrospectedColumn col = primaryKeyColumns.get(i);
+                String paramType = col.getFullyQualifiedJavaType().getShortName();
+                String paramName = col.getJavaProperty();
                 
-                for (int i = 0; i < primaryKeyColumns.size(); i++) {
-                    IntrospectedColumn col = primaryKeyColumns.get(i);
-                    String paramType = col.getFullyQualifiedJavaType().getShortName();
-                    String paramName = col.getJavaProperty();
-                    
-                    if (i > 0) {
-                        methodParams.append(", ");
-                        serviceCallParams.append(", ");
-                    }
-                    
-                    methodParams.append(paramType).append(" ").append(paramName);
-                    serviceCallParams.append(paramName);
+                if (i > 0) {
+                    methodParams.append(", ");
+                    serviceCallParams.append(", ");
                 }
                 
-                context.put("primaryKeyMethodParams", methodParams.toString());
-                context.put("primaryKeyServiceCallParams", serviceCallParams.toString());
-            } else {
-                // Single primary key
-                String paramType = primaryKeyColumn.getFullyQualifiedJavaType().getShortName();
-                String paramName = primaryKeyColumn.getJavaProperty();
-                
-                context.put("primaryKeyMethodParam", paramType + " " + paramName);
-                context.put("primaryKeyServiceCall", paramName);
+                methodParams.append(paramType).append(" ").append(paramName);
+                serviceCallParams.append(paramName);
             }
+            
+            context.put("primaryKeyMethodParams", methodParams.toString());
+            context.put("primaryKeyServiceCallParams", serviceCallParams.toString());
         } else {
             context.put("hasPrimaryKey", false);
-            context.put("hasSinglePrimaryKey", false);
-            context.put("hasCompositePrimaryKey", false);
         }
     }
 }

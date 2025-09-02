@@ -23,26 +23,16 @@ public interface ${ServiceClassName} {
      */
     Page<${VoClassName}> page(${ModelSimpleName}RequestParam requestParam);
 
+#if($hasPrimaryKey)
     /**
      * 根据主键查询并转换为VO
      *
-#if($hasSinglePrimaryKey)
-     * @param ${primaryKeyJavaProperty} 主键
-#elseif($hasCompositePrimaryKey)
-#foreach($prop in $primaryKeyJavaProperties)
-     * @param ${prop} 主键字段${foreach.index}
-#end
-#else
-     * @param id 主键ID
+#foreach($prop in $primaryKeyProperties)
+     * @param ${prop} 主键字段
 #end
      * @return VO查询结果
      */
-#if($hasSinglePrimaryKey)
-    ${VoClassName} selectByPrimaryKey(${primaryKeyMethodParam});
-#elseif($hasCompositePrimaryKey)
     ${VoClassName} selectByPrimaryKey(${primaryKeyMethodParams});
-#else
-    ${VoClassName} selectByPrimaryKey(Long id);
 #end
 
     /**
@@ -61,26 +51,16 @@ public interface ${ServiceClassName} {
      */
     int updateByExampleSelective(${ModelSimpleName} record);
 
+#if($hasPrimaryKey)
     /**
      * 根据主键删除
      *
-#if($hasSinglePrimaryKey)
-     * @param ${primaryKeyJavaProperty} 主键
-#elseif($hasCompositePrimaryKey)
-#foreach($prop in $primaryKeyJavaProperties)
-     * @param ${prop} 主键字段${foreach.index}
-#end
-#else
-     * @param id 主键ID
+#foreach($prop in $primaryKeyProperties)
+     * @param ${prop} 主键字段
 #end
      * @return 是否删除成功
      */
-#if($hasSinglePrimaryKey)
-    Boolean deleteByPrimaryKey(${primaryKeyMethodParam});
-#elseif($hasCompositePrimaryKey)
     Boolean deleteByPrimaryKey(${primaryKeyMethodParams});
-#else
-    Boolean deleteByPrimaryKey(Long id);
 #end
 
     /**
