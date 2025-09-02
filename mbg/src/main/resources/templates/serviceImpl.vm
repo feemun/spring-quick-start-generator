@@ -66,12 +66,30 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
     /**
      * 根据主键查询
      *
+#if($hasSinglePrimaryKey)
+     * @param ${primaryKeyJavaProperty} 主键
+#elseif($hasCompositePrimaryKey)
+#foreach($prop in $primaryKeyJavaProperties)
+     * @param ${prop} 主键字段${foreach.index}
+#end
+#else
      * @param id 主键ID
+#end
      * @return 查询结果
      */
+#if($hasSinglePrimaryKey)
+    public ${ModelSimpleName} selectByPrimaryKey(${primaryKeyMethodParam}) {
+        return ${DaoVariableName}.selectByPrimaryKey(${primaryKeyServiceCall});
+    }
+#elseif($hasCompositePrimaryKey)
+    public ${ModelSimpleName} selectByPrimaryKey(${primaryKeyMethodParams}) {
+        return ${DaoVariableName}.selectByPrimaryKey(${primaryKeyServiceCallParams});
+    }
+#else
     public ${ModelSimpleName} selectByPrimaryKey(Long id) {
         return ${DaoVariableName}.selectByPrimaryKey(id);
     }
+#end
 
     /**
      * 根据主键查询并转换为VO
@@ -88,13 +106,13 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
      * @return VO查询结果
      */
 #if($hasSinglePrimaryKey)
-    public ${VoClassName} getById(${primaryKeyMethodParam}) {
+    public ${VoClassName} selectByPrimaryKey(${primaryKeyMethodParam}) {
         ${ModelSimpleName} model = ${DaoVariableName}.selectByPrimaryKey(${primaryKeyServiceCall});
 #elseif($hasCompositePrimaryKey)
-    public ${VoClassName} getById(${primaryKeyMethodParams}) {
+    public ${VoClassName} selectByPrimaryKey(${primaryKeyMethodParams}) {
         ${ModelSimpleName} model = ${DaoVariableName}.selectByPrimaryKey(${primaryKeyServiceCallParams});
 #else
-    public ${VoClassName} getById(Long id) {
+    public ${VoClassName} selectByPrimaryKey(Long id) {
         ${ModelSimpleName} model = ${DaoVariableName}.selectByPrimaryKey(id);
 #end
         if (model == null) {
@@ -128,12 +146,30 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
     /**
      * 根据主键删除
      *
+#if($hasSinglePrimaryKey)
+     * @param ${primaryKeyJavaProperty} 主键
+#elseif($hasCompositePrimaryKey)
+#foreach($prop in $primaryKeyJavaProperties)
+     * @param ${prop} 主键字段${foreach.index}
+#end
+#else
      * @param id 主键ID
+#end
      * @return 是否删除成功
      */
+#if($hasSinglePrimaryKey)
+    public Boolean deleteByPrimaryKey(${primaryKeyMethodParam}) {
+        return ${DaoVariableName}.deleteByPrimaryKey(${primaryKeyServiceCall}) > 0;
+    }
+#elseif($hasCompositePrimaryKey)
+    public Boolean deleteByPrimaryKey(${primaryKeyMethodParams}) {
+        return ${DaoVariableName}.deleteByPrimaryKey(${primaryKeyServiceCallParams}) > 0;
+    }
+#else
     public Boolean deleteByPrimaryKey(Long id) {
         return ${DaoVariableName}.deleteByPrimaryKey(id) > 0;
     }
+#end
 
     /**
      * 根据条件删除
