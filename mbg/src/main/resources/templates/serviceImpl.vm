@@ -6,9 +6,15 @@ import ${modelPackage}.${ModelSimpleName}Example;
 import ${MapperPackage}.${DaoSimpleName};
 import ${ServicePackage}.${ServiceSimpleName};
 import ${modelPackage}.param.${ModelSimpleName}RequestParam;
+import ${voPackage}.${VoClassName};
+import ${voMapperPackage}.${VoMapperClassName};
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,14 +29,17 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
 
     @Resource
     private ${DaoSimpleName} ${DaoVariableName};
+    
+    @Resource
+    private ${VoMapperClassName} ${ModelSimpleName.toLowerCase()}VoMapper;
 
     /**
      * 分页查询
      *
      * @param requestParam 查询参数，包含分页信息和查询条件
-     * @return 查询结果列表
+     * @return 分页查询结果，已转换为VO对象
      */
-    public List<${ModelSimpleName}> page(${ModelSimpleName}RequestParam requestParam) {
+    public Page<${VoClassName}> page(${ModelSimpleName}RequestParam requestParam) {
         PageHelper.startPage(requestParam.getPage(), requestParam.getSize());
         ${ModelSimpleName}Example example = new ${ModelSimpleName}Example();
         ${ModelSimpleName}Example.Criteria criteria = example.createCriteria();
@@ -41,7 +50,17 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
         //     criteria.andNameLike("%" + requestParam.getName() + "%");
         // }
         
-        return ${DaoVariableName}.selectByExample(example);
+        List<${ModelSimpleName}> lst = ${DaoVariableName}.selectByExample(example);
+        PageInfo<${ModelSimpleName}> pageInfo = new PageInfo<>(lst);
+        
+        // Convert to VO list
+        List<${VoClassName}> voList = ${ModelSimpleName.toLowerCase()}VoMapper.toVoList(pageInfo.getList());
+        
+        return new PageImpl<>(
+            voList,
+            PageRequest.of(pageInfo.getPageNum() - 1, pageInfo.getPageSize()),
+            pageInfo.getTotal()
+        );
     }
 
     /**
@@ -52,6 +71,20 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
      */
     public ${ModelSimpleName} selectByPrimaryKey(Long id) {
         return ${DaoVariableName}.selectByPrimaryKey(id);
+    }
+
+    /**
+     * 根据主键查询并转换为VO
+     *
+     * @param id 主键ID
+     * @return VO查询结果
+     */
+    public ${VoClassName} getById(Long id) {
+        ${ModelSimpleName} model = ${DaoVariableName}.selectByPrimaryKey(id);
+        if (model == null) {
+            return null;
+        }
+        return ${ModelSimpleName.toLowerCase()}VoMapper.toVo(model);
     }
 
     /**

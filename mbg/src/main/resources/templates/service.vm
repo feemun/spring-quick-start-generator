@@ -5,6 +5,8 @@ import ${modelPackage}.${ModelSimpleName};
 import ${ModelPoName};
 #end
 import ${modelPackage}.param.${ModelSimpleName}RequestParam;
+import ${voPackage}.${VoClassName};
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -17,9 +19,9 @@ public interface ${ServiceClassName} {
      * 分页查询后台
      *
      * @param requestParam 查询参数，包含分页信息和查询条件
-     * @return 查询结果列表
+     * @return 分页查询结果，已转换为VO对象
      */
-    List<${ModelSimpleName}> page(${ModelSimpleName}RequestParam requestParam);
+    Page<${VoClassName}> page(${ModelSimpleName}RequestParam requestParam);
 
     /**
      * 根据主键查询
@@ -28,6 +30,14 @@ public interface ${ServiceClassName} {
      * @return 查询结果
      */
     ${ModelSimpleName} selectByPrimaryKey(Long id);
+
+    /**
+     * 根据主键查询并转换为VO
+     *
+     * @param id 主键ID
+     * @return VO查询结果
+     */
+    ${VoClassName} getById(Long id);
 
     /**
      * 根据主键更新

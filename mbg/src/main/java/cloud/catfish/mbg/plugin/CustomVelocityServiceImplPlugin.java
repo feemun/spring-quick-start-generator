@@ -59,6 +59,10 @@ public class CustomVelocityServiceImplPlugin extends PluginAdapter {
     private static final String SERVICE_IMPL_CLASS_SUFFIX = "ServiceImpl";
     private static final String MAPPER_CLASS_SUFFIX = "Mapper";
     private static final String REQUEST_PARAM_CLASS_SUFFIX = "RequestParam";
+    private static final String VO_CLASS_SUFFIX = "Vo";
+    private static final String VO_MAPPER_CLASS_SUFFIX = "VoMapper";
+    private static final String VO_PACKAGE_SUFFIX = ".vo";
+    private static final String VO_MAPPER_PACKAGE_SUFFIX = ".mapper.vo";
     private static final String DEFAULT_RESPONSE_MODEL = "CommonResult";
     
     // Configuration Properties
@@ -205,6 +209,10 @@ public class CustomVelocityServiceImplPlugin extends PluginAdapter {
         // Model and response configuration
         context.put("ModelSimpleName", entityName);
         context.put("RequestParamClassName", entityName + REQUEST_PARAM_CLASS_SUFFIX);
+        context.put("VoClassName", entityName + VO_CLASS_SUFFIX);
+        context.put("VoMapperClassName", entityName + VO_MAPPER_CLASS_SUFFIX);
+        context.put("voPackage", packageName + VO_PACKAGE_SUFFIX);
+        context.put("voMapperPackage", packageName.replace(MODEL_PACKAGE_SUFFIX, "") + VO_MAPPER_PACKAGE_SUFFIX);
         context.put("SimplResponseModel", responseModel);
         
         if (enableDebugOutput) {

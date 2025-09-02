@@ -48,10 +48,13 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
     private static final String SERVICE_PACKAGE_SUFFIX = ".service";
     private static final String CONTROLLER_PACKAGE_SUFFIX = ".controller";
     private static final String PARAM_PACKAGE_SUFFIX = ".model.param";
+    private static final String VO_MAPPER_PACKAGE_SUFFIX = ".mapper.vo";
     private static final String CONTROLLER_CLASS_SUFFIX = "Controller";
     private static final String SERVICE_INTERFACE_PREFIX = "I";
     private static final String SERVICE_CLASS_SUFFIX = "Service";
     private static final String REQUEST_PARAM_CLASS_SUFFIX = "RequestParam";
+    private static final String VO_CLASS_SUFFIX = "Vo";
+    private static final String VO_MAPPER_CLASS_SUFFIX = "VoMapper";
     private static final String DEFAULT_RESPONSE_MODEL = "CommonResult";
     
     // Configuration properties
@@ -218,12 +221,15 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
         context.put("packageName", packageName);
         context.put("servicePackage", packageName.replace(MODEL_PACKAGE_SUFFIX, SERVICE_PACKAGE_SUFFIX));
         context.put("ControllerPackage", packageName.replace(MODEL_PACKAGE_SUFFIX, CONTROLLER_PACKAGE_SUFFIX));
+        context.put("voMapperPackage", packageName.replace(MODEL_PACKAGE_SUFFIX, VO_MAPPER_PACKAGE_SUFFIX));
         
         // Class names
         context.put("ControllerSimpleName", entityName + CONTROLLER_CLASS_SUFFIX);
         context.put("ServiceClassName", SERVICE_INTERFACE_PREFIX + entityName + SERVICE_CLASS_SUFFIX);
         context.put("ModelSimpleName", entityName);
         context.put("RequestParamClassName", entityName + REQUEST_PARAM_CLASS_SUFFIX);
+        context.put("VoClassName", entityName + VO_CLASS_SUFFIX);
+        context.put("VoMapperClassName", entityName + VO_MAPPER_CLASS_SUFFIX);
         
         // Variable names
         context.put("ServiceVariableName", StringHelper.firstCharToLower(entityName));

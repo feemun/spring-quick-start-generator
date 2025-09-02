@@ -10,11 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
-import com.github.pagehelper.PageInfo;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import ${packageName}.param.${ModelSimpleName}RequestParam;
+import ${packageName}.vo.${VoClassName};
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.annotation.Resource;
@@ -28,26 +26,21 @@ public class ${ControllerSimpleName} {
 
     @Resource
     private ${ServiceClassName} ${ServiceVariableName};
+    
+
 
     @Operation(summary = "分页条件查询", description = "根据条件分页查询${ModelSimpleName}列表")
     @PostMapping("/search")
-    public ResponseEntity<Page<${ModelSimpleName}>> search(@Valid @RequestBody ${ModelSimpleName}RequestParam req) {
-        List<${ModelSimpleName}> lst = ${ServiceVariableName}.page(req);
-        PageInfo<${ModelSimpleName}> pageInfo = new PageInfo<>(lst);
-        
-        Page<${ModelSimpleName}> page = new PageImpl<>(
-            pageInfo.getList(),
-            PageRequest.of(pageInfo.getPageNum() - 1, pageInfo.getPageSize()),
-            pageInfo.getTotal()
-        );
+    public ResponseEntity<Page<${VoClassName}>> search(@Valid @RequestBody ${ModelSimpleName}RequestParam req) {
+        Page<${VoClassName}> page = ${ServiceVariableName}.page(req);
         
         return ResponseEntity.ok(page);
     }
 
     @Operation(summary = "根据主键查询", description = "根据ID查询单个${ModelSimpleName}")
     @GetMapping("/{id}")
-    public ResponseEntity<${ModelSimpleName}> getById(@PathVariable("id") Long id) {
-        ${ModelSimpleName} result = ${ServiceVariableName}.selectByPrimaryKey(id);
+    public ResponseEntity<${VoClassName}> getById(@PathVariable("id") Long id) {
+        ${VoClassName} result = ${ServiceVariableName}.getById(id);
         if (result == null) {
             return ResponseEntity.notFound().build();
         }
