@@ -6,6 +6,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
+import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
@@ -13,6 +14,7 @@ import org.mybatis.generator.api.dom.java.TopLevelClass;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * Custom Velocity Service Implementation Plugin for MyBatis Generator.
@@ -167,7 +169,7 @@ public class CustomVelocityServiceImplPlugin extends PluginAdapter {
         String packageName = topLevelClass.getType().getPackageName();
         
         // Create Velocity context with all necessary variables
-        VelocityContext context = createVelocityContext(entityName, packageName);
+        VelocityContext context = createVelocityContext(entityName, packageName, introspectedTable);
         
         // Generate service implementation content
         String serviceImplContent = generateServiceImplContent(context);
@@ -182,9 +184,10 @@ public class CustomVelocityServiceImplPlugin extends PluginAdapter {
      * 
      * @param entityName the entity name
      * @param packageName the base package name
+     * @param introspectedTable the table information
      * @return populated Velocity context
      */
-    private VelocityContext createVelocityContext(String entityName, String packageName) {
+    private VelocityContext createVelocityContext(String entityName, String packageName, IntrospectedTable introspectedTable) {
         VelocityContext context = new VelocityContext();
         
         // Package imports
@@ -214,6 +217,9 @@ public class CustomVelocityServiceImplPlugin extends PluginAdapter {
         context.put("voPackage", packageName + VO_PACKAGE_SUFFIX);
         context.put("voMapperPackage", packageName.replace(MODEL_PACKAGE_SUFFIX, "") + VO_MAPPER_PACKAGE_SUFFIX);
         context.put("SimplResponseModel", responseModel);
+        
+        // Primary key information
+        addPrimaryKeyInformation(context, introspectedTable);
         
         if (enableDebugOutput) {
             System.out.println("Generated Velocity context for entity: " + entityName);
@@ -256,6 +262,44 @@ public class CustomVelocityServiceImplPlugin extends PluginAdapter {
             }
         } catch (Exception e) {
             throw new RuntimeException("Failed to write service implementation file: " + className, e);
+        }
+    }
+    
+    /**
+     * Adds primary key information to the Velocity context.
+     * 
+     * @param context the Velocity context
+     * @param introspectedTable the table information
+     */
+    private void addPrimaryKeyInformation(VelocityContext context, IntrospectedTable introspectedTable) {
+        List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
+        
+        if (!primaryKeyColumns.isEmpty()) {
+            IntrospectedColumn primaryKeyColumn = primaryKeyColumns.get(0);
+            
+            // Primary key field information
+            context.put("primaryKeyType", primaryKeyColumn.getFullyQualifiedJavaType().getShortName());
+            context.put("primaryKeyProperty", primaryKeyColumn.getJavaProperty());
+            context.put("primaryKeyColumn", primaryKeyColumn.getActualColumnName());
+            
+            // Multiple primary keys support
+            context.put("hasPrimaryKey", true);
+            context.put("hasMultiplePrimaryKeys", primaryKeyColumns.size() > 1);
+            
+            if (primaryKeyColumns.size() > 1) {
+                List<String> pkTypes = primaryKeyColumns.stream()
+                    .map(col -> col.getFullyQualifiedJavaType().getShortName())
+                    .collect(Collectors.toList());
+                List<String> pkProperties = primaryKeyColumns.stream()
+                    .map(IntrospectedColumn::getJavaProperty)
+                    .collect(Collectors.toList());
+                    
+                context.put("primaryKeyTypes", pkTypes);
+                context.put("primaryKeyProperties", pkProperties);
+            }
+        } else {
+            context.put("hasPrimaryKey", false);
+            context.put("hasMultiplePrimaryKeys", false);
         }
     }
 }

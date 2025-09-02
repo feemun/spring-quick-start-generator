@@ -6,13 +6,16 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.VelocityEngine;
+import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 /**
  * Custom Velocity Controller Plugin for MyBatis Generator.
@@ -192,7 +195,7 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
         String packageName = topLevelClass.getType().getPackageName();
         
         // Create Velocity context with all necessary variables
-        VelocityContext context = createVelocityContext(entityName, packageName);
+        VelocityContext context = createVelocityContext(entityName, packageName, introspectedTable);
         
         // Generate controller content using template
         String controllerContent = generateControllerContent(context);
@@ -212,9 +215,10 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
      * 
      * @param entityName the entity class name
      * @param packageName the base package name
+     * @param introspectedTable the table information
      * @return configured VelocityContext
      */
-    private VelocityContext createVelocityContext(String entityName, String packageName) {
+    private VelocityContext createVelocityContext(String entityName, String packageName, IntrospectedTable introspectedTable) {
         VelocityContext context = new VelocityContext();
         
         // Package information
@@ -238,7 +242,78 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
         context.put("apiBaseUrl", "/" + entityName);
         context.put("SimplResponseModel", responseModel);
         
+        // Primary key information
+        addPrimaryKeyInformation(context, introspectedTable);
+        
         return context;
+    }
+    
+    /**
+     * Adds primary key information to the Velocity context for dynamic handling.
+     * 
+     * @param context the Velocity context to add primary key information to
+     * @param introspectedTable the table information containing primary key details
+     */
+    private void addPrimaryKeyInformation(VelocityContext context, IntrospectedTable introspectedTable) {
+        List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
+        
+        if (primaryKeyColumns != null && !primaryKeyColumns.isEmpty()) {
+            // Single primary key case
+            if (primaryKeyColumns.size() == 1) {
+                IntrospectedColumn pkColumn = primaryKeyColumns.get(0);
+                context.put("hasSinglePrimaryKey", true);
+                context.put("hasCompositePrimaryKey", false);
+                context.put("primaryKeyJavaProperty", pkColumn.getJavaProperty());
+                context.put("primaryKeyJavaType", pkColumn.getFullyQualifiedJavaType().getShortName());
+                context.put("primaryKeyPathVariable", "{" + pkColumn.getJavaProperty() + "}");
+                context.put("primaryKeyMethodParam", pkColumn.getFullyQualifiedJavaType().getShortName() + " " + pkColumn.getJavaProperty());
+                context.put("primaryKeyServiceCall", pkColumn.getJavaProperty());
+            } else {
+                // Composite primary key case
+                context.put("hasSinglePrimaryKey", false);
+                context.put("hasCompositePrimaryKey", true);
+                
+                // Create lists for template iteration
+                List<String> pkJavaProperties = primaryKeyColumns.stream()
+                    .map(IntrospectedColumn::getJavaProperty)
+                    .collect(Collectors.toList());
+                
+                List<String> pkJavaTypes = primaryKeyColumns.stream()
+                    .map(col -> col.getFullyQualifiedJavaType().getShortName())
+                    .collect(Collectors.toList());
+                
+                // Path variables: {id1}/{id2}/{id3}
+                String pathVariables = primaryKeyColumns.stream()
+                    .map(col -> "{" + col.getJavaProperty() + "}")
+                    .collect(Collectors.joining("/"));
+                
+                // Method parameters: Long id1, String id2, Integer id3
+                String methodParams = primaryKeyColumns.stream()
+                    .map(col -> col.getFullyQualifiedJavaType().getShortName() + " " + col.getJavaProperty())
+                    .collect(Collectors.joining(", "));
+                
+                // Service call parameters: id1, id2, id3
+                String serviceCallParams = primaryKeyColumns.stream()
+                    .map(IntrospectedColumn::getJavaProperty)
+                    .collect(Collectors.joining(", "));
+                
+                context.put("primaryKeyColumns", primaryKeyColumns);
+                context.put("primaryKeyJavaProperties", pkJavaProperties);
+                context.put("primaryKeyJavaTypes", pkJavaTypes);
+                context.put("primaryKeyPathVariables", pathVariables);
+                context.put("primaryKeyMethodParams", methodParams);
+                context.put("primaryKeyServiceCallParams", serviceCallParams);
+            }
+        } else {
+            // No primary key case (should be rare)
+            context.put("hasSinglePrimaryKey", false);
+            context.put("hasCompositePrimaryKey", false);
+            context.put("primaryKeyJavaProperty", "id");
+            context.put("primaryKeyJavaType", "Long");
+            context.put("primaryKeyPathVariable", "{id}");
+            context.put("primaryKeyMethodParam", "Long id");
+            context.put("primaryKeyServiceCall", "id");
+        }
     }
     
     /**

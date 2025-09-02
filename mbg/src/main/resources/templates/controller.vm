@@ -37,14 +37,39 @@ public class ${ControllerSimpleName} {
         return ResponseEntity.ok(page);
     }
 
+    /**
+     * 根据主键查询
+     *
+#if($hasSinglePrimaryKey)
+     * @param ${primaryKeyJavaProperty} 主键
+#elseif($hasCompositePrimaryKey)
+#foreach($prop in $primaryKeyJavaProperties)
+     * @param ${prop} 主键字段${foreach.index}
+#end
+#else
+     * @param id 主键ID
+#end
+     * @return 查询结果
+     */
     @Operation(summary = "根据主键查询", description = "根据ID查询单个${ModelSimpleName}")
+#if($hasSinglePrimaryKey)
+    @GetMapping("/${primaryKeyPathVariable}")
+    public ResponseEntity<${VoClassName}> getById(@PathVariable ${primaryKeyMethodParam}) {
+        ${VoClassName} result = ${ServiceVariableName}.getById(${primaryKeyServiceCall});
+#elseif($hasCompositePrimaryKey)
+    @GetMapping("/${primaryKeyPathVariables}")
+    public ResponseEntity<${VoClassName}> getById(${primaryKeyMethodParams}) {
+        ${VoClassName} result = ${ServiceVariableName}.getById(${primaryKeyServiceCallParams});
+#else
     @GetMapping("/{id}")
-    public ResponseEntity<${VoClassName}> getById(@PathVariable("id") Long id) {
+    public ResponseEntity<${VoClassName}> getById(@PathVariable Long id) {
         ${VoClassName} result = ${ServiceVariableName}.getById(id);
-        if (result == null) {
+#end
+        if (result != null) {
+            return ResponseEntity.ok(result);
+        } else {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(result);
     }
 
     @Operation(summary = "根据主键更新", description = "更新${ModelSimpleName}信息")

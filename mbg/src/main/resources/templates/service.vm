@@ -34,10 +34,24 @@ public interface ${ServiceClassName} {
     /**
      * 根据主键查询并转换为VO
      *
+#if($hasSinglePrimaryKey)
+     * @param ${primaryKeyJavaProperty} 主键
+#elseif($hasCompositePrimaryKey)
+#foreach($prop in $primaryKeyJavaProperties)
+     * @param ${prop} 主键字段${foreach.index}
+#end
+#else
      * @param id 主键ID
+#end
      * @return VO查询结果
      */
+#if($hasSinglePrimaryKey)
+    ${VoClassName} getById(${primaryKeyMethodParam});
+#elseif($hasCompositePrimaryKey)
+    ${VoClassName} getById(${primaryKeyMethodParams});
+#else
     ${VoClassName} getById(Long id);
+#end
 
     /**
      * 根据主键更新
