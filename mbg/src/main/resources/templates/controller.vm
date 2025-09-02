@@ -47,23 +47,15 @@ public class ${ControllerSimpleName} {
     @GetMapping("/${primaryKeyPathVariables}")
     public ResponseEntity<${VoClassName}> selectByPrimaryKey(${primaryKeyMethodParams}) {
         ${VoClassName} result = ${ServiceVariableName}.selectByPrimaryKey(${primaryKeyServiceCallParams});
-        if (result != null) {
-            return ResponseEntity.ok(result);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return ResponseEntity.ok(result);
     }
 #end
 
     @Operation(summary = "根据主键更新", description = "更新${ModelSimpleName}信息")
     @PutMapping("")
     public ResponseEntity<Void> updateByPrimaryKeySelective(@Valid @RequestBody ${ModelSimpleName} record) {
-        Boolean success = ${ServiceVariableName}.updateByPrimaryKeySelective(record);
-        if (success) {
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        ${ServiceVariableName}.updateByPrimaryKeySelective(record);
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "根据条件批量更新", description = "根据条件批量更新${ModelSimpleName}信息")
@@ -78,12 +70,8 @@ public class ${ControllerSimpleName} {
     @Operation(summary = "根据主键删除", description = "删除单个${ModelSimpleName}")
     @DeleteMapping("/${primaryKeyPathVariables}")
     public ResponseEntity<Void> deleteByPrimaryKey(${primaryKeyMethodParams}) {
-        Boolean success = ${ServiceVariableName}.deleteByPrimaryKey(${primaryKeyServiceCallParams});
-        if (success) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        ${ServiceVariableName}.deleteByPrimaryKey(${primaryKeyServiceCallParams});
+        return ResponseEntity.noContent().build();
     }
 #end
 
@@ -102,61 +90,35 @@ public class ${ControllerSimpleName} {
         Long snowflakeId = SnowflakeUtil.nextId();
         record.setId(snowflakeId);
         
-        Boolean success = ${ServiceVariableName}.insertSelective(record);
-        if (success) {
-            return ResponseEntity.status(HttpStatus.CREATED).body(record);
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        ${ServiceVariableName}.insertSelective(record);
+        return ResponseEntity.status(HttpStatus.CREATED).body(record);
     }
 
 
 
     @Operation(summary = "Excel批量导入", description = "通过Excel文件批量导入${ModelSimpleName}数据")
     @PostMapping("/import")
-    public ResponseEntity<String> importExcel(@RequestParam("file") MultipartFile file) {
-        try {
-            // 委托给服务层处理所有业务逻辑
-            String result = ${ServiceVariableName}.importExcel(file);
-            return ResponseEntity.ok(result);
-        } catch (IllegalArgumentException e) {
-            // 参数验证异常，返回400错误
-            log.warn("Excel导入参数错误: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (Exception e) {
-            // 其他异常，返回500错误
-            log.error("Excel导入失败: {}", e.getMessage(), e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("导入Excel失败: " + e.getMessage());
-        }
+    public ResponseEntity<String> importExcel(@RequestParam("file") MultipartFile file)  throws Exception {
+        // 委托给服务层处理所有业务逻辑
+        String result = ${ServiceVariableName}.importExcel(file);
+        return ResponseEntity.ok(result);
     }
 
     @Operation(summary = "导出Excel", description = "导出${ModelSimpleName}数据到Excel文件")
     @GetMapping("/export")
-    public void exportExcel(HttpServletResponse response, @RequestParam(required = false) ${ModelSimpleName} condition) {
-        try {
-            // 设置响应头信息
-            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            String filename = new String("${ModelSimpleName}数据.xlsx".getBytes("UTF-8"), "ISO-8859-1");
-            response.setHeader("Content-Disposition", "attachment;filename=" + filename);
-            
-            // 这里应该添加数据查询和Excel导出的逻辑
-            // 如果condition不为空，则按条件查询
-            // 示例：List<${ModelSimpleName}> records = condition != null ? 
-            //     ${ServiceVariableName}.selectByExample(condition) : ${ServiceVariableName}.selectAll();
-            // excelService.exportExcel(response, records, "${ModelSimpleName}数据");
-            
-            // 导出逻辑实现...
-        } catch (Exception e) {
-            log.error("Export Excel failed: {}", e.getMessage(), e);
-            try {
-                response.reset();
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                response.setContentType("application/json;charset=UTF-8");
-                response.getWriter().write("{\"error\":\"导出Excel失败: " + e.getMessage() + "\"}");
-            } catch (Exception ex) {
-                log.error("Error sending export failure response", ex);
-            }
-        }
+    public void exportExcel(HttpServletResponse response, @RequestParam(required = false) ${ModelSimpleName} condition) throws Exception {
+        // 设置响应头信息
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        String filename = new String("${ModelSimpleName}数据.xlsx".getBytes("UTF-8"), "ISO-8859-1");
+        response.setHeader("Content-Disposition", "attachment;filename=" + filename);
+        
+        // 这里应该添加数据查询和Excel导出的逻辑
+        // 如果condition不为空，则按条件查询
+        // 示例：List<${ModelSimpleName}> records = condition != null ? 
+        //     ${ServiceVariableName}.selectByExample(condition) : ${ServiceVariableName}.selectAll();
+        // excelService.exportExcel(response, records, "${ModelSimpleName}数据");
+        
+        // 导出逻辑实现...
     }
 
 }
