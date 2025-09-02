@@ -35,14 +35,6 @@ public class ${ControllerSimpleName} {
     }
 
 #if($hasPrimaryKey)
-    /**
-     * 根据主键查询
-     *
-#foreach($prop in $primaryKeyProperties)
-     * @param ${prop} 主键字段
-#end
-     * @return 查询结果
-     */
     @Operation(summary = "根据主键查询", description = "根据ID查询单个${ModelSimpleName}")
     @GetMapping("/${primaryKeyPathVariables}")
     public ResponseEntity<${VoClassName}> selectByPrimaryKey(${primaryKeyMethodParams}) {
@@ -53,9 +45,10 @@ public class ${ControllerSimpleName} {
 
     @Operation(summary = "根据主键更新", description = "更新${ModelSimpleName}信息")
     @PutMapping("")
-    public ResponseEntity<Void> updateByPrimaryKeySelective(@Valid @RequestBody ${ModelSimpleName} record) {
-        ${ServiceVariableName}.updateByPrimaryKeySelective(record);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Boolean> updateByPrimaryKeySelective(@Valid @RequestBody ${ModelSimpleName} record) {
+        Boolean success = ${ServiceVariableName}.updateByPrimaryKeySelective(record);
+        log.info(success ? "Successfully updated ${ModelSimpleName}" : "Failed to update ${ModelSimpleName}");
+        return ResponseEntity.ok(success);
     }
 
     @Operation(summary = "根据条件批量更新", description = "根据条件批量更新${ModelSimpleName}信息")
