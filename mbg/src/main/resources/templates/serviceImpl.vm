@@ -64,34 +64,6 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
     }
 
     /**
-     * 根据主键查询
-     *
-#if($hasSinglePrimaryKey)
-     * @param ${primaryKeyJavaProperty} 主键
-#elseif($hasCompositePrimaryKey)
-#foreach($prop in $primaryKeyJavaProperties)
-     * @param ${prop} 主键字段${foreach.index}
-#end
-#else
-     * @param id 主键ID
-#end
-     * @return 查询结果
-     */
-#if($hasSinglePrimaryKey)
-    public ${ModelSimpleName} selectByPrimaryKey(${primaryKeyMethodParam}) {
-        return ${DaoVariableName}.selectByPrimaryKey(${primaryKeyServiceCall});
-    }
-#elseif($hasCompositePrimaryKey)
-    public ${ModelSimpleName} selectByPrimaryKey(${primaryKeyMethodParams}) {
-        return ${DaoVariableName}.selectByPrimaryKey(${primaryKeyServiceCallParams});
-    }
-#else
-    public ${ModelSimpleName} selectByPrimaryKey(Long id) {
-        return ${DaoVariableName}.selectByPrimaryKey(id);
-    }
-#end
-
-    /**
      * 根据主键查询并转换为VO
      *
 #if($hasSinglePrimaryKey)

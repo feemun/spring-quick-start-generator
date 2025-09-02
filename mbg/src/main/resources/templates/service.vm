@@ -24,28 +24,6 @@ public interface ${ServiceClassName} {
     Page<${VoClassName}> page(${ModelSimpleName}RequestParam requestParam);
 
     /**
-     * 根据主键查询
-     *
-#if($hasSinglePrimaryKey)
-     * @param ${primaryKeyJavaProperty} 主键
-#elseif($hasCompositePrimaryKey)
-#foreach($prop in $primaryKeyJavaProperties)
-     * @param ${prop} 主键字段${foreach.index}
-#end
-#else
-     * @param id 主键ID
-#end
-     * @return 查询结果
-     */
-#if($hasSinglePrimaryKey)
-    ${ModelSimpleName} selectByPrimaryKey(${primaryKeyMethodParam});
-#elseif($hasCompositePrimaryKey)
-    ${ModelSimpleName} selectByPrimaryKey(${primaryKeyMethodParams});
-#else
-    ${ModelSimpleName} selectByPrimaryKey(Long id);
-#end
-
-    /**
      * 根据主键查询并转换为VO
      *
 #if($hasSinglePrimaryKey)

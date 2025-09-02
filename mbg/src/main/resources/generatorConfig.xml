@@ -15,12 +15,8 @@
 
         <!-- Unified Domain Model Plugin (replaces LocalDateTime Serializable, Deserializable, and NoGetterSetter plugins) -->
         <plugin type="cloud.catfish.mbg.plugin.DomainModelPlugin">
-            <property name="enableJsonFormat" value="true"/>
-            <property name="enableDateTimeFormat" value="true"/>
             <property name="generateGetters" value="false"/>
             <property name="generateSetters" value="false"/>
-            <property name="dateTimePattern" value="yyyy-MM-dd HH:mm:ss"/>
-            <property name="timezone" value="GMT+8"/>
         </plugin>
 
         <!-- lombok annotation Plugin -->
