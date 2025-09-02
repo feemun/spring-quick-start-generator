@@ -7,6 +7,7 @@ import ${ModelPoName};
 import ${modelPackage}.param.${ModelSimpleName}RequestParam;
 import ${voPackage}.${VoClassName};
 import org.springframework.data.domain.Page;
+import ${packageName}.param.${ModelSimpleName}RequestParam;
 
 import java.util.List;
 
@@ -43,10 +44,11 @@ public interface ${ServiceClassName} {
     /**
      * 根据条件更新
      *
-     * @param record 数据对象，包含更新的数据和条件
+     * @param updateData 要更新的数据对象
+     * @param condition 更新条件
      * @return 影响行数
      */
-    int updateByExampleSelective(${ModelSimpleName} record);
+    int updateByExampleSelective(${ModelSimpleName} updateData, ${ModelSimpleName}RequestParam condition);
 
 #if($hasPrimaryKey)
     /**
@@ -63,10 +65,10 @@ public interface ${ServiceClassName} {
     /**
      * 根据条件删除
      *
-     * @param record 删除条件
+     * @param condition 删除条件
      * @return 影响行数
      */
-    int deleteByExample(${ModelSimpleName} record);
+    int deleteByExample(${ModelSimpleName}RequestParam condition);
 
     /**
      * 新增

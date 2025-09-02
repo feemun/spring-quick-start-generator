@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import ${packageName}.param.${ModelSimpleName}RequestParam;
 
 import java.util.List;
 
@@ -88,13 +89,18 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
     /**
      * 根据条件更新
      *
-     * @param record 数据对象，包含更新的数据和条件
+     * @param updateData 要更新的数据对象
+     * @param condition 更新条件
      * @return 影响行数
      */
-    public int updateByExampleSelective(${ModelSimpleName} record) {
+    public int updateByExampleSelective(${ModelSimpleName} updateData, ${ModelSimpleName}RequestParam condition) {
         ${ModelSimpleName}Example example = new ${ModelSimpleName}Example();
-        example.createCriteria();
-        return ${DaoVariableName}.updateByExampleSelective(record, example);
+        ${ModelSimpleName}Example.Criteria criteria = example.createCriteria();
+        
+        // 根据条件参数构建查询条件
+        // buildCriteria(criteria, condition);
+        
+        return ${DaoVariableName}.updateByExampleSelective(updateData, example);
     }
 
 #if($hasPrimaryKey)
@@ -115,10 +121,10 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
     /**
      * 根据条件删除
      *
-     * @param record 删除条件
+     * @param condition 删除条件
      * @return 影响行数
      */
-    public int deleteByExample(${ModelSimpleName} record) {
+    public int deleteByExample(${ModelSimpleName}RequestParam condition) {
         ${ModelSimpleName}Example example = new ${ModelSimpleName}Example();
         example.createCriteria();
         return ${DaoVariableName}.deleteByExample(example);

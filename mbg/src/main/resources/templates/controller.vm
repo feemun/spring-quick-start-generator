@@ -51,10 +51,15 @@ public class ${ControllerSimpleName} {
         return ResponseEntity.ok(success);
     }
 
-    @Operation(summary = "根据条件批量更新", description = "根据条件批量更新${ModelSimpleName}信息")
+    @Operation(summary = "根据条件批量更新", description = "根据指定条件批量更新${ModelSimpleName}信息")
     @PutMapping("/batch")
-    public ResponseEntity<Integer> batchUpdate(@Valid @RequestBody ${ModelSimpleName} record) {
-        Integer rowsAffected = ${ServiceVariableName}.updateByExampleSelective(record);
+    public ResponseEntity<Integer> batchUpdate(
+            @Valid @RequestBody ${ModelSimpleName} updateData,
+            @Valid @ModelAttribute ${ModelSimpleName}RequestParam condition) {
+        if (condition == null) {
+            throw new IllegalArgumentException("批量更新必须指定明确的条件");
+        }
+        Integer rowsAffected = ${ServiceVariableName}.updateByExampleSelective(updateData, condition);
         log.info("Updated {} row(s) by condition.", rowsAffected);
         return ResponseEntity.ok(rowsAffected);
     }
@@ -72,8 +77,8 @@ public class ${ControllerSimpleName} {
 
     @Operation(summary = "根据条件批量删除", description = "根据条件批量删除${ModelSimpleName}")
     @DeleteMapping("/batch")
-    public ResponseEntity<Integer> batchDelete(@Valid @RequestBody ${ModelSimpleName} record) {
-        Integer rowsAffected = ${ServiceVariableName}.deleteByExample(record);
+    public ResponseEntity<Integer> batchDelete(@Valid @ModelAttribute ${ModelSimpleName}RequestParam condition) {
+        Integer rowsAffected = ${ServiceVariableName}.deleteByExample(condition);
         log.info("Deleted {} row(s) by condition.", rowsAffected);
         return ResponseEntity.ok(rowsAffected);
     }
