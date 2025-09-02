@@ -7,7 +7,6 @@ import ${ModelPoName};
 import ${modelPackage}.param.${ModelSimpleName}RequestParam;
 import ${voPackage}.${VoClassName};
 import org.springframework.data.domain.Page;
-import ${packageName}.param.${ModelSimpleName}RequestParam;
 
 import java.util.List;
 

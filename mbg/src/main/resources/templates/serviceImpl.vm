@@ -16,7 +16,6 @@ import org.springframework.data.domain.PageRequest;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
-import ${packageName}.param.${ModelSimpleName}RequestParam;
 
 import java.util.List;
 
@@ -39,6 +38,7 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
     public Page<${VoClassName}> page(${ModelSimpleName}RequestParam requestParam) {
         PageHelper.startPage(requestParam.getPage(), requestParam.getSize());
         ${ModelSimpleName}Example example = new ${ModelSimpleName}Example();
+        example.setOrderByClause(requestParam.getOrderByClause());
         ${ModelSimpleName}Example.Criteria criteria = example.createCriteria();
         
         // 如果有查询条件，则添加到criteria中

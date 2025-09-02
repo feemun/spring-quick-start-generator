@@ -51,6 +51,6 @@ public class BaseRequestParam {
      * Sort field and direction specification.
      * Format: 'fieldName,direction' (e.g., 'id,desc' or 'username,asc')
      */
-    @Schema(description = "Sort field and direction (e.g., 'id,desc' or 'username,asc')")
-    private String sort;
+    @Schema(description = "order field and direction (e.g., 'id ASC, username DESC')")
+    private String orderByClause;
 }
