@@ -28,8 +28,8 @@ public class ${ControllerSimpleName} {
     private ${ServiceClassName} ${ServiceVariableName};
 
     @Operation(summary = "分页条件查询", description = "根据条件分页查询${ModelSimpleName}列表")
-    @PostMapping("/search")
-    public ResponseEntity<Page<${VoClassName}>> search(@Valid @RequestBody ${ModelSimpleName}RequestParam req) {
+    @GetMapping("/search")
+    public ResponseEntity<Page<${VoClassName}>> search(@Valid @ModelAttribute ${ModelSimpleName}RequestParam req) {
         Page<${VoClassName}> page = ${ServiceVariableName}.page(req);
         return ResponseEntity.ok(page);
     }

@@ -74,7 +74,6 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
         return model != null ? ${ModelSimpleName.toLowerCase()}VoMapper.toVo(model) : null;
     }
 #end
-    }
 
     /**
      * 根据主键更新
