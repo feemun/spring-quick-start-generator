@@ -225,6 +225,7 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
         context.put("packageName", packageName);
         context.put("servicePackage", packageName.replace(MODEL_PACKAGE_SUFFIX, SERVICE_PACKAGE_SUFFIX));
         context.put("ControllerPackage", packageName.replace(MODEL_PACKAGE_SUFFIX, CONTROLLER_PACKAGE_SUFFIX));
+        context.put("voPackage", packageName.replace(MODEL_PACKAGE_SUFFIX, ".vo"));
         context.put("voMapperPackage", packageName.replace(MODEL_PACKAGE_SUFFIX, VO_MAPPER_PACKAGE_SUFFIX));
         
         // Class names

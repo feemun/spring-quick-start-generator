@@ -204,7 +204,7 @@ public class CustomVelocityServicePlugin extends PluginAdapter {
         context.put("ModelSimpleName", entityName);
         context.put("RequestParamClassName", entityName + REQUEST_PARAM_CLASS_SUFFIX);
         context.put("VoClassName", entityName + VO_CLASS_SUFFIX);
-        context.put("voPackage", packageName + VO_PACKAGE_SUFFIX);
+        context.put("voPackage", packageName.replace(MODEL_PACKAGE_SUFFIX, VO_PACKAGE_SUFFIX));
         context.put("apiBaseUrl", generateApiBaseUrl(entityName));
         context.put("SimplResponseModel", responseModel);
         

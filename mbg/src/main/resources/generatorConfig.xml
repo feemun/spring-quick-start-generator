@@ -24,8 +24,8 @@
 
         <!-- VO generator Plugin -->
         <plugin type="cloud.catfish.mbg.plugin.VoGeneratorPlugin">
-            <property name="voPackage" value="cloud.catfish.mbg.model.vo"/>
-            <property name="mapperPackage" value="cloud.catfish.mbg.mapper.vo"/>
+            <property name="voPackage" value="cloud.catfish.mbg.vo"/>
+            <property name="mapperPackage" value="cloud.catfish.mbg.converter"/>
             <property name="voTargetProject" value="mbg/src/main/java"/>
             <property name="mapperTargetProject" value="mbg/src/main/java"/>
             <property name="enableMappers" value="true"/>
@@ -102,8 +102,7 @@
 <!--        </table>-->
 
         <table tableName="ums_admin">
-            <!-- 用来指定主键生成策略 -->
-            <generatedKey column="id" sqlStatement="MySql" identity="true"/>
+            <!-- Snowflake IDs are generated programmatically, no database auto-generation needed -->
         </table>
 
     </context>

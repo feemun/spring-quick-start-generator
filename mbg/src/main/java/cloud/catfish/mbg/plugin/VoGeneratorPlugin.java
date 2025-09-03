@@ -111,11 +111,11 @@ public class VoGeneratorPlugin extends PluginAdapter {
     
     // Default values
     private static final String DEFAULT_VO_PACKAGE_SUFFIX = ".vo";
-    private static final String DEFAULT_MAPPER_PACKAGE_SUFFIX = ".mapper.vo";
+    private static final String DEFAULT_MAPPER_PACKAGE_SUFFIX = ".converter";
     private static final String DEFAULT_TARGET_PROJECT = "src/main/java";
     private static final String DEFAULT_COMPONENT_MODEL = "spring";
     private static final String VO_SUFFIX = "Vo";
-    private static final String MAPPER_SUFFIX = "VoMapper";
+    private static final String MAPPER_SUFFIX = "Converter";
     
     // MapStruct annotation
     private static final String MAPSTRUCT_MAPPER_CLASS = "org.mapstruct.Mapper";

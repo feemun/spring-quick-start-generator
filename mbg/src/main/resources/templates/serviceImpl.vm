@@ -27,7 +27,7 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
     private ${DaoSimpleName} ${DaoVariableName};
     
     @Resource
-    private ${VoMapperClassName} ${ModelSimpleName.toLowerCase()}VoMapper;
+    private ${VoMapperClassName} ${ModelSimpleName.toLowerCase()}Converter;
 
     /**
      * 分页查询
@@ -51,7 +51,7 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
         PageInfo<${ModelSimpleName}> pageInfo = new PageInfo<>(lst);
         
         // Convert to VO list
-        List<${VoClassName}> voList = ${ModelSimpleName.toLowerCase()}VoMapper.toVoList(pageInfo.getList());
+        List<${VoClassName}> voList = ${ModelSimpleName.toLowerCase()}Converter.toVoList(pageInfo.getList());
         
         return new PageImpl<>(
             voList,
@@ -72,7 +72,7 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
     @Override
     public ${VoClassName} selectByPrimaryKey(${primaryKeyMethodParams}) {
         ${ModelSimpleName} model = ${DaoVariableName}.selectByPrimaryKey(${primaryKeyServiceCallParams});
-        return model != null ? ${ModelSimpleName.toLowerCase()}VoMapper.toVo(model) : null;
+        return model != null ? ${ModelSimpleName.toLowerCase()}Converter.toVo(model) : null;
     }
 #end
 
