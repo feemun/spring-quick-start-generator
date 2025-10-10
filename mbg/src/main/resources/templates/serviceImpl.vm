@@ -155,20 +155,6 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
    }
    
    /**
-    * 批量选择性新增（忽略null值）
-    *
-    * @param records 批量新增的数据对象列表
-    * @return 是否新增成功
-    */
-   public Boolean batchInsertSelective(List<${ModelSimpleName}> records) {
-       if (records == null || records.isEmpty()) {
-           return false;
-       }
-       
-       return ${DaoVariableName}.batchInsertSelective(records) > 0;
-   }
-   
-   /**
     * Excel文件导入处理
     *
     * @param file Excel文件

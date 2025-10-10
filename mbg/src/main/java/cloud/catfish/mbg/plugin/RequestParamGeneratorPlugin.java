@@ -1,17 +1,16 @@
 package cloud.catfish.mbg.plugin;
 
+import cloud.catfish.mbg.comm.CommonConfig;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.Field;
-import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * MyBatis Generator plugin for generating Request Parameter classes
@@ -48,11 +47,10 @@ public class RequestParamGeneratorPlugin extends PluginAdapter {
     // Configuration property keys
     private static final String REQUEST_PARAM_PACKAGE = "requestParamPackage";
     private static final String REQUEST_PARAM_TARGET_PROJECT = "requestParamTargetProject";
-
-    // Default values
-    private static final String DEFAULT_REQUEST_PARAM_PACKAGE_SUFFIX = ".param";
-    private static final String DEFAULT_TARGET_PROJECT = "src/main/java";
-    private static final String REQUEST_PARAM_SUFFIX = "RequestParam";
+    
+    // Default values from CommonConfig
+    private static final String DEFAULT_REQUEST_PARAM_PACKAGE_SUFFIX = CommonConfig.REQUEST_PACKAGE_NAME.substring(CommonConfig.ROOT_PACKAGE.length());
+    private static final String DEFAULT_TARGET_PROJECT = CommonConfig.DEFAULT_TARGET_PROJECT;
 
     // Import constants
     private static final String SWAGGER_SCHEMA_CLASS = "io.swagger.v3.oas.annotations.media.Schema";

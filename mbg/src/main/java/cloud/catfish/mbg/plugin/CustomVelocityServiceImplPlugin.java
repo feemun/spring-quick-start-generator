@@ -1,5 +1,6 @@
 package cloud.catfish.mbg.plugin;
 
+import cloud.catfish.mbg.comm.CommonConfig;
 import cloud.catfish.mbg.util.StringHelper;
 import cloud.catfish.mbg.util.VelocityUtil;
 import org.apache.velocity.Template;
@@ -49,22 +50,22 @@ public class CustomVelocityServiceImplPlugin extends PluginAdapter {
     
     // Template and Package Configuration
     private static final String SERVICE_IMPL_TEMPLATE = "templates/serviceImpl.vm";
-    private static final String DEFAULT_BASE_PACKAGE_PATH = "mbg/src/main/java/cloud/catfish/mbg/service/impl";
+    private static final String DEFAULT_BASE_PACKAGE_PATH = "mbg/src/main/java/" + CommonConfig.SERVICE_IMPL_PACKAGE_RELATIVE_NAME;
     private static final String MODEL_PACKAGE_SUFFIX = ".model";
-    private static final String SERVICE_PACKAGE_SUFFIX = ".service";
-    private static final String SERVICE_IMPL_PACKAGE_SUFFIX = ".service.impl";
-    private static final String MAPPER_PACKAGE_SUFFIX = ".mapper";
+    private static final String SERVICE_PACKAGE_SUFFIX = CommonConfig.SERVICE_PACKAGE_NAME.substring(CommonConfig.ROOT_PACKAGE.length());
+    private static final String SERVICE_IMPL_PACKAGE_SUFFIX = CommonConfig.SERVICE_IMPL_PACKAGE_NAME.substring(CommonConfig.ROOT_PACKAGE.length());
+    private static final String MAPPER_PACKAGE_SUFFIX = CommonConfig.MAPPER_PACKAGE_NAME.substring(CommonConfig.ROOT_PACKAGE.length());
     
     // Naming Convention Constants
     private static final String SERVICE_CLASS_PREFIX = "I";
-    private static final String SERVICE_CLASS_SUFFIX = "Service";
-    private static final String SERVICE_IMPL_CLASS_SUFFIX = "ServiceImpl";
+    private static final String SERVICE_CLASS_SUFFIX = CommonConfig.SERVICE_TEMPLATE_PATH;
+    private static final String SERVICE_IMPL_CLASS_SUFFIX = CommonConfig.SERVICE_SUFFIX_IMPL_FILE_NAME;
     private static final String MAPPER_CLASS_SUFFIX = "Mapper";
     private static final String REQUEST_PARAM_CLASS_SUFFIX = "RequestParam";
     private static final String VO_CLASS_SUFFIX = "Vo";
-    private static final String VO_MAPPER_CLASS_SUFFIX = "Converter";
-    private static final String VO_PACKAGE_SUFFIX = ".vo";
-    private static final String VO_MAPPER_PACKAGE_SUFFIX = ".converter";
+    private static final String VO_MAPPER_CLASS_SUFFIX = CommonConfig.SERVICE_SUFFIX_FILE_NAME;
+    private static final String VO_PACKAGE_SUFFIX = CommonConfig.VO_PACKAGE_NAME.substring(CommonConfig.ROOT_PACKAGE.length());
+    private static final String VO_MAPPER_PACKAGE_SUFFIX = CommonConfig.CONVERTER_PACKAGE_NAME.substring(CommonConfig.ROOT_PACKAGE.length());
     private static final String DEFAULT_RESPONSE_MODEL = "CommonResult";
     
     // Configuration Properties

@@ -34,14 +34,15 @@ public class CommonConfig {
     public static String VO_PACKAGE_RELATIVE_NAME = ROOT_RELATIVE_PATH + "/vo";
 
     // file suffix name
-    public static String MAPPER_FILE_NAME = "Mapper";
-    public static String SERVICE_FILE_NAME = "Service";
-    public static String SERVICE_IMPL_FILE_NAME = "ServiceImpl";
-    public static String CONTROLLER_FILE_NAME = "Controller";
-    public static String CONVERTER_FILE_NAME = "Converter";
-    public static String REQUEST_PARAM_FILE_NAME = "Req";
-    public static String DOMAIN_FILE_NAME = "";
-    public static String VO_FILE_NAME = "VO";
+    public static String MAPPER_SUFFIX_FILE_NAME = "Mapper";
+    public static String SERVICE_SUFFIX_FILE_NAME = "Service";
+    public static String SERVICE_SUFFIX_IMPL_FILE_NAME = "ServiceImpl";
+    public static String CONTROLLER_SUFFIX_FILE_NAME = "Controller";
+    public static String CONVERTER_SUFFIX_FILE_NAME = "Converter";
+    public static String REQUEST_SUFFIX_PARAM_FILE_NAME = "Req";
+    public static String DOMAIN_SUFFIX_FILE_NAME = "";
+    public static String VO_SUFFIX_FILE_NAME = "VO";
+    public static String MAPSTRUCT_SUFFIX_FILE_NAME = "Converter";
 
     // default template
     public static String RESOURCES_ABSOLUTE_PATH = "/Users/qiupan/Documents/GitHub/spring-quick-start-generator/mbg/src/main/resources/templates";
