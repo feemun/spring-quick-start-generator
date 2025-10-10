@@ -19,7 +19,7 @@ public class BatchInsertSelectivePlugin extends PluginAdapter {
 
     @Override
     public boolean validate(List<String> warnings) {
-        return true;
+        return false;
     }
 
     /**
@@ -28,7 +28,7 @@ public class BatchInsertSelectivePlugin extends PluginAdapter {
     @Override
     public boolean clientGenerated(Interface interfaze, IntrospectedTable introspectedTable) {
         addBatchInsertSelectiveMethod(interfaze, introspectedTable);
-        return true;
+        return false;
     }
 
     /**
@@ -37,7 +37,7 @@ public class BatchInsertSelectivePlugin extends PluginAdapter {
     @Override
     public boolean sqlMapDocumentGenerated(Document document, IntrospectedTable introspectedTable) {
         addBatchInsertSelectiveXmlElement(document, introspectedTable);
-        return true;
+        return false;
     }
 
     /**

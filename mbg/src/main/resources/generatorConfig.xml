@@ -62,9 +62,7 @@
         <plugin type="cloud.catfish.mbg.plugin.BatchInsertPlugin"/>
 
         <!-- batch insert selective Plugin -->
-        <plugin type="cloud.catfish.mbg.plugin.BatchInsertSelectivePlugin"/>
-
-
+<!--        <plugin type="cloud.catfish.mbg.plugin.BatchInsertPlugin"/>-->
 
         <!-- 生成mapper.xml时覆盖原文件 -->
         <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin" />
