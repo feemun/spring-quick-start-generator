@@ -101,7 +101,7 @@
 <!--            <generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
 <!--        </table>-->
 
-        <table tableName="ums_admin">
+        <table tableName="student">
             <!-- Snowflake IDs are generated programmatically, no database auto-generation needed -->
         </table>
 

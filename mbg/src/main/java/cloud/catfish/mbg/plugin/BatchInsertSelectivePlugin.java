@@ -90,20 +90,17 @@ public class BatchInsertSelectivePlugin extends PluginAdapter {
         // 添加注释
         insertElement.addElement(new TextElement("<!-- 批量选择性插入，忽略null值 -->"));
         
-        // 使用动态SQL来处理不同记录可能有不同的非null字段
-        insertElement.addElement(new TextElement("INSERT INTO " + introspectedTable.getFullyQualifiedTableNameAtRuntime()));
-        
-        // 创建foreach元素来遍历记录列表
+        // 创建foreach元素来为每条记录生成单独的INSERT语句
         XmlElement foreachElement = new XmlElement("foreach");
         foreachElement.addAttribute(new Attribute("collection", "list"));
         foreachElement.addAttribute(new Attribute("item", "item"));
         foreachElement.addAttribute(new Attribute("index", "index"));
         foreachElement.addAttribute(new Attribute("separator", ";"));
         
-        // 为每条记录生成单独的INSERT语句
-        foreachElement.addElement(new TextElement("("));
+        // INSERT INTO 表名
+        foreachElement.addElement(new TextElement("INSERT INTO " + introspectedTable.getFullyQualifiedTableNameAtRuntime()));
         
-        // 动态生成列名
+        // 动态生成列名部分
         XmlElement trimColumns = new XmlElement("trim");
         trimColumns.addAttribute(new Attribute("prefix", "("));
         trimColumns.addAttribute(new Attribute("suffix", ")"));
@@ -120,7 +117,7 @@ public class BatchInsertSelectivePlugin extends PluginAdapter {
         foreachElement.addElement(trimColumns);
         foreachElement.addElement(new TextElement(" VALUES "));
         
-        // 动态生成值
+        // 动态生成值部分
         XmlElement trimValues = new XmlElement("trim");
         trimValues.addAttribute(new Attribute("prefix", "("));
         trimValues.addAttribute(new Attribute("suffix", ")"));
@@ -144,7 +141,6 @@ public class BatchInsertSelectivePlugin extends PluginAdapter {
         }
         
         foreachElement.addElement(trimValues);
-        foreachElement.addElement(new TextElement(")"));
         
         insertElement.addElement(foreachElement);
         
