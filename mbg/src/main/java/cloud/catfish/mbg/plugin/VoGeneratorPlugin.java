@@ -41,10 +41,6 @@ import java.util.Properties;
  *   <li><code>mapperPackage</code> - Target package for MapStruct mappers (default: mapper.vo)</li>
  *   <li><code>voTargetProject</code> - Target project path for VO classes (default: src/main/java)</li>
  *   <li><code>mapperTargetProject</code> - Target project path for mappers (default: src/main/java)</li>
- *   <li><code>enableMappers</code> - Enable MapStruct mapper generation (default: true)</li>
- *   <li><code>mapperComponentModel</code> - MapStruct component model (default: spring)</li>
- *   <li><code>enableSwagger</code> - Enable Swagger3 annotations (default: true)</li>
- *   <li><code>swaggerDescriptionSuffix</code> - Suffix for class descriptions (default: " VO")</li>
  * </ul>
  * 
  * <p><strong>Usage Example:</strong></p>
@@ -54,10 +50,6 @@ import java.util.Properties;
  *     &lt;property name="mapperPackage" value="cloud.catfish.mbg.mapper.vo"/&gt;
  *     &lt;property name="voTargetProject" value="src/main/java"/&gt;
  *     &lt;property name="mapperTargetProject" value="src/main/java"/&gt;
- *     &lt;property name="enableMappers" value="true"/&gt;
- *     &lt;property name="mapperComponentModel" value="spring"/&gt;
- *     &lt;property name="enableSwagger" value="true"/&gt;
- *     &lt;property name="swaggerDescriptionSuffix" value=" VO"/&gt;
  * &lt;/plugin&gt;
  * </pre>
  * 
@@ -94,7 +86,7 @@ import java.util.Properties;
  * </pre>
  * 
  * @author MyBatis Generator Plugin
- * @version 1.0
+ * @version 2.0
  * @since Java 14
  */
 public class VoGeneratorPlugin extends PluginAdapter {
@@ -104,10 +96,6 @@ public class VoGeneratorPlugin extends PluginAdapter {
     private static final String MAPPER_PACKAGE = "mapperPackage";
     private static final String VO_TARGET_PROJECT = "voTargetProject";
     private static final String MAPPER_TARGET_PROJECT = "mapperTargetProject";
-    private static final String ENABLE_MAPPERS = "enableMappers";
-    private static final String MAPPER_COMPONENT_MODEL = "mapperComponentModel";
-    private static final String ENABLE_SWAGGER = "enableSwagger";
-    private static final String SWAGGER_DESCRIPTION_SUFFIX = "swaggerDescriptionSuffix";
     
     // Default values
     private static final String DEFAULT_VO_PACKAGE_SUFFIX = ".vo";
@@ -132,12 +120,9 @@ public class VoGeneratorPlugin extends PluginAdapter {
     // Configuration fields
     private String voPackage;
     private String mapperPackage;
-    private String voTargetProject = DEFAULT_TARGET_PROJECT;
-    private String mapperTargetProject = DEFAULT_TARGET_PROJECT;
-    private boolean enableMappers = true;
-    private String mapperComponentModel = DEFAULT_COMPONENT_MODEL;
-    private boolean enableSwagger = true;
-    private String swaggerDescriptionSuffix = DEFAULT_SWAGGER_DESCRIPTION_SUFFIX;
+    private String voTargetProject;
+    private String mapperTargetProject;
+    private Properties properties;
 
     @Override
     public boolean validate(List<String> warnings) {
@@ -164,6 +149,13 @@ public class VoGeneratorPlugin extends PluginAdapter {
         return true;
     }
     
+    @Override
+    public void setProperties(Properties properties) {
+        super.setProperties(properties);
+        this.properties = properties;
+        parseConfigurationProperties();
+    }
+    
     /**
      * Parses configuration properties from the plugin configuration.
      */
@@ -179,10 +171,6 @@ public class VoGeneratorPlugin extends PluginAdapter {
             mapperPackage = properties.getProperty(MAPPER_PACKAGE, basePackage + DEFAULT_MAPPER_PACKAGE_SUFFIX);
             voTargetProject = properties.getProperty(VO_TARGET_PROJECT, DEFAULT_TARGET_PROJECT);
             mapperTargetProject = properties.getProperty(MAPPER_TARGET_PROJECT, DEFAULT_TARGET_PROJECT);
-            enableMappers = Boolean.parseBoolean(properties.getProperty(ENABLE_MAPPERS, "true"));
-            mapperComponentModel = properties.getProperty(MAPPER_COMPONENT_MODEL, DEFAULT_COMPONENT_MODEL);
-            enableSwagger = Boolean.parseBoolean(properties.getProperty(ENABLE_SWAGGER, "true"));
-            swaggerDescriptionSuffix = properties.getProperty(SWAGGER_DESCRIPTION_SUFFIX, DEFAULT_SWAGGER_DESCRIPTION_SUFFIX);
         }
     }
     
@@ -205,10 +193,8 @@ public class VoGeneratorPlugin extends PluginAdapter {
             // Generate VO record class
             generateVoRecord(topLevelClass, introspectedTable);
             
-            // Generate MapStruct mapper if enabled
-            if (enableMappers) {
-                generateMapStructMapper(topLevelClass, introspectedTable);
-            }
+            // Generate MapStruct mapper (always enabled in simplified version)
+            generateMapStructMapper(topLevelClass, introspectedTable);
         } catch (Exception e) {
             System.err.println("Warning: Failed to generate VO for " + topLevelClass.getType().getShortName() + ": " + e.getMessage());
         }
@@ -242,9 +228,7 @@ public class VoGeneratorPlugin extends PluginAdapter {
         voContent.append(" */\n");
         
         // Swagger annotation for class
-        if (enableSwagger) {
-            voContent.append("@Schema(description = \"").append(domainClassName).append(swaggerDescriptionSuffix).append("\")\n");
-        }
+        voContent.append("@Schema(description = \"").append(domainClassName).append(DEFAULT_SWAGGER_DESCRIPTION_SUFFIX).append("\")\n");
         
         // Record declaration
         voContent.append("public record ").append(voClassName).append("(\n");
@@ -261,9 +245,7 @@ public class VoGeneratorPlugin extends PluginAdapter {
             }
             
             // Add Swagger annotation for field
-            if (enableSwagger) {
-                voContent.append("    @Schema(description = \"").append(getFieldDescription(field, introspectedTable)).append("\")\n");
-            }
+            voContent.append("    @Schema(description = \"").append(getFieldDescription(field, introspectedTable)).append("\")\n");
             
             voContent.append("    ").append(field.getType().getShortName()).append(" ").append(field.getName());
             if (i < fields.size() - 1) {
@@ -308,7 +290,7 @@ public class VoGeneratorPlugin extends PluginAdapter {
         mapperContent.append(" */\n");
         
         // Mapper annotation and interface declaration
-        mapperContent.append("@Mapper(componentModel = \"").append(mapperComponentModel).append("\")\n");
+        mapperContent.append("@Mapper(componentModel = \"").append(DEFAULT_COMPONENT_MODEL).append("\")\n");
         mapperContent.append("public interface ").append(mapperClassName).append(" {\n\n");
         
         // Conversion methods
@@ -364,10 +346,8 @@ public class VoGeneratorPlugin extends PluginAdapter {
             content.append("import ").append(DATETIME_FORMAT_CLASS).append(";\n");
         }
         
-        // Add Swagger import if enabled
-        if (enableSwagger) {
-            content.append("import ").append(SWAGGER_SCHEMA_CLASS).append(";\n");
-        }
+        // Always add Swagger import
+        content.append("import ").append(SWAGGER_SCHEMA_CLASS).append(";\n");
         
         // Collect unique import types from fields
         domainClass.getFields().stream()
@@ -378,7 +358,7 @@ public class VoGeneratorPlugin extends PluginAdapter {
             .sorted()
             .forEach(importName -> content.append("import ").append(importName).append(";\n"));
         
-        if (!domainClass.getFields().isEmpty() || enableSwagger) {
+        if (!domainClass.getFields().isEmpty()) {
             content.append("\n");
         }
     }
