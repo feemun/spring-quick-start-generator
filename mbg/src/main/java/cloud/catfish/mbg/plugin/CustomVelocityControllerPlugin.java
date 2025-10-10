@@ -50,8 +50,6 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
     private static final String MODEL_PACKAGE_SUFFIX = ".model";
     private static final String SERVICE_PACKAGE_SUFFIX = ".service";
     private static final String CONTROLLER_PACKAGE_SUFFIX = ".controller";
-    private static final String PARAM_PACKAGE_SUFFIX = ".model.param";
-    private static final String VO_MAPPER_PACKAGE_SUFFIX = ".mapper.vo";
     private static final String CONTROLLER_CLASS_SUFFIX = "Controller";
     private static final String SERVICE_INTERFACE_PREFIX = "I";
     private static final String SERVICE_CLASS_SUFFIX = "Service";
@@ -226,7 +224,6 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
         context.put("servicePackage", packageName.replace(MODEL_PACKAGE_SUFFIX, SERVICE_PACKAGE_SUFFIX));
         context.put("ControllerPackage", packageName.replace(MODEL_PACKAGE_SUFFIX, CONTROLLER_PACKAGE_SUFFIX));
         context.put("voPackage", packageName.replace(MODEL_PACKAGE_SUFFIX, ".vo"));
-        context.put("voMapperPackage", packageName.replace(MODEL_PACKAGE_SUFFIX, VO_MAPPER_PACKAGE_SUFFIX));
         
         // Class names
         context.put("ControllerSimpleName", entityName + CONTROLLER_CLASS_SUFFIX);
