@@ -44,7 +44,6 @@ public class BaseRequestParam {
      */
     @Schema(description = "Page size", example = "10")
     @Min(value = 1, message = "Page size must be greater than 0")
-    @Max(value = 100, message = "Page size cannot exceed 100")
     private Integer size = 10;
     
     /**
