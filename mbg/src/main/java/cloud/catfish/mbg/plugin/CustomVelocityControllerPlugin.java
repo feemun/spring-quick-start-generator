@@ -1,6 +1,6 @@
 package cloud.catfish.mbg.plugin;
 
-import cloud.catfish.mbg.comm.CommonConfig;
+import cloud.catfish.mbg.comm.CommonConstant;
 import cloud.catfish.mbg.util.StringHelper;
 import cloud.catfish.mbg.util.VelocityUtil;
 import org.apache.velocity.Template;
@@ -13,29 +13,33 @@ import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+/**
+ * Custom Velocity Controller Plugin for MyBatis Generator.
+ * <p>
+ * This plugin generates Spring Boot REST controllers using Apache Velocity templates.
+ * It automatically creates controller classes with standard CRUD operations based on
+ * the generated model classes.
+ * <p>
+ * Features:
+ * - Generates REST controllers with proper annotations
+ * - Configurable package structure
+ * - Template-based code generation using Velocity
+ * - Automatic service layer integration
+ * - Customizable API base URLs and response models
+ *
+ * @author MyBatis Generator Plugin
+ * @version 1.0
+ */
 public class CustomVelocityControllerPlugin extends PluginAdapter {
-
-    // Constants for Velocity configuration
-    private static final String INPUT_ENCODING = "UTF-8";
-    private static final String OUTPUT_ENCODING = "UTF-8";
-    private static final String RESOURCE_LOADER = "resource.loader";
-    private static final String CLASS_LOADER = "class";
-    private static final String CLASS_RESOURCE_LOADER_CLASS = "class.resource.loader.class";
-    private static final String CLASSPATH_RESOURCE_LOADER = "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader";
-
-
-    // Configuration properties
-    private static final String BASE_PACKAGE_PATH_PROPERTY = "basePackagePath";
-    private static final String RESPONSE_MODEL_PROPERTY = "responseModel";
-    private static final String ENABLE_DEBUG_OUTPUT_PROPERTY = "enableDebugOutput";
 
     // Instance fields
     private VelocityEngine velocityEngine;
-    private boolean enableDebugOutput = false;
 
     /**
      * Validates the plugin configuration and dependencies.
@@ -47,23 +51,9 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
     public boolean validate(List<String> warnings) {
         boolean valid = true;
 
-        // Validate that required utility classes are available
-        try {
-            Class.forName("cloud.catfish.mbg.util.StringHelper");
-            Class.forName("cloud.catfish.mbg.util.VelocityUtil");
-        } catch (ClassNotFoundException e) {
-            warnings.add("Required utility classes not found: " + e.getMessage());
-            valid = false;
-        }
-
         // Validate Velocity template availability
         if (velocityEngine != null) {
-            try {
-                velocityEngine.getTemplate(CommonConfig.CONTROLLER_TEMPLATE_PATH);
-            } catch (Exception e) {
-                warnings.add("Controller template not found: " + CommonConfig.CONTROLLER_TEMPLATE_PATH);
-                valid = false;
-            }
+            velocityEngine.getTemplate("templates/controller.vm");
         }
 
         return valid;
@@ -88,13 +78,14 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
     private void initializeVelocityEngine() {
         velocityEngine = new VelocityEngine();
 
-        // Set encoding properties
-        velocityEngine.setProperty(Velocity.INPUT_ENCODING, INPUT_ENCODING);
-        velocityEngine.setProperty(Velocity.OUTPUT_ENCODING, OUTPUT_ENCODING);
+        // Set encoding properties - Velocity expects String values, not Charset objects
+        velocityEngine.setProperty(Velocity.INPUT_ENCODING, StandardCharsets.UTF_8.name());
+        velocityEngine.setProperty(Velocity.OUTPUT_ENCODING, StandardCharsets.UTF_8.name());
 
-        // Set resource loader properties
-        velocityEngine.setProperty(RESOURCE_LOADER, CLASS_LOADER);
-        velocityEngine.setProperty(CLASS_RESOURCE_LOADER_CLASS, CLASSPATH_RESOURCE_LOADER);
+        // Configure classpath resource loader to find templates in resources
+        velocityEngine.setProperty(Velocity.RESOURCE_LOADER, "classpath");
+        velocityEngine.setProperty("classpath.resource.loader.class",
+                "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 
         // Initialize the engine
         velocityEngine.init();
@@ -110,15 +101,7 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
      */
     @Override
     public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-        try {
-            generateController(topLevelClass, introspectedTable);
-        } catch (Exception e) {
-            // Log error but don't fail the generation process
-            System.err.println("Error generating controller for " + topLevelClass.getType().getShortName() + ": " + e.getMessage());
-            if (enableDebugOutput) {
-                e.printStackTrace();
-            }
-        }
+        generateController(topLevelClass, introspectedTable);
         return true;
     }
 
@@ -131,20 +114,15 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
     private void generateController(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
         // Extract entity information
         String entityName = topLevelClass.getType().getShortName();
-        String packageName = topLevelClass.getType().getPackageName();
 
         // Create Velocity context with all necessary variables
-        VelocityContext context = createVelocityContext(entityName, packageName, introspectedTable);
+        VelocityContext context = createVelocityContext(entityName, introspectedTable);
 
         // Generate controller content using template
         String controllerContent = generateControllerContent(context);
 
-        // Output debug information if enabled
-        if (enableDebugOutput) {
-            System.out.println("Generated controller for " + entityName + ":");
-            System.out.println(controllerContent);
-        }
-
+        System.out.println("Generated controller for " + entityName + ":");
+        System.out.println(controllerContent);
         // Write controller file to disk
         writeControllerFile(controllerContent, entityName);
     }
@@ -153,33 +131,31 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
      * Creates a Velocity context with all necessary variables for template processing.
      *
      * @param entityName        the entity class name
-     * @param packageName       the base package name
      * @param introspectedTable the table information
      * @return configured VelocityContext
      */
-    private VelocityContext createVelocityContext(String entityName, String packageName, IntrospectedTable introspectedTable) {
+    private VelocityContext createVelocityContext(String entityName, IntrospectedTable introspectedTable) {
         VelocityContext context = new VelocityContext();
 
         // Package information
-        context.put("packageName", packageName);
-        context.put("servicePackage", CommonConfig.SERVICE_PACKAGE_NAME);
-        context.put("ControllerPackage", CommonConfig.CONTROLLER_PACKAGE_NAME);
-        context.put("voPackage", CommonConfig.VO_PACKAGE_NAME);
+        context.put("ServicePackage", CommonConstant.SERVICE_PACKAGE_NAME);
+        context.put("ControllerPackage", CommonConstant.SERVICE_PACKAGE_NAME);
+        context.put("VoPackage", CommonConstant.VO_PACKAGE_NAME);
 
         // Class names
-        context.put("ControllerSimpleName", entityName + CommonConfig.CONTROLLER_SUFFIX_FILE_NAME);
-        context.put("ServiceClassName", CommonConfig.SERVICE_PACKAGE_NAME + entityName + CommonConfig.SERVICE_SUFFIX_FILE_NAME);
+        context.put("ControllerSimpleName", entityName + CommonConstant.SERVICE_PACKAGE_NAME);
+        context.put("ServiceClassName", CommonConstant.SERVICE_PACKAGE_NAME + entityName + CommonConstant.SERVICE_PACKAGE_NAME);
         context.put("ModelSimpleName", entityName);
-        context.put("RequestParamClassName", entityName + CommonConfig.REQUEST_SUFFIX_PARAM_FILE_NAME);
-        context.put("VoClassName", entityName + CommonConfig.VO_SUFFIX_FILE_NAME);
-        context.put("VoMapperClassName", entityName + CommonConfig.MAPSTRUCT_SUFFIX_FILE_NAME);
+        context.put("RequestParamClassName", entityName + CommonConstant.REQUEST_SUFFIX_PARAM_FILE_NAME);
+        context.put("VoClassName", entityName + CommonConstant.REQUEST_SUFFIX_PARAM_FILE_NAME);
+        context.put("VoMapperClassName", entityName + CommonConstant.REQUEST_SUFFIX_PARAM_FILE_NAME);
 
         // Variable names
         context.put("ServiceVariableName", StringHelper.firstCharToLower(entityName));
 
         // API configuration
         context.put("apiBaseUrl", "/" + entityName);
-        context.put("SimplResponseModel", null);
+        context.put("SimplResponseModel", CommonConstant.REQUEST_SUFFIX_PARAM_FILE_NAME);
 
         // Primary key information
         addPrimaryKeyInformation(context, introspectedTable);
@@ -188,59 +164,89 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
     }
 
     /**
-     * Adds primary key information to the Velocity context for dynamic handling.
+     * 为 Velocity 模板上下文添加主键相关信息，用于动态生成 Controller 方法。
      *
-     * @param context           the Velocity context to add primary key information to
-     * @param introspectedTable the table information containing primary key details
+     * <p>该方法会分析数据库表的主键结构，并生成以下信息：</p>
+     * <ul>
+     *   <li>主键基础信息：类型、属性名、列名等</li>
+     *   <li>主键集合信息：支持复合主键的属性和类型列表</li>
+     *   <li>动态代码片段：方法参数、服务调用参数、URL路径变量</li>
+     * </ul>
+     *
+     * <p>生成的信息将被 Velocity 模板使用，自动适配单主键和复合主键场景。</p>
+     *
+     * @param context           Velocity 模板上下文，用于存储主键信息
+     * @param introspectedTable 数据库表的元数据信息，包含主键详情
      */
     private void addPrimaryKeyInformation(VelocityContext context, IntrospectedTable introspectedTable) {
+        // 获取表的主键列信息
         List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
 
-        if (primaryKeyColumns != null && !primaryKeyColumns.isEmpty()) {
-            context.put("hasPrimaryKey", true);
-            context.put("primaryKeyType", primaryKeyColumns.get(0).getFullyQualifiedJavaType().getShortName());
-            context.put("primaryKeyProperty", primaryKeyColumns.get(0).getJavaProperty());
-            context.put("primaryKeyColumn", primaryKeyColumns.get(0).getActualColumnName());
+        // 检查是否存在主键
+        if (primaryKeyColumns == null || primaryKeyColumns.isEmpty()) {
+            // 无主键情况：设置标志位为 false
+            context.put("hasPrimaryKey", false);
+            return;
+        }
 
-            // Extract primary key properties for template iteration
-            List<String> pkProperties = primaryKeyColumns.stream()
-                    .map(IntrospectedColumn::getJavaProperty)
-                    .collect(Collectors.toList());
+        // === 设置主键存在标志 ===
+        context.put("hasPrimaryKey", true);
 
-            List<String> pkTypes = primaryKeyColumns.stream()
-                    .map(col -> col.getFullyQualifiedJavaType().getShortName())
-                    .collect(Collectors.toList());
+        // === 设置第一个主键的基础信息（兼容单主键场景） ===
+        IntrospectedColumn firstPrimaryKey = primaryKeyColumns.get(0);
+        context.put("primaryKeyType", firstPrimaryKey.getFullyQualifiedJavaType().getShortName());
+        context.put("primaryKeyProperty", firstPrimaryKey.getJavaProperty());
+        context.put("primaryKeyColumn", firstPrimaryKey.getActualColumnName());
 
-            context.put("primaryKeyTypes", pkTypes);
-            context.put("primaryKeyProperties", pkProperties);
+        // === 提取所有主键的属性和类型列表（支持复合主键） ===
+        List<String> primaryKeyProperties = primaryKeyColumns.stream()
+                .map(IntrospectedColumn::getJavaProperty)
+                .collect(Collectors.toList());
 
-            // Generate unified method parameters for all primary key scenarios
-            StringBuilder methodParams = new StringBuilder();
-            StringBuilder serviceCallParams = new StringBuilder();
-            StringBuilder pathVariables = new StringBuilder();
+        List<String> primaryKeyTypes = primaryKeyColumns.stream()
+                .map(column -> column.getFullyQualifiedJavaType().getShortName())
+                .collect(Collectors.toList());
 
-            for (int i = 0; i < primaryKeyColumns.size(); i++) {
-                IntrospectedColumn col = primaryKeyColumns.get(i);
-                String paramType = col.getFullyQualifiedJavaType().getShortName();
-                String paramName = col.getJavaProperty();
+        context.put("primaryKeyTypes", primaryKeyTypes);
+        context.put("primaryKeyProperties", primaryKeyProperties);
 
-                if (i > 0) {
-                    methodParams.append(", ");
-                    serviceCallParams.append(", ");
-                    pathVariables.append("/");
-                }
+        // === 动态生成 Controller 方法所需的代码片段 ===
+        StringBuilder methodParametersBuilder = new StringBuilder();      // 方法参数：@PathVariable Long id
+        StringBuilder serviceCallParametersBuilder = new StringBuilder(); // 服务调用参数：id
+        StringBuilder pathVariablesBuilder = new StringBuilder();         // URL路径变量：{id}
 
-                methodParams.append("@PathVariable ").append(paramType).append(" ").append(paramName);
-                serviceCallParams.append(paramName);
-                pathVariables.append("{").append(paramName).append("}");
+        // 遍历所有主键列，构建代码片段
+        for (int i = 0; i < primaryKeyColumns.size(); i++) {
+            IntrospectedColumn primaryKeyColumn = primaryKeyColumns.get(i);
+            String parameterType = primaryKeyColumn.getFullyQualifiedJavaType().getShortName();
+            String parameterName = primaryKeyColumn.getJavaProperty();
+
+            // 非第一个参数时添加分隔符
+            if (i > 0) {
+                methodParametersBuilder.append(", ");
+                serviceCallParametersBuilder.append(", ");
+                pathVariablesBuilder.append("/");
             }
 
-            context.put("primaryKeyMethodParams", methodParams.toString());
-            context.put("primaryKeyServiceCallParams", serviceCallParams.toString());
-            context.put("primaryKeyPathVariables", pathVariables.toString());
-        } else {
-            context.put("hasPrimaryKey", false);
+            // 构建方法参数：@PathVariable Long id
+            methodParametersBuilder.append("@PathVariable ")
+                    .append(parameterType)
+                    .append(" ")
+                    .append(parameterName);
+
+            // 构建服务调用参数：id
+            serviceCallParametersBuilder.append(parameterName);
+
+            // 构建URL路径变量：{id}
+            pathVariablesBuilder.append("{")
+                    .append(parameterName)
+                    .append("}");
         }
+
+        // === 将生成的代码片段添加到模板上下文 ===
+        context.put("primaryKeyMethodParams", methodParametersBuilder.toString());
+        context.put("primaryKeyServiceCallParams", serviceCallParametersBuilder.toString());
+        context.put("primaryKeyPathVariables", pathVariablesBuilder.toString());
     }
 
     /**
@@ -251,14 +257,8 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
      */
     private String generateControllerContent(VelocityContext context) {
         StringWriter writer = new StringWriter();
-
-        try {
-            Template controllerTemplate = velocityEngine.getTemplate(CommonConfig.CONTROLLER_TEMPLATE_PATH);
-            controllerTemplate.merge(context, writer);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to generate controller content: " + e.getMessage(), e);
-        }
-
+        Template controllerTemplate = velocityEngine.getTemplate(CommonConstant.CONTROLLER_TEMPLATE_PATH);
+        controllerTemplate.merge(context, writer);
         return writer.toString();
     }
 
@@ -269,14 +269,12 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
      * @param entityName        the entity name for file naming
      */
     private void writeControllerFile(String controllerContent, String entityName) {
-        try {
-            StringWriter writer = new StringWriter();
-            writer.write(controllerContent);
+        StringWriter writer = new StringWriter();
+        writer.write(controllerContent);
 
-            String fileName = entityName + CommonConfig.CONTROLLER_SUFFIX_FILE_NAME + ".java";
-            VelocityUtil.processTemplate(writer, CommonConfig.PROJECT_ABSOLUTE_PATH, fileName);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to write controller file: " + e.getMessage(), e);
-        }
+        String fileName = entityName + CommonConstant.CONTROLLER_SUFFIX_FILE_NAME + ".java";
+        VelocityUtil.processTemplate(writer,
+                CommonConstant.MBG_MODULE_ABSOLUTE_PATH + CommonConstant.RESOURCES_RELATIVE_PATH + CommonConstant.CONTROLLER_PACKAGE_RELATIVE_NAME,
+                fileName);
     }
 }

@@ -14,36 +14,36 @@
         <property name="javaFileEncoding" value="UTF-8"/>
 
         <!-- Unified Domain Model Plugin (replaces LocalDateTime Serializable, Deserializable, and NoGetterSetter plugins) -->
-        <plugin type="cloud.catfish.mbg.plugin.DomainModelPlugin">
-            <property name="generateGetters" value="false"/>
-            <property name="generateSetters" value="false"/>
-        </plugin>
+<!--        <plugin type="cloud.catfish.mbg.plugin.DomainModelPlugin">-->
+<!--            <property name="generateGetters" value="false"/>-->
+<!--            <property name="generateSetters" value="false"/>-->
+<!--        </plugin>-->
 
         <!-- lombok annotation Plugin -->
         <plugin type="cloud.catfish.mbg.plugin.LombokAnnotationPlugin"/>
 
         <!-- VO generator Plugin -->
-        <plugin type="cloud.catfish.mbg.plugin.VoGeneratorPlugin">
-            <property name="voPackage" value="cloud.catfish.mbg.vo"/>
-            <property name="mapperPackage" value="cloud.catfish.mbg.converter"/>
-            <property name="voTargetProject" value="mbg/src/main/java"/>
-            <property name="mapperTargetProject" value="mbg/src/main/java"/>
-        </plugin>
+<!--        <plugin type="cloud.catfish.mbg.plugin.VoGeneratorPlugin">-->
+<!--            <property name="voPackage" value="cloud.catfish.mbg.vo"/>-->
+<!--            <property name="mapperPackage" value="cloud.catfish.mbg.converter"/>-->
+<!--            <property name="voTargetProject" value="mbg/src/main/java"/>-->
+<!--            <property name="mapperTargetProject" value="mbg/src/main/java"/>-->
+<!--        </plugin>-->
 
         <!-- RequestParam generator Plugin -->
-        <plugin type="cloud.catfish.mbg.plugin.RequestParamGeneratorPlugin">
-            <property name="requestParamPackage" value="cloud.catfish.mbg.req"/>
-            <property name="requestParamTargetProject" value="mbg/src/main/java"/>
-        </plugin>
+<!--        <plugin type="cloud.catfish.mbg.plugin.RequestParamGeneratorPlugin">-->
+<!--            <property name="requestParamPackage" value="cloud.catfish.mbg.req"/>-->
+<!--            <property name="requestParamTargetProject" value="mbg/src/main/java"/>-->
+<!--        </plugin>-->
 
         <!-- controller generator Plugin -->
         <plugin type="cloud.catfish.mbg.plugin.CustomVelocityControllerPlugin"/>
 
-        <!-- service generator Plugin -->
-        <plugin type="cloud.catfish.mbg.plugin.CustomVelocityServicePlugin"/>
+<!--        &lt;!&ndash; service generator Plugin &ndash;&gt;-->
+<!--        <plugin type="cloud.catfish.mbg.plugin.CustomVelocityServicePlugin"/>-->
 
-        <!-- service impl generator Plugin -->
-        <plugin type="cloud.catfish.mbg.plugin.CustomVelocityServiceImplPlugin"/>
+<!--        &lt;!&ndash; service impl generator Plugin &ndash;&gt;-->
+<!--        <plugin type="cloud.catfish.mbg.plugin.CustomVelocityServiceImplPlugin"/>-->
 
         <!-- lombok custom serializable Plugin -->
         <plugin type="cloud.catfish.mbg.plugin.CustomSerializablePlugin"/>

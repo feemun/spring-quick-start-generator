@@ -1,6 +1,6 @@
 package cloud.catfish.mbg.comm;
 
-public class CommonConfig {
+public class CommonConstant {
 
     // project absolute path
     public static String PROJECT_ABSOLUTE_PATH = "/Users/qiupan/Documents/GitHub/spring-quick-start-generator";
@@ -9,6 +9,11 @@ public class CommonConfig {
     public static String MBG_MODULE_ABSOLUTE_PATH = PROJECT_ABSOLUTE_PATH + "/mbg";
     public static String COMMON_MODULE_ABSOLUTE_PATH = PROJECT_ABSOLUTE_PATH + "/common";
     public static String ADMIN_MODULE_ABSOLUTE_PATH = PROJECT_ABSOLUTE_PATH + "/admin";
+
+    // resources relative path
+    public static String RESOURCES_RELATIVE_PATH = "/src/main/java";
+    // source code relative path
+    public static String SOURCE_CODE_RELATIVE_PATH = "/src/main/resources";
 
     // package name
     public static String ROOT_PACKAGE = "cloud.catfish.mbg";
@@ -23,7 +28,7 @@ public class CommonConfig {
 
 
     // package relative path                              RELATIVE
-    public static String ROOT_RELATIVE_PATH = "cloud/catfish/mbg";
+    public static String ROOT_RELATIVE_PATH = "/cloud/catfish/mbg";
     public static String MAPPER_PACKAGE_RELATIVE_NAME = ROOT_RELATIVE_PATH + "/mapper";
     public static String SERVICE_PACKAGE_RELATIVE_NAME = ROOT_RELATIVE_PATH + "/service";
     public static String SERVICE_IMPL_PACKAGE_RELATIVE_NAME = ROOT_RELATIVE_PATH + "/service.impl";
@@ -45,10 +50,10 @@ public class CommonConfig {
     public static String MAPSTRUCT_SUFFIX_FILE_NAME = "Converter";
 
     // default template
-    public static String RESOURCES_ABSOLUTE_PATH = "/Users/qiupan/Documents/GitHub/spring-quick-start-generator/mbg/src/main/resources/templates";
-    public static String SERVICE_TEMPLATE_PATH = RESOURCES_ABSOLUTE_PATH + "/service.vm";
-    public static String SERVICE_IMPL_TEMPLATE_PATH = RESOURCES_ABSOLUTE_PATH + "/serviceImpl.vm";
-    public static String CONTROLLER_TEMPLATE_PATH = RESOURCES_ABSOLUTE_PATH + "/controller.vm";
+    public static String RESOURCES_CLASS_PATH = "templates";
+    public static String SERVICE_TEMPLATE_PATH = RESOURCES_CLASS_PATH + "/service.vm";
+    public static String SERVICE_IMPL_TEMPLATE_PATH = RESOURCES_CLASS_PATH + "/serviceImpl.vm";
+    public static String CONTROLLER_TEMPLATE_PATH = RESOURCES_CLASS_PATH + "/controller.vm";
 
 
 }
