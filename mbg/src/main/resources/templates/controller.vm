@@ -1,7 +1,7 @@
 package ${ControllerPackage};
 
-import ${packageName}.${ModelSimpleName};
-import ${servicePackage}.${ServiceClassName};
+import ${ModelPackage}.${ModelClassName};
+import ${ServicePackage}.${ServiceClassName};
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -9,33 +9,32 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.List;
 import org.springframework.data.domain.Page;
-import ${packageName}.param.${ModelSimpleName}RequestParam;
-import ${voPackage}.${VoClassName};
+import ${RequestParamPackage}.${ModelClassName}Req;
+import ${VoPackage}.${VoClassName};
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.annotation.Resource;
 import cloud.catfish.common.util.SnowflakeUtil;
 
-@Tag(name = "${ModelSimpleName} API", description = "${ModelSimpleName}相关的增删改查操作")
+@Tag(name = "${ModelClassName} API", description = "${ModelClassName}相关的增删改查操作")
 @RestController
 @RequestMapping("${apiBaseUrl}")
 @Slf4j
-public class ${ControllerSimpleName} {
+public class ${ControllerClassName} {
 
     @Resource
     private ${ServiceClassName} ${ServiceVariableName};
 
-    @Operation(summary = "分页条件查询", description = "根据条件分页查询${ModelSimpleName}列表")
+    @Operation(summary = "分页条件查询", description = "根据条件分页查询${ModelClassName}列表")
     @GetMapping("/search")
-    public ResponseEntity<Page<${VoClassName}>> search(@Valid @ModelAttribute ${ModelSimpleName}RequestParam req) {
+    public ResponseEntity<Page<${VoClassName}>> search(@Valid @ModelAttribute ${ModelClassName}Req req) {
         Page<${VoClassName}> page = ${ServiceVariableName}.page(req);
         return ResponseEntity.ok(page);
     }
 
 #if($hasPrimaryKey)
-    @Operation(summary = "根据主键查询", description = "根据ID查询单个${ModelSimpleName}")
+    @Operation(summary = "根据主键查询", description = "根据ID查询单个${ModelClassName}")
     @GetMapping("/${primaryKeyPathVariables}")
     public ResponseEntity<${VoClassName}> selectByPrimaryKey(${primaryKeyMethodParams}) {
         ${VoClassName} result = ${ServiceVariableName}.selectByPrimaryKey(${primaryKeyServiceCallParams});
@@ -43,19 +42,19 @@ public class ${ControllerSimpleName} {
     }
 #end
 
-    @Operation(summary = "根据主键更新", description = "更新${ModelSimpleName}信息")
+    @Operation(summary = "根据主键更新", description = "更新${ModelClassName}信息")
     @PutMapping("")
-    public ResponseEntity<Boolean> updateByPrimaryKeySelective(@Valid @RequestBody ${ModelSimpleName} record) {
+    public ResponseEntity<Boolean> updateByPrimaryKeySelective(@Valid @RequestBody ${ModelClassName} record) {
         Boolean success = ${ServiceVariableName}.updateByPrimaryKeySelective(record);
-        log.info(success ? "Successfully updated ${ModelSimpleName}" : "Failed to update ${ModelSimpleName}");
+        log.info(success ? "Successfully updated ${ModelClassName}" : "Failed to update ${ModelClassName}");
         return ResponseEntity.ok(success);
     }
 
-    @Operation(summary = "根据条件批量更新", description = "根据指定条件批量更新${ModelSimpleName}信息")
+    @Operation(summary = "根据条件批量更新", description = "根据指定条件批量更新${ModelClassName}信息")
     @PutMapping("/batch")
     public ResponseEntity<Integer> batchUpdate(
-            @Valid @RequestBody ${ModelSimpleName} updateData,
-            @Valid @ModelAttribute ${ModelSimpleName}RequestParam condition) {
+            @Valid @RequestBody ${ModelClassName} updateData,
+            @Valid @ModelAttribute ${ModelClassName}Req condition) {
         if (condition == null) {
             throw new IllegalArgumentException("批量更新必须指定明确的条件");
         }
@@ -65,27 +64,27 @@ public class ${ControllerSimpleName} {
     }
 
 #if($hasPrimaryKey)
-    @Operation(summary = "根据主键删除", description = "删除单个${ModelSimpleName}")
+    @Operation(summary = "根据主键删除", description = "删除单个${ModelClassName}")
     @DeleteMapping("/${primaryKeyPathVariables}")
     public ResponseEntity<Boolean> deleteByPrimaryKey(${primaryKeyMethodParams}) {
         Boolean success = ${ServiceVariableName}.deleteByPrimaryKey(${primaryKeyServiceCallParams});
-        log.info(success ? "Successfully deleted ${ModelSimpleName} with primary key: ${primaryKeyServiceCallParams}" 
-                        : "Failed to delete ${ModelSimpleName} with primary key: ${primaryKeyServiceCallParams}");
+        log.info(success ? "Successfully deleted ${ModelClassName} with primary key: ${primaryKeyServiceCallParams}"
+                        : "Failed to delete ${ModelClassName} with primary key: ${primaryKeyServiceCallParams}");
         return ResponseEntity.ok(success);
     }
 #end
 
-    @Operation(summary = "根据条件批量删除", description = "根据条件批量删除${ModelSimpleName}")
+    @Operation(summary = "根据条件批量删除", description = "根据条件批量删除${ModelClassName}")
     @DeleteMapping("/batch")
-    public ResponseEntity<Integer> batchDelete(@Valid @ModelAttribute ${ModelSimpleName}RequestParam condition) {
+    public ResponseEntity<Integer> batchDelete(@Valid @ModelAttribute ${ModelClassName}Req condition) {
         Integer rowsAffected = ${ServiceVariableName}.deleteByExample(condition);
         log.info("Deleted {} row(s) by condition.", rowsAffected);
         return ResponseEntity.ok(rowsAffected);
     }
 
-    @Operation(summary = "创建新记录", description = "创建新的${ModelSimpleName}")
+    @Operation(summary = "创建新记录", description = "创建新的${ModelClassName}")
     @PostMapping
-    public ResponseEntity<${ModelSimpleName}> create(@Valid @RequestBody ${ModelSimpleName} record) {
+    public ResponseEntity<${ModelClassName}> create(@Valid @RequestBody ${ModelClassName} record) {
         // 使用Twitter Snowflake算法生成ID
         Long snowflakeId = SnowflakeUtil.nextId();
         record.setId(snowflakeId);
@@ -94,7 +93,7 @@ public class ${ControllerSimpleName} {
         return ResponseEntity.status(HttpStatus.CREATED).body(record);
     }
 
-    @Operation(summary = "Excel批量导入", description = "通过Excel文件批量导入${ModelSimpleName}数据")
+    @Operation(summary = "Excel批量导入", description = "通过Excel文件批量导入${ModelClassName}数据")
     @PostMapping("/import")
     public ResponseEntity<String> importExcel(@RequestParam("file") MultipartFile file)  throws Exception {
         // 委托给服务层处理所有业务逻辑
@@ -102,19 +101,19 @@ public class ${ControllerSimpleName} {
         return ResponseEntity.ok(result);
     }
 
-    @Operation(summary = "导出Excel", description = "导出${ModelSimpleName}数据到Excel文件")
+    @Operation(summary = "导出Excel", description = "导出${ModelClassName}数据到Excel文件")
     @GetMapping("/export")
-    public void exportExcel(HttpServletResponse response, @RequestParam(required = false) ${ModelSimpleName} condition) throws Exception {
+    public void exportExcel(HttpServletResponse response, @RequestParam(required = false) ${ModelClassName} condition) throws Exception {
         // 设置响应头信息
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        String filename = new String("${ModelSimpleName}数据.xlsx".getBytes("UTF-8"), "ISO-8859-1");
+        String filename = new String("${ModelClassName}数据.xlsx".getBytes("UTF-8"), "ISO-8859-1");
         response.setHeader("Content-Disposition", "attachment;filename=" + filename);
         
         // 这里应该添加数据查询和Excel导出的逻辑
         // 如果condition不为空，则按条件查询
-        // 示例：List<${ModelSimpleName}> records = condition != null ? 
+        // 示例：List<${ModelClassName}> records = condition != null ?
         //     ${ServiceVariableName}.selectByExample(condition) : ${ServiceVariableName}.selectAll();
-        // excelService.exportExcel(response, records, "${ModelSimpleName}数据");
+        // excelService.exportExcel(response, records, "${ModelClassName}数据");
         
         // 导出逻辑实现...
     }

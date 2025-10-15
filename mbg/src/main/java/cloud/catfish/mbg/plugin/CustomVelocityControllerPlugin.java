@@ -14,7 +14,6 @@ import org.mybatis.generator.api.dom.java.TopLevelClass;
 
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
@@ -138,24 +137,36 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
         VelocityContext context = new VelocityContext();
 
         // Package information
+        context.put("ControllerPackage", CommonConstant.CONTROLLER_PACKAGE_NAME);
         context.put("ServicePackage", CommonConstant.SERVICE_PACKAGE_NAME);
-        context.put("ControllerPackage", CommonConstant.SERVICE_PACKAGE_NAME);
+        context.put("ServiceImplPackage", CommonConstant.SERVICE_PACKAGE_NAME);
+        context.put("VoPackage", CommonConstant.SERVICE_PACKAGE_NAME);
+        context.put("ModelPackage", CommonConstant.MODEL_PACKAGE_NAME);
+        context.put("RequestParamPackage", CommonConstant.REQUEST_PARAM_PACKAGE_NAME);
+        context.put("MapstructConverterPackage", CommonConstant.SERVICE_PACKAGE_NAME);
+        context.put("MapperPackage", CommonConstant.SERVICE_PACKAGE_NAME);
         context.put("VoPackage", CommonConstant.VO_PACKAGE_NAME);
 
         // Class names
-        context.put("ControllerSimpleName", entityName + CommonConstant.SERVICE_PACKAGE_NAME);
-        context.put("ServiceClassName", CommonConstant.SERVICE_PACKAGE_NAME + entityName + CommonConstant.SERVICE_PACKAGE_NAME);
-        context.put("ModelSimpleName", entityName);
+        context.put("ControllerClassName", entityName + CommonConstant.CONTROLLER_SUFFIX_FILE_NAME);
+        context.put("ServiceClassName", entityName + CommonConstant.SERVICE_SUFFIX_FILE_NAME);
+        context.put("ServiceImplClassName", entityName + CommonConstant.SERVICE_SUFFIX_IMPL_FILE_NAME);
+        context.put("ModelClassName", entityName);
         context.put("RequestParamClassName", entityName + CommonConstant.REQUEST_SUFFIX_PARAM_FILE_NAME);
-        context.put("VoClassName", entityName + CommonConstant.REQUEST_SUFFIX_PARAM_FILE_NAME);
-        context.put("VoMapperClassName", entityName + CommonConstant.REQUEST_SUFFIX_PARAM_FILE_NAME);
+        context.put("VoClassName", entityName + CommonConstant.VO_SUFFIX_FILE_NAME);
+        context.put("MapstructConverterClassName", entityName + CommonConstant.REQUEST_SUFFIX_PARAM_FILE_NAME);
+        context.put("MapperClassName", entityName + CommonConstant.MAPPER_SUFFIX_FILE_NAME);
 
         // Variable names
-        context.put("ServiceVariableName", StringHelper.firstCharToLower(entityName));
+        context.put("ServiceVariableName", StringHelper.firstCharToLower(entityName) + CommonConstant.SERVICE_SUFFIX_FILE_NAME);
+        context.put("ServiceImplVariableName", StringHelper.firstCharToLower(entityName) + CommonConstant.SERVICE_SUFFIX_FILE_NAME);
+        context.put("VoVariableName", StringHelper.firstCharToLower(entityName) + CommonConstant.VO_SUFFIX_FILE_NAME);
+        context.put("RequestParamVariableName", StringHelper.firstCharToLower(entityName) + CommonConstant.REQUEST_SUFFIX_PARAM_FILE_NAME);
+        context.put("MapstructConverterVariableName", StringHelper.firstCharToLower(entityName) + CommonConstant.CONVERTER_SUFFIX_FILE_NAME);
+        context.put("MapperVariableName", StringHelper.firstCharToLower(entityName) + CommonConstant.MAPPER_SUFFIX_FILE_NAME);
 
         // API configuration
         context.put("apiBaseUrl", "/" + entityName);
-        context.put("SimplResponseModel", CommonConstant.REQUEST_SUFFIX_PARAM_FILE_NAME);
 
         // Primary key information
         addPrimaryKeyInformation(context, introspectedTable);

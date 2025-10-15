@@ -23,7 +23,7 @@ public class CommonConstant {
     public static String CONTROLLER_PACKAGE_NAME = ROOT_PACKAGE + ".controller";
     public static String CONVERTER_PACKAGE_NAME = ROOT_PACKAGE + ".converter";
     public static String REQUEST_PARAM_PACKAGE_NAME = ROOT_PACKAGE + ".request";
-    public static String DOMAIN_PACKAGE_NAME = ROOT_PACKAGE + ".domain";
+    public static String MODEL_PACKAGE_NAME = ROOT_PACKAGE + ".model";
     public static String VO_PACKAGE_NAME = ROOT_PACKAGE + ".vo";
 
 
