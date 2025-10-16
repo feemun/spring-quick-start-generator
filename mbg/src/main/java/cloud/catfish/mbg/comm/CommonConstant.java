@@ -41,7 +41,7 @@ public class CommonConstant {
     // file suffix name
     public static String MAPPER_SUFFIX_FILE_NAME = "Mapper";
     public static String SERVICE_SUFFIX_FILE_NAME = "Service";
-    public static String SERVICE_SUFFIX_IMPL_FILE_NAME = "ServiceImpl";
+    public static String SERVICE_IMPL_SUFFIX_FILE_NAME = "ServiceImpl";
     public static String CONTROLLER_SUFFIX_FILE_NAME = "Controller";
     public static String CONVERTER_SUFFIX_FILE_NAME = "Converter";
     public static String REQUEST_SUFFIX_PARAM_FILE_NAME = "Req";

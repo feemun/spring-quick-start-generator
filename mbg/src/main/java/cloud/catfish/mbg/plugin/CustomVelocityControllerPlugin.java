@@ -150,7 +150,7 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
         // Class names
         context.put("ControllerClassName", entityName + CommonConstant.CONTROLLER_SUFFIX_FILE_NAME);
         context.put("ServiceClassName", entityName + CommonConstant.SERVICE_SUFFIX_FILE_NAME);
-        context.put("ServiceImplClassName", entityName + CommonConstant.SERVICE_SUFFIX_IMPL_FILE_NAME);
+        context.put("ServiceImplClassName", entityName + CommonConstant.SERVICE_IMPL_SUFFIX_FILE_NAME);
         context.put("ModelClassName", entityName);
         context.put("RequestParamClassName", entityName + CommonConstant.REQUEST_SUFFIX_PARAM_FILE_NAME);
         context.put("VoClassName", entityName + CommonConstant.VO_SUFFIX_FILE_NAME);

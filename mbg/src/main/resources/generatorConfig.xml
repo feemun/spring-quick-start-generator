@@ -42,8 +42,8 @@
         <!-- service generator Plugin -->
         <plugin type="cloud.catfish.mbg.plugin.CustomVelocityServicePlugin"/>
 
-<!--        &lt;!&ndash; service impl generator Plugin &ndash;&gt;-->
-<!--        <plugin type="cloud.catfish.mbg.plugin.CustomVelocityServiceImplPlugin"/>-->
+        <!-- service impl generator Plugin -->
+        <plugin type="cloud.catfish.mbg.plugin.CustomVelocityServiceImplPlugin"/>
 
         <!-- lombok custom serializable Plugin -->
         <plugin type="cloud.catfish.mbg.plugin.CustomSerializablePlugin"/>

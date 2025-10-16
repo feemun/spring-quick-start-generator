@@ -1,13 +1,12 @@
 package ${ServiceImplPackage};
 
 import com.github.pagehelper.PageHelper;
-import ${modelPackage}.${ModelSimpleName};
-import ${modelPackage}.${ModelSimpleName}Example;
-import ${MapperPackage}.${DaoSimpleName};
-import ${ServicePackage}.${ServiceSimpleName};
-import ${modelPackage}.param.${ModelSimpleName}RequestParam;
-import ${voPackage}.${VoClassName};
-import ${voMapperPackage}.${VoMapperClassName};
+import ${ModelPackage}.${ModelClassName};
+import ${ModelPackage}.${ModelClassName}Example;
+import ${MapperPackage}.${MapperClassName};
+import ${ServicePackage}.${ServiceClassName};
+import ${RequestParamPackage}.${ModelClassName}Req;
+import ${VoPackage}.${VoClassName};
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.data.domain.Page;
@@ -21,37 +20,37 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
+public class ${ServiceImplClassName} implements ${ServiceClassName} {
 
     @Resource
-    private ${DaoSimpleName} ${DaoVariableName};
+    private ${MapperClassName} ${MapperVariableName};
     
     @Resource
-    private ${VoMapperClassName} ${ModelSimpleName.toLowerCase()}Converter;
+    private ${MapstructConverterClassName} ${MapstructConverterVariableName};
 
     /**
      * 分页查询
      *
-     * @param requestParam 查询参数，包含分页信息和查询条件
+     * @param req 查询参数，包含分页信息和查询条件
      * @return 分页查询结果，已转换为VO对象
      */
-    public Page<${VoClassName}> page(${ModelSimpleName}RequestParam requestParam) {
-        PageHelper.startPage(requestParam.getPage(), requestParam.getSize());
-        ${ModelSimpleName}Example example = new ${ModelSimpleName}Example();
-        example.setOrderByClause(requestParam.getOrderByClause());
-        ${ModelSimpleName}Example.Criteria criteria = example.createCriteria();
+    public Page<${VoClassName}> page(${ModelClassName}Req req) {
+        PageHelper.startPage(req.getPage(), req.getSize());
+        ${ModelClassName}Example example = new ${ModelClassName}Example();
+        example.setOrderByClause(req.getOrderByClause());
+        ${ModelClassName}Example.Criteria criteria = example.createCriteria();
         
         // 如果有查询条件，则添加到criteria中
         // 这里需要根据实际的字段添加条件
-        // 示例: if (requestParam.getName() != null) {
-        //     criteria.andNameLike("%" + requestParam.getName() + "%");
+        // 示例: if (req.getName() != null) {
+        //     criteria.andNameLike("%" + req.getName() + "%");
         // }
         
-        List<${ModelSimpleName}> lst = ${DaoVariableName}.selectByExample(example);
-        PageInfo<${ModelSimpleName}> pageInfo = new PageInfo<>(lst);
+        List<${ModelClassName}> lst = ${MapperVariableName}.selectByExample(example);
+        PageInfo<${ModelClassName}> pageInfo = new PageInfo<>(lst);
         
         // Convert to VO list
-        List<${VoClassName}> voList = ${ModelSimpleName.toLowerCase()}Converter.toVoList(pageInfo.getList());
+        List<${VoClassName}> voList = ${ModelClassName.toLowerCase()}Converter.toVoList(pageInfo.getList());
         
         return new PageImpl<>(
             voList,
@@ -71,8 +70,8 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
      */
     @Override
     public ${VoClassName} selectByPrimaryKey(${primaryKeyMethodParams}) {
-        ${ModelSimpleName} model = ${DaoVariableName}.selectByPrimaryKey(${primaryKeyServiceCallParams});
-        return model != null ? ${ModelSimpleName.toLowerCase()}Converter.toVo(model) : null;
+        ${ModelClassName} model = ${MapperVariableName}.selectByPrimaryKey(${primaryKeyServiceCallParams});
+        return model != null ? ${ModelClassName.toLowerCase()}Converter.toVo(model) : null;
     }
 #end
 
@@ -82,8 +81,8 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
      * @param record 更新的数据对象
      * @return 是否更新成功
      */
-    public Boolean updateByPrimaryKeySelective(${ModelSimpleName} record) {
-        return ${DaoVariableName}.updateByPrimaryKeySelective(record) > 0;
+    public Boolean updateByPrimaryKeySelective(${ModelClassName} record) {
+        return ${MapperVariableName}.updateByPrimaryKeySelective(record) > 0;
     }
 
     /**
@@ -93,14 +92,14 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
      * @param condition 更新条件
      * @return 影响行数
      */
-    public int updateByExampleSelective(${ModelSimpleName} updateData, ${ModelSimpleName}RequestParam condition) {
-        ${ModelSimpleName}Example example = new ${ModelSimpleName}Example();
-        ${ModelSimpleName}Example.Criteria criteria = example.createCriteria();
+    public int updateByExampleSelective(${ModelClassName} updateData, ${ModelClassName}Req condition) {
+        ${ModelClassName}Example example = new ${ModelClassName}Example();
+        ${ModelClassName}Example.Criteria criteria = example.createCriteria();
         
         // 根据条件参数构建查询条件
         // buildCriteria(criteria, condition);
         
-        return ${DaoVariableName}.updateByExampleSelective(updateData, example);
+        return ${MapperVariableName}.updateByExampleSelective(updateData, example);
     }
 
 #if($hasPrimaryKey)
@@ -114,7 +113,7 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
      */
     @Override
     public Boolean deleteByPrimaryKey(${primaryKeyMethodParams}) {
-        return ${DaoVariableName}.deleteByPrimaryKey(${primaryKeyServiceCallParams}) > 0;
+        return ${MapperVariableName}.deleteByPrimaryKey(${primaryKeyServiceCallParams}) > 0;
     }
 #end
 
@@ -124,10 +123,10 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
      * @param condition 删除条件
      * @return 影响行数
      */
-    public int deleteByExample(${ModelSimpleName}RequestParam condition) {
-        ${ModelSimpleName}Example example = new ${ModelSimpleName}Example();
+    public int deleteByExample(${ModelClassName}Req condition) {
+        ${ModelClassName}Example example = new ${ModelClassName}Example();
         example.createCriteria();
-        return ${DaoVariableName}.deleteByExample(example);
+        return ${MapperVariableName}.deleteByExample(example);
     }
 
     /**
@@ -136,8 +135,8 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
      * @param record 新增的数据对象
      * @return 是否新增成功
      */
-   public Boolean insertSelective(${ModelSimpleName} record) {
-       return ${DaoVariableName}.insertSelective(record) > 0;
+   public Boolean insertSelective(${ModelClassName} record) {
+       return ${MapperVariableName}.insertSelective(record) > 0;
    }
    
    /**
@@ -146,12 +145,12 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
     * @param records 批量新增的数据对象列表
     * @return 是否新增成功
     */
-   public Boolean batchInsert(List<${ModelSimpleName}> records) {
+   public Boolean batchInsert(List<${ModelClassName}> records) {
        if (records == null || records.isEmpty()) {
            return false;
        }
        
-       return ${DaoVariableName}.batchInsert(records) > 0;
+       return ${MapperVariableName}.batchInsert(records) > 0;
    }
    
    /**
@@ -176,7 +175,7 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
            // 2. 解析Excel文件
            // TODO: 实现Excel文件解析逻辑
            // 建议使用EasyExcel或Apache POI进行Excel解析
-           // List<${ModelSimpleName}> records = parseExcelFile(file);
+           // List<${ModelClassName}> records = parseExcelFile(file);
            
            // 3. 数据验证和处理
            // if (records == null || records.isEmpty()) {
@@ -184,7 +183,7 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
            // }
            
            // 4. 为每条记录生成Snowflake ID（如果需要）
-           // for (${ModelSimpleName} record : records) {
+           // for (${ModelClassName} record : records) {
            //     if (record.getId() == null) {
            //         record.setId(SnowflakeUtil.nextId());
            //     }
@@ -211,7 +210,7 @@ public class ${ServiceImplSimpleName} implements ${ServiceSimpleName} {
    }
    
    // TODO: 实现Excel文件解析的私有方法
-   // private List<${ModelSimpleName}> parseExcelFile(MultipartFile file) throws Exception {
+   // private List<${ModelClassName}> parseExcelFile(MultipartFile file) throws Exception {
    //     // 使用EasyExcel或Apache POI解析Excel文件
    //     // 返回解析后的数据列表
    //     return new ArrayList<>();
