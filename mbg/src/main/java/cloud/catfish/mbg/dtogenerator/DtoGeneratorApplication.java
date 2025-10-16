@@ -9,36 +9,13 @@ import cloud.catfish.mbg.dtogenerator.model.FieldInfo;
 import java.sql.Connection;
 import java.util.List;
 
-/**
- * DTO生成器主应用类（重构版）
- * <p>
- * 基于SQL查询结果集元数据自动生成Java DTO类
- * 支持任意类型的SQL查询：单表、多表联查、聚合查询、子查询等
- * <p>
- * 使用方式：
- * 1. 配置文件模式（推荐）：java DtoGeneratorApplication
- * 2. 编程方式：app.generateDtoFromConfig()
- * <p>
- * 配置文件：complex-dto-generator.properties
- * - jdbc.driverClass: 数据库驱动类
- * - jdbc.connectionURL: 数据库连接URL
- * - jdbc.userId: 数据库用户名
- * - jdbc.password: 数据库密码
- * - dto.sql: SQL查询语句
- * - dto.package.name: DTO包名
- * - dto.name: DTO类名
- * - dto.target.path: DTO生成目标路径（可选）
- *
- * @author Generated
- * @since 2.0
- */
 public class DtoGeneratorApplication {
-    
+
     private final ConfigurationManager configManager;
     private final DatabaseConnectionManager dbManager;
     private final SqlMetadataExtractor metadataExtractor;
     private final DtoCodeGenerator codeGenerator;
-    
+
     /**
      * 构造函数，初始化所有模块
      */
@@ -48,7 +25,7 @@ public class DtoGeneratorApplication {
         this.metadataExtractor = new SqlMetadataExtractor();
         this.codeGenerator = new DtoCodeGenerator();
     }
-    
+
     /**
      * 主方法 - 从配置文件读取参数并生成DTO
      */
@@ -61,83 +38,83 @@ public class DtoGeneratorApplication {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * 从配置文件生成DTO
      */
     public void generateDtoFromConfig() {
         try {
             System.out.println("🚀 开始生成DTO...");
-            
+
             // 加载配置
             configManager.loadConfiguration();
-            
+
             // 获取配置信息
             String sql = configManager.getSql();
             String packageName = configManager.getPackageName();
             String className = configManager.getClassName();
             String targetPath = configManager.getTargetPath();
-            
+
             System.out.println("📋 配置信息:");
             System.out.println("  SQL: " + sql);
             System.out.println("  包名: " + packageName);
             System.out.println("  类名: " + className);
             System.out.println("  目标路径: " + (targetPath != null ? targetPath : "默认路径"));
-            
+
             // 生成DTO
             generateDtoFromSql(sql, className, packageName, targetPath);
-            
+
             System.out.println("✅ DTO生成完成!");
-            
+
         } catch (Exception e) {
             System.err.println("❌ 从配置文件生成DTO失败: " + e.getMessage());
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * 从SQL查询生成DTO
-     * 
-     * @param sql SQL查询语句
-     * @param className DTO类名
+     *
+     * @param sql         SQL查询语句
+     * @param className   DTO类名
      * @param packageName 包名
-     * @param targetPath 目标路径（可选）
+     * @param targetPath  目标路径（可选）
      */
     public void generateDtoFromSql(String sql, String className, String packageName, String targetPath) {
         Connection connection = null;
         try {
             System.out.println("🔗 连接数据库...");
-            
+
             // 创建数据库连接
             connection = dbManager.createConnection();
-            
+
             // 测试连接
             if (dbManager.testConnection()) {
                 System.out.println("✅ 数据库连接成功");
             } else {
                 throw new RuntimeException("数据库连接测试失败");
             }
-            
+
             System.out.println("🔍 分析SQL查询...");
-            
+
             // 提取字段信息
             List<FieldInfo> fields = metadataExtractor.extractFieldsFromSql(connection, sql);
-            
+
             if (fields.isEmpty()) {
                 throw new RuntimeException("未能从SQL查询中提取到字段信息");
             }
-            
+
             System.out.println("📊 提取到 " + fields.size() + " 个字段:");
             for (FieldInfo field : fields) {
-                System.out.println("  - " + field.fieldName + " (" + field.javaType + ") - " + 
-                    (field.comment != null && !field.comment.trim().isEmpty() ? field.comment : "无注释"));
+                System.out.println("  - " + field.fieldName + " (" + field.javaType + ") - " +
+                        (field.comment != null && !field.comment.trim().isEmpty() ? field.comment : "无注释"));
             }
-            
+
             System.out.println("🏗️ 生成DTO代码...");
-            
+
             // 生成DTO类
             codeGenerator.generateDtoClass(fields, className, packageName, targetPath);
-            
+
         } catch (Exception e) {
             System.err.println("❌ 生成DTO失败: " + e.getMessage());
             throw new RuntimeException(e);
@@ -148,44 +125,5 @@ public class DtoGeneratorApplication {
                 System.out.println("🔒 数据库连接已关闭");
             }
         }
-    }
-    
-    /**
-     * 从SQL查询生成DTO（使用默认路径）
-     * 
-     * @param sql SQL查询语句
-     * @param className DTO类名
-     * @param packageName 包名
-     */
-    public void generateDtoFromSql(String sql, String className, String packageName) {
-        generateDtoFromSql(sql, className, packageName, null);
-    }
-    
-    /**
-     * 获取配置管理器
-     */
-    public ConfigurationManager getConfigManager() {
-        return configManager;
-    }
-    
-    /**
-     * 获取数据库连接管理器
-     */
-    public DatabaseConnectionManager getDbManager() {
-        return dbManager;
-    }
-    
-    /**
-     * 获取元数据提取器
-     */
-    public SqlMetadataExtractor getMetadataExtractor() {
-        return metadataExtractor;
-    }
-    
-    /**
-     * 获取代码生成器
-     */
-    public DtoCodeGenerator getCodeGenerator() {
-        return codeGenerator;
     }
 }

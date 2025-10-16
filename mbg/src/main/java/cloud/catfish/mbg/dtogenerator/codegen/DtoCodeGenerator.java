@@ -151,14 +151,5 @@ public class DtoCodeGenerator {
         
         System.out.println("📁 生成DTO类文件: " + javaFile.getAbsolutePath());
     }
-    
-    /**
-     * 首字母大写
-     */
-    private String capitalize(String str) {
-        if (str == null || str.isEmpty()) {
-            return str;
-        }
-        return Character.toUpperCase(str.charAt(0)) + str.substring(1);
-    }
+
 }

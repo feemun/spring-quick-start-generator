@@ -87,15 +87,4 @@ public class DatabaseConnectionManager {
             closeConnection(connection);
         }
     }
-    
-    /**
-     * 获取数据库连接信息（不包含密码）
-     */
-    public String getConnectionInfo() {
-        return String.format("数据库连接信息 - 驱动: %s, URL: %s, 用户: %s", 
-            configManager.getDriverClass(),
-            configManager.getConnectionUrl(),
-            configManager.getUsername()
-        );
-    }
 }

@@ -116,35 +116,5 @@ public class ConfigurationManager {
         }
         return value.trim();
     }
-    
-    /**
-     * 获取可选的配置属性
-     */
-    public String getOptionalProperty(String key, String defaultValue) {
-        return properties.getProperty(key, defaultValue);
-    }
-    
-    /**
-     * 获取所有配置属性
-     */
-    public Properties getAllProperties() {
-        return new Properties(properties);
-    }
-    
-    /**
-     * 打印配置信息
-     */
-    public void printConfiguration() {
-        System.out.println("📋 当前配置信息:");
-        System.out.println("  驱动类: " + getDriverClass());
-        System.out.println("  连接URL: " + getConnectionUrl());
-        System.out.println("  用户名: " + getUsername());
-        System.out.println("  SQL: " + getSql());
-        System.out.println("  包名: " + getPackageName());
-        System.out.println("  类名: " + getClassName());
-        String targetPath = getTargetPath();
-        if (targetPath != null && !targetPath.trim().isEmpty()) {
-            System.out.println("  目标路径: " + targetPath);
-        }
-    }
+
 }
