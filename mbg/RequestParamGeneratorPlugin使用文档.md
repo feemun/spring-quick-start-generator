@@ -47,16 +47,17 @@
 ### 1. 在 generatorConfig.xml 中配置插件
 
 ```xml
+
 <generatorConfiguration>
     <context id="context1">
         <!-- 其他配置... -->
-        
+
         <!-- RequestParam generator Plugin -->
-        <plugin type="cloud.catfish.mbg.plugin.RequestParamGeneratorPlugin">
+        <plugin type="cloud.catfish.mbg.plugin.RequestParamPlugin">
             <property name="requestParamPackage" value="cloud.catfish.mbg.model.param"/>
             <property name="requestParamTargetProject" value="mbg/src/main/java"/>
         </plugin>
-        
+
         <!-- 其他配置... -->
     </context>
 </generatorConfiguration>

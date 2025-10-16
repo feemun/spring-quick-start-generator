@@ -31,10 +31,7 @@
 <!--        </plugin>-->
 
         <!-- RequestParam generator Plugin -->
-<!--        <plugin type="cloud.catfish.mbg.plugin.RequestParamGeneratorPlugin">-->
-<!--            <property name="requestParamPackage" value="cloud.catfish.mbg.req"/>-->
-<!--            <property name="requestParamTargetProject" value="mbg/src/main/java"/>-->
-<!--        </plugin>-->
+        <plugin type="cloud.catfish.mbg.plugin.RequestParamPlugin"/>
 
         <!-- controller generator Plugin -->
         <plugin type="cloud.catfish.mbg.plugin.CustomVelocityControllerPlugin"/>
