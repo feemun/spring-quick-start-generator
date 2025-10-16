@@ -22,13 +22,11 @@
         <!-- lombok annotation Plugin -->
         <plugin type="cloud.catfish.mbg.plugin.LombokAnnotationPlugin"/>
 
-        <!-- VO generator Plugin -->
-<!--        <plugin type="cloud.catfish.mbg.plugin.VoGeneratorPlugin">-->
-<!--            <property name="voPackage" value="cloud.catfish.mbg.vo"/>-->
-<!--            <property name="mapperPackage" value="cloud.catfish.mbg.converter"/>-->
-<!--            <property name="voTargetProject" value="mbg/src/main/java"/>-->
-<!--            <property name="mapperTargetProject" value="mbg/src/main/java"/>-->
-<!--        </plugin>-->
+        <!-- 生成 VO 记录类 -->
+        <plugin type="cloud.catfish.mbg.plugin.VoRecordPlugin"/>
+
+        <!-- 生成 MapStruct 转换器 -->
+        <plugin type="cloud.catfish.mbg.plugin.MapstructConverterPlugin"/>
 
         <!-- RequestParam generator Plugin -->
         <plugin type="cloud.catfish.mbg.plugin.RequestParamPlugin"/>
