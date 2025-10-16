@@ -39,8 +39,8 @@
         <!-- controller generator Plugin -->
         <plugin type="cloud.catfish.mbg.plugin.CustomVelocityControllerPlugin"/>
 
-<!--        &lt;!&ndash; service generator Plugin &ndash;&gt;-->
-<!--        <plugin type="cloud.catfish.mbg.plugin.CustomVelocityServicePlugin"/>-->
+        <!-- service generator Plugin -->
+        <plugin type="cloud.catfish.mbg.plugin.CustomVelocityServicePlugin"/>
 
 <!--        &lt;!&ndash; service impl generator Plugin &ndash;&gt;-->
 <!--        <plugin type="cloud.catfish.mbg.plugin.CustomVelocityServiceImplPlugin"/>-->

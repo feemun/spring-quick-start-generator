@@ -1,12 +1,13 @@
 package ${ServicePackage};
 
-import ${modelPackage}.${ModelSimpleName};
+import ${ModelPackage}.${ModelClassName};
 #if(${multiConditionQuery})
 import ${ModelPoName};
 #end
-import ${modelPackage}.param.${ModelSimpleName}RequestParam;
-import ${voPackage}.${VoClassName};
+import ${ModelPackage}.${ModelClassName}Req;
+import ${VoPackage}.${VoClassName};
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -15,10 +16,10 @@ public interface ${ServiceClassName} {
     /**
      * 分页查询后台
      *
-     * @param requestParam 查询参数，包含分页信息和查询条件
+     * @param req 查询参数，包含分页信息和查询条件
      * @return 分页查询结果，已转换为VO对象
      */
-    Page<${VoClassName}> page(${ModelSimpleName}RequestParam requestParam);
+    Page<${VoClassName}> page(${ModelClassName}Req req);
 
 #if($hasPrimaryKey)
     /**
@@ -38,7 +39,7 @@ public interface ${ServiceClassName} {
      * @param record 更新的数据对象
      * @return 是否更新成功
      */
-    Boolean updateByPrimaryKeySelective(${ModelSimpleName} record);
+    Boolean updateByPrimaryKeySelective(${ModelClassName} record);
 
     /**
      * 根据条件更新
@@ -47,7 +48,7 @@ public interface ${ServiceClassName} {
      * @param condition 更新条件
      * @return 影响行数
      */
-    int updateByExampleSelective(${ModelSimpleName} updateData, ${ModelSimpleName}RequestParam condition);
+    int updateByExampleSelective(${ModelClassName} updateData, ${ModelClassName}Req condition);
 
 #if($hasPrimaryKey)
     /**
@@ -67,7 +68,7 @@ public interface ${ServiceClassName} {
      * @param condition 删除条件
      * @return 影响行数
      */
-    int deleteByExample(${ModelSimpleName}RequestParam condition);
+    int deleteByExample(${ModelClassName}Req condition);
 
     /**
      * 新增
@@ -75,7 +76,7 @@ public interface ${ServiceClassName} {
      * @param record 新增的数据对象
      * @return 是否新增成功
      */
-    Boolean insertSelective(${ModelSimpleName} record);
+    Boolean insertSelective(${ModelClassName} record);
     
     /**
      * 批量新增
@@ -83,7 +84,7 @@ public interface ${ServiceClassName} {
      * @param records 批量新增的数据对象列表
      * @return 是否新增成功
      */
-    Boolean batchInsert(List<${ModelSimpleName}> records);
+    Boolean batchInsert(List<${ModelClassName}> records);
     
     /**
      * Excel文件导入处理
@@ -92,6 +93,6 @@ public interface ${ServiceClassName} {
      * @return 导入结果信息
      * @throws Exception 导入过程中的异常
      */
-    String importExcel(org.springframework.web.multipart.MultipartFile file) throws Exception;
+    String importExcel(MultipartFile file) throws Exception;
 
 }

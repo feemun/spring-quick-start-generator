@@ -3,7 +3,7 @@ package cloud.catfish.mbg.comm;
 public class CommonConstant {
 
     // project absolute path
-    public static String PROJECT_ABSOLUTE_PATH = "/Users/qiupan/Documents/GitHub/spring-quick-start-generator";
+    public static String PROJECT_ABSOLUTE_PATH = "C:\\Users\\feemu\\Documents\\GitHub\\spring-quick-start-generator";
 
     // module absolute path
     public static String MBG_MODULE_ABSOLUTE_PATH = PROJECT_ABSOLUTE_PATH + "/mbg";
