@@ -102,7 +102,7 @@ public class CustomVelocityServiceImplPlugin extends PluginAdapter {
         context.put("VoPackage", CommonConstant.SERVICE_PACKAGE_NAME);
         context.put("ModelPackage", CommonConstant.MODEL_PACKAGE_NAME);
         context.put("RequestParamPackage", CommonConstant.REQUEST_PARAM_PACKAGE_NAME);
-        context.put("MapstructConverterPackage", CommonConstant.SERVICE_PACKAGE_NAME);
+        context.put("MapstructConverterPackage", CommonConstant.CONVERTER_PACKAGE_NAME);
         context.put("MapperPackage", CommonConstant.MAPPER_PACKAGE_NAME);
         context.put("VoPackage", CommonConstant.VO_PACKAGE_NAME);
 

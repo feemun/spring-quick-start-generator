@@ -121,7 +121,6 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
         String controllerContent = generateControllerContent(context);
 
         System.out.println("Generated controller for " + entityName + ":");
-        System.out.println(controllerContent);
         // Write controller file to disk
         writeControllerFile(controllerContent, entityName);
     }

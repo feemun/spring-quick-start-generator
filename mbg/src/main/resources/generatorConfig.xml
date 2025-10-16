@@ -14,10 +14,10 @@
         <property name="javaFileEncoding" value="UTF-8"/>
 
         <!-- Unified Domain Model Plugin (replaces LocalDateTime Serializable, Deserializable, and NoGetterSetter plugins) -->
-<!--        <plugin type="cloud.catfish.mbg.plugin.DomainModelPlugin">-->
-<!--            <property name="generateGetters" value="false"/>-->
-<!--            <property name="generateSetters" value="false"/>-->
-<!--        </plugin>-->
+        <plugin type="cloud.catfish.mbg.plugin.DomainModelPlugin">
+            <property name="generateGetters" value="false"/>
+            <property name="generateSetters" value="false"/>
+        </plugin>
 
         <!-- lombok annotation Plugin -->
         <plugin type="cloud.catfish.mbg.plugin.LombokAnnotationPlugin"/>
@@ -47,7 +47,7 @@
         <plugin type="cloud.catfish.mbg.plugin.BatchInsertPlugin"/>
 
         <!-- batch insert selective Plugin -->
-<!--        <plugin type="cloud.catfish.mbg.plugin.BatchInsertPlugin"/>-->
+        <plugin type="cloud.catfish.mbg.plugin.BatchInsertSelectivePlugin"/>
 
         <!-- 生成mapper.xml时覆盖原文件 -->
         <plugin type="org.mybatis.generator.plugins.UnmergeableXmlMappersPlugin" />
