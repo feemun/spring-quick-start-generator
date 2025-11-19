@@ -1,6 +1,5 @@
 package cloud.catfish.mbg.plugin;
 
-import cloud.catfish.mbg.comm.CommonConstant;
 import cloud.catfish.mbg.util.StringHelper;
 import cloud.catfish.mbg.util.VelocityUtil;
 import org.apache.velocity.Template;
@@ -19,24 +18,24 @@ import java.util.stream.Collectors;
 
 /**
  * Custom Velocity Service Plugin for MyBatis Generator.
- * <p>
+ * 
  * This plugin generates Spring Boot service interface classes using Apache Velocity templates.
  * It automatically creates service interfaces that define the contract for business logic
  * operations and can be implemented by corresponding service implementation classes.
- * <p>
+ * 
  * Features:
  * - Generates service interface classes with proper annotations
  * - Configurable package structure for services and models
  * - Template-based code generation using Velocity
  * - Customizable response models and naming conventions
  * - Automatic API base URL generation for REST endpoints
- * <p>
+ * 
  * Generated service interfaces include:
  * - Standard CRUD operation definitions
  * - Proper method signatures with return types
  * - Generic response model support
  * - Configurable naming patterns
- *
+ * 
  * @author MyBatis Generator Plugin
  * @version 1.0
  */
@@ -47,30 +46,93 @@ public class CustomVelocityServicePlugin extends PluginAdapter {
     private static final String VELOCITY_OUTPUT_ENCODING = "UTF-8";
     private static final String VELOCITY_RESOURCE_LOADER = "class";
     private static final String VELOCITY_CLASS_LOADER = "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader";
-
+    
+    // Template and Package Configuration
+    private static final String SERVICE_TEMPLATE = "templates/service.vm";
+    private static final String DEFAULT_BASE_PACKAGE_PATH = "mbg/src/main/java/cloud/catfish/mbg/service";
+    private static final String MODEL_PACKAGE_SUFFIX = ".model";
+    private static final String SERVICE_PACKAGE_SUFFIX = ".service";
+    
+    // Naming Convention Constants
+    private static final String SERVICE_CLASS_PREFIX = "I";
+    private static final String SERVICE_CLASS_SUFFIX = "Service";
+    private static final String REQUEST_PARAM_CLASS_SUFFIX = "RequestParam";
+    private static final String VO_CLASS_SUFFIX = "Vo";
+    private static final String VO_PACKAGE_SUFFIX = ".vo";
+    private static final String DEFAULT_RESPONSE_MODEL = "CommonResult";
+    private static final String API_BASE_URL_PREFIX = "/";
+    
+    // Configuration Properties
+    private static final String BASE_PACKAGE_PATH_PROPERTY = "basePackagePath";
+    private static final String RESPONSE_MODEL_PROPERTY = "responseModel";
+    private static final String ENABLE_DEBUG_OUTPUT_PROPERTY = "enableDebugOutput";
+    private static final String API_BASE_URL_PROPERTY = "apiBaseUrl";
+    
     // Instance Fields
     private VelocityEngine velocityEngine;
+    private String basePackagePath;
+    private String responseModel;
+    private boolean enableDebugOutput;
+    private String apiBaseUrlPattern;
 
     @Override
     public boolean validate(List<String> warnings) {
-        VelocityEngine testEngine = new VelocityEngine();
-        initializeVelocityEngine(testEngine);
-        testEngine.getTemplate(CommonConstant.SERVICE_TEMPLATE_PATH);
+        // Validate required utility classes
+        try {
+            Class.forName("cloud.catfish.mbg.util.StringHelper");
+            Class.forName("cloud.catfish.mbg.util.VelocityUtil");
+        } catch (ClassNotFoundException e) {
+            warnings.add("Required utility classes not found: " + e.getMessage());
+            return false;
+        }
+        
+        // Validate Velocity template availability
+        try {
+            VelocityEngine testEngine = new VelocityEngine();
+            initializeVelocityEngine(testEngine);
+            testEngine.getTemplate(SERVICE_TEMPLATE);
+        } catch (Exception e) {
+            warnings.add("Velocity template validation failed: " + e.getMessage());
+            return false;
+        }
+        
         return true;
     }
 
     @Override
     public void setProperties(Properties properties) {
         super.setProperties(properties);
-
+        
+        // Parse configuration properties
+        parseConfigurationProperties(properties);
+        
         // Initialize Velocity engine
         velocityEngine = new VelocityEngine();
         initializeVelocityEngine(velocityEngine);
     }
-
+    
+    /**
+     * Parses configuration properties and sets default values.
+     * 
+     * @param properties the configuration properties
+     */
+    private void parseConfigurationProperties(Properties properties) {
+        basePackagePath = properties.getProperty(BASE_PACKAGE_PATH_PROPERTY, DEFAULT_BASE_PACKAGE_PATH);
+        responseModel = properties.getProperty(RESPONSE_MODEL_PROPERTY, DEFAULT_RESPONSE_MODEL);
+        enableDebugOutput = Boolean.parseBoolean(properties.getProperty(ENABLE_DEBUG_OUTPUT_PROPERTY, "false"));
+        apiBaseUrlPattern = properties.getProperty(API_BASE_URL_PROPERTY, API_BASE_URL_PREFIX + "{entityName}");
+        
+        if (enableDebugOutput) {
+            System.out.println("CustomVelocityServicePlugin Configuration:");
+            System.out.println("  Base Package Path: " + basePackagePath);
+            System.out.println("  Response Model: " + responseModel);
+            System.out.println("  API Base URL Pattern: " + apiBaseUrlPattern);
+        }
+    }
+    
     /**
      * Initializes the Velocity engine with standard configuration.
-     *
+     * 
      * @param engine the Velocity engine to initialize
      */
     private void initializeVelocityEngine(VelocityEngine engine) {
@@ -83,165 +145,185 @@ public class CustomVelocityServicePlugin extends PluginAdapter {
 
     @Override
     public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-        generateService(topLevelClass, introspectedTable);
-        return true;
+        try {
+            generateService(topLevelClass, introspectedTable);
+            return true;
+        } catch (Exception e) {
+            if (enableDebugOutput) {
+                System.err.println("Error generating service interface: " + e.getMessage());
+                e.printStackTrace();
+            }
+            return false;
+        }
     }
 
     /**
+     * Generates the service interface class for the given model.
+     * 
+     * @param topLevelClass the model class
+     * @param introspectedTable the table information
+     */
+    private void generateService(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+        String entityName = topLevelClass.getType().getShortName();
+        String packageName = topLevelClass.getType().getPackageName();
+        
+        // Create Velocity context with all necessary variables
+        VelocityContext context = createVelocityContext(entityName, packageName, introspectedTable);
+        
+        // Generate service interface content
+        String serviceContent = generateServiceContent(context);
+        
+        // Write service interface file
+        String serviceClassName = SERVICE_CLASS_PREFIX + entityName + SERVICE_CLASS_SUFFIX;
+        writeServiceFile(serviceContent, serviceClassName);
+    }
+    
+    /**
      * Creates and populates the Velocity context with all necessary variables.
-     *
-     * @param entityName        the entity name
-     * @param packageName       the base package name
+     * 
+     * @param entityName the entity name
+     * @param packageName the base package name
      * @param introspectedTable the table information
      * @return populated Velocity context
      */
     private VelocityContext createVelocityContext(String entityName, String packageName, IntrospectedTable introspectedTable) {
         VelocityContext context = new VelocityContext();
-
-        // Package information
-        context.put("ControllerPackage", CommonConstant.CONTROLLER_PACKAGE_NAME);
-        context.put("ServicePackage", CommonConstant.SERVICE_PACKAGE_NAME);
-        context.put("ServiceImplPackage", CommonConstant.SERVICE_PACKAGE_NAME);
-        context.put("VoPackage", CommonConstant.SERVICE_PACKAGE_NAME);
-        context.put("ModelPackage", CommonConstant.MODEL_PACKAGE_NAME);
-        context.put("RequestParamPackage", CommonConstant.REQUEST_PARAM_PACKAGE_NAME);
-        context.put("MapstructConverterPackage", CommonConstant.SERVICE_PACKAGE_NAME);
-        context.put("MapperPackage", CommonConstant.SERVICE_PACKAGE_NAME);
-        context.put("VoPackage", CommonConstant.VO_PACKAGE_NAME);
-
+        
+        // Package imports
+        context.put("ServicePackage", packageName.replace(MODEL_PACKAGE_SUFFIX, SERVICE_PACKAGE_SUFFIX));
+        context.put("modelPackage", packageName);
+        
         // Class names
-        context.put("ControllerClassName", entityName + CommonConstant.CONTROLLER_SUFFIX_FILE_NAME);
-        context.put("ServiceClassName", entityName + CommonConstant.SERVICE_SUFFIX_FILE_NAME);
-        context.put("ServiceImplClassName", entityName + CommonConstant.SERVICE_IMPL_SUFFIX_FILE_NAME);
-        context.put("ModelClassName", entityName);
-        context.put("RequestParamClassName", entityName + CommonConstant.REQUEST_SUFFIX_PARAM_FILE_NAME);
-        context.put("VoClassName", entityName + CommonConstant.VO_SUFFIX_FILE_NAME);
-        context.put("MapstructConverterClassName", entityName + CommonConstant.REQUEST_SUFFIX_PARAM_FILE_NAME);
-        context.put("MapperClassName", entityName + CommonConstant.MAPPER_SUFFIX_FILE_NAME);
-
+        String serviceClassName = SERVICE_CLASS_PREFIX + entityName + SERVICE_CLASS_SUFFIX;
+        context.put("ServiceClassName", serviceClassName);
+        
         // Variable names
-        context.put("ServiceVariableName", StringHelper.firstCharToLower(entityName) + CommonConstant.SERVICE_SUFFIX_FILE_NAME);
-        context.put("ServiceImplVariableName", StringHelper.firstCharToLower(entityName) + CommonConstant.SERVICE_SUFFIX_FILE_NAME);
-        context.put("VoVariableName", StringHelper.firstCharToLower(entityName) + CommonConstant.VO_SUFFIX_FILE_NAME);
-        context.put("RequestParamVariableName", StringHelper.firstCharToLower(entityName) + CommonConstant.REQUEST_SUFFIX_PARAM_FILE_NAME);
-        context.put("MapstructConverterVariableName", StringHelper.firstCharToLower(entityName) + CommonConstant.CONVERTER_SUFFIX_FILE_NAME);
-        context.put("MapperVariableName", StringHelper.firstCharToLower(entityName) + CommonConstant.MAPPER_SUFFIX_FILE_NAME);
-
+        context.put("ServiceVariableName", StringHelper.firstCharToLower(entityName));
+        
+        // Model and API configuration
+        context.put("ModelSimpleName", entityName);
+        context.put("RequestParamClassName", entityName + REQUEST_PARAM_CLASS_SUFFIX);
+        context.put("VoClassName", entityName + VO_CLASS_SUFFIX);
+        context.put("voPackage", packageName.replace(MODEL_PACKAGE_SUFFIX, VO_PACKAGE_SUFFIX));
+        context.put("apiBaseUrl", generateApiBaseUrl(entityName));
+        context.put("SimplResponseModel", responseModel);
+        
         // Primary key information
         addPrimaryKeyInformation(context, introspectedTable);
-
+        
+        if (enableDebugOutput) {
+            System.out.println("Generated Velocity context for entity: " + entityName);
+        }
+        
         return context;
     }
-
+    
+    /**
+     * Generates the API base URL for the given entity.
+     * 
+     * @param entityName the entity name
+     * @return the API base URL
+     */
+    private String generateApiBaseUrl(String entityName) {
+        return apiBaseUrlPattern.replace("{entityName}", entityName);
+    }
+    
     /**
      * Generates the service interface content using Velocity template.
-     *
+     * 
      * @param context the Velocity context
      * @return generated service interface content
      */
     private String generateServiceContent(VelocityContext context) {
-        StringWriter writer = new StringWriter();
-        Template serviceTemplate = velocityEngine.getTemplate(CommonConstant.SERVICE_TEMPLATE_PATH);
-        serviceTemplate.merge(context, writer);
-
-        String content = writer.toString();
-        System.out.println("Generated service content:");
-        System.out.println(content);
-
-        return content;
+        try {
+            StringWriter writer = new StringWriter();
+            Template serviceTemplate = velocityEngine.getTemplate(SERVICE_TEMPLATE);
+            serviceTemplate.merge(context, writer);
+            
+            String content = writer.toString();
+            if (enableDebugOutput) {
+                System.out.println("Generated service content:");
+                System.out.println(content);
+            }
+            
+            return content;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate service interface content", e);
+        }
     }
-
+    
     /**
      * Writes the service interface file to the specified location.
-     *
-     * @param content   the service interface content
+     * 
+     * @param content the service interface content
      * @param className the service interface class name
      */
     private void writeServiceFile(String content, String className) {
-        StringWriter writer = new StringWriter();
-        writer.write(content);
-        VelocityUtil.processTemplate(writer,
-                CommonConstant.MBG_MODULE_ABSOLUTE_PATH + CommonConstant.RESOURCES_RELATIVE_PATH + CommonConstant.SERVICE_PACKAGE_RELATIVE_NAME,
-                className + ".java"
-        );
-
-        System.out.println("Generated service interface: " + className + ".java");
+        try {
+            StringWriter writer = new StringWriter();
+            writer.write(content);
+            VelocityUtil.processTemplate(writer, basePackagePath, className + ".java");
+            
+            if (enableDebugOutput) {
+                System.out.println("Generated service interface: " + className + ".java");
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to write service interface file: " + className, e);
+        }
     }
-
+    
     /**
      * Adds primary key information to the Velocity context.
-     *
-     * @param context           the Velocity context
+     * 
+     * @param context the Velocity context
      * @param introspectedTable the table information
      */
     private void addPrimaryKeyInformation(VelocityContext context, IntrospectedTable introspectedTable) {
         List<IntrospectedColumn> primaryKeyColumns = introspectedTable.getPrimaryKeyColumns();
-
+        
         if (!primaryKeyColumns.isEmpty()) {
             IntrospectedColumn primaryKeyColumn = primaryKeyColumns.get(0);
-
+            
             // Primary key field information
             context.put("primaryKeyType", primaryKeyColumn.getFullyQualifiedJavaType().getShortName());
             context.put("primaryKeyProperty", primaryKeyColumn.getJavaProperty());
             context.put("primaryKeyColumn", primaryKeyColumn.getActualColumnName());
-
+            
             // Unified primary key support - treat single key as special case of multiple keys
             context.put("hasPrimaryKey", true);
-
+            
             List<String> pkTypes = primaryKeyColumns.stream()
-                    .map(col -> col.getFullyQualifiedJavaType().getShortName())
-                    .collect(Collectors.toList());
+                .map(col -> col.getFullyQualifiedJavaType().getShortName())
+                .collect(Collectors.toList());
             List<String> pkProperties = primaryKeyColumns.stream()
-                    .map(IntrospectedColumn::getJavaProperty)
-                    .collect(Collectors.toList());
-
+                .map(IntrospectedColumn::getJavaProperty)
+                .collect(Collectors.toList());
+                
             context.put("primaryKeyTypes", pkTypes);
             context.put("primaryKeyProperties", pkProperties);
-
+            
             // Generate unified method parameters for all primary key scenarios
             StringBuilder methodParams = new StringBuilder();
             StringBuilder serviceCallParams = new StringBuilder();
-
+            
             for (int i = 0; i < primaryKeyColumns.size(); i++) {
                 IntrospectedColumn col = primaryKeyColumns.get(i);
                 String paramType = col.getFullyQualifiedJavaType().getShortName();
                 String paramName = col.getJavaProperty();
-
+                
                 if (i > 0) {
                     methodParams.append(", ");
                     serviceCallParams.append(", ");
                 }
-
+                
                 methodParams.append(paramType).append(" ").append(paramName);
                 serviceCallParams.append(paramName);
             }
-
+            
             context.put("primaryKeyMethodParams", methodParams.toString());
             context.put("primaryKeyServiceCallParams", serviceCallParams.toString());
         } else {
             context.put("hasPrimaryKey", false);
         }
     }
-
-    /**
-     * Generates the service interface class for the given model.
-     *
-     * @param topLevelClass     the model class
-     * @param introspectedTable the table information
-     */
-    private void generateService(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
-        String entityName = topLevelClass.getType().getShortName();
-        String packageName = topLevelClass.getType().getPackageName();
-
-        // Create Velocity context with all necessary variables
-        VelocityContext context = createVelocityContext(entityName, packageName, introspectedTable);
-
-        // Generate service interface content
-        String serviceContent = generateServiceContent(context);
-
-        // Write service interface file
-        String serviceClassName = entityName + CommonConstant.SERVICE_SUFFIX_FILE_NAME;
-        writeServiceFile(serviceContent, serviceClassName);
-    }
-
 }
