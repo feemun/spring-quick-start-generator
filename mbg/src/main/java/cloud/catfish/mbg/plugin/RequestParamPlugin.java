@@ -17,9 +17,6 @@ public class RequestParamPlugin extends PluginAdapter {
     private static final String SWAGGER_SCHEMA_CLASS = "io.swagger.v3.oas.annotations.media.Schema";
     private static final String DEFAULT_SWAGGER_DESCRIPTION_SUFFIX = " Request Parameters";
 
-    // Validation annotation constants
-    private static final String SIZE_CLASS = "jakarta.validation.constraints.Size";
-    private static final String EMAIL_CLASS = "jakarta.validation.constraints.Email";
 
     // Date/Time format constants
     private static final String LOCALDATETIME_TYPE = "LocalDateTime";
@@ -93,9 +90,6 @@ public class RequestParamPlugin extends PluginAdapter {
         String description = getFieldDescription(field, introspectedTable);
         content.append("    @Schema(description = \"").append(description).append("\")\n");
 
-        // Add validation annotations
-        addValidationAnnotations(content, field, fieldType);
-
         // Regular field declaration
         content.append("    private ").append(fieldType).append(" ").append(fieldName).append(";\n\n");
     }
@@ -117,21 +111,7 @@ public class RequestParamPlugin extends PluginAdapter {
         content.append("    private ").append(fieldType).append(" ").append(fieldName).append("End;\n\n");
     }
 
-    /**
-     * Adds validation annotations based on field type and database constraints.
-     */
-    private void addValidationAnnotations(StringBuilder content, Field field, String fieldType) {
-        // Add @Size for String fields
-        if ("String".equals(fieldType)) {
-            content.append("    @Size(max = 255, message = \"").append(field.getName())
-                    .append(" cannot exceed 255 characters\")\n");
-        }
-
-        // Add @Email for email-like fields
-        if (field.getName().toLowerCase().contains("email")) {
-            content.append("    @Email(message = \"Invalid email format\")\n");
-        }
-    }
+    
 
 
     /**
@@ -143,9 +123,7 @@ public class RequestParamPlugin extends PluginAdapter {
         content.append("import cloud.catfish.common.param.BaseRequestParam;\n");
         content.append("import ").append(SWAGGER_SCHEMA_CLASS).append(";\n");
 
-        // Add validation imports
-        content.append("import ").append(SIZE_CLASS).append(";\n");
-        content.append("import ").append(EMAIL_CLASS).append(";\n");
+        
 
         // Check if we need LocalDateTime imports
         boolean hasLocalDateTime = domainClass.getFields().stream()
