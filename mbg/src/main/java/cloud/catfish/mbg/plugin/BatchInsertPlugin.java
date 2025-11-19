@@ -87,13 +87,14 @@ public class BatchInsertPlugin extends PluginAdapter {
         insertElement.addAttribute(new Attribute("id", "batchInsert"));
         insertElement.addAttribute(new Attribute("parameterType", "java.util.List"));
         
-        // 构建SQL语句
+        XmlElement ifElement = new XmlElement("if");
+        ifElement.addAttribute(new Attribute("test", "list != null and list.size() > 0"));
+
         StringBuilder sb = new StringBuilder();
         sb.append("INSERT INTO ");
         sb.append(introspectedTable.getFullyQualifiedTableNameAtRuntime());
         sb.append(" (");
-        
-        // 添加列名
+
         List<IntrospectedColumn> columns = introspectedTable.getAllColumns();
         boolean first = true;
         for (IntrospectedColumn column : columns) {
@@ -104,16 +105,14 @@ public class BatchInsertPlugin extends PluginAdapter {
             first = false;
         }
         sb.append(") VALUES");
-        
-        insertElement.addElement(new TextElement(sb.toString()));
-        
-        // 添加foreach元素
+
+        ifElement.addElement(new TextElement(sb.toString()));
+
         XmlElement foreachElement = new XmlElement("foreach");
         foreachElement.addAttribute(new Attribute("collection", "list"));
         foreachElement.addAttribute(new Attribute("item", "item"));
         foreachElement.addAttribute(new Attribute("separator", ","));
-        
-        // 构建VALUES部分
+
         StringBuilder valuesSb = new StringBuilder();
         valuesSb.append("(");
         first = true;
@@ -131,11 +130,12 @@ public class BatchInsertPlugin extends PluginAdapter {
             first = false;
         }
         valuesSb.append(")");
-        
+
         foreachElement.addElement(new TextElement(valuesSb.toString()));
-        insertElement.addElement(foreachElement);
-        
-        // 添加到根元素
+        ifElement.addElement(foreachElement);
+
+        insertElement.addElement(ifElement);
+
         rootElement.addElement(insertElement);
     }
 }
