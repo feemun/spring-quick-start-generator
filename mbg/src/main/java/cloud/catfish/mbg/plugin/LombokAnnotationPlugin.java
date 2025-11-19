@@ -36,58 +36,11 @@ import java.util.List;
  */
 public class LombokAnnotationPlugin extends PluginAdapter {
 
-    // Lombok annotation class names
     private static final String LOMBOK_DATA = "lombok.Data";
-    private static final String LOMBOK_GETTER = "lombok.Getter";
-    private static final String LOMBOK_SETTER = "lombok.Setter";
-    private static final String LOMBOK_TO_STRING = "lombok.ToString";
-    private static final String LOMBOK_EQUALS_AND_HASH_CODE = "lombok.EqualsAndHashCode";
-    private static final String LOMBOK_ALL_ARGS_CONSTRUCTOR = "lombok.AllArgsConstructor";
-    private static final String LOMBOK_NO_ARGS_CONSTRUCTOR = "lombok.NoArgsConstructor";
-    private static final String LOMBOK_BUILDER = "lombok.Builder";
-    
-    // Configuration property keys
-    private static final String ENABLE_GETTER = "enableGetter";
-    private static final String ENABLE_SETTER = "enableSetter";
-    private static final String ENABLE_TO_STRING = "enableToString";
-    private static final String ENABLE_EQUALS_AND_HASH_CODE = "enableEqualsAndHashCode";
-    private static final String ENABLE_ALL_ARGS_CONSTRUCTOR = "enableAllArgsConstructor";
-    private static final String ENABLE_NO_ARGS_CONSTRUCTOR = "enableNoArgsConstructor";
-    private static final String ENABLE_BUILDER = "enableBuilder";
-    
-    // Instance fields for configuration
-    private boolean enableGetter = true;
-    private boolean enableSetter = true;
-    private boolean enableToString = true;
-    private boolean enableEqualsAndHashCode = true;
-    private boolean enableAllArgsConstructor = true;
-    private boolean enableNoArgsConstructor = true;
-    private boolean enableBuilder = true;
 
     @Override
     public boolean validate(List<String> warnings) {
-        // Parse configuration properties
-        parseConfigurationProperties();
-        
-        // Validate Lombok availability (optional - could check if Lombok is in classpath)
-        // For now, we assume Lombok is available since it's a compile-time dependency
-        
         return true;
-    }
-    
-    /**
-     * Parses configuration properties to determine which Lombok annotations to enable.
-     */
-    private void parseConfigurationProperties() {
-        if (properties != null) {
-            enableGetter = Boolean.parseBoolean(properties.getProperty(ENABLE_GETTER, "true"));
-            enableSetter = Boolean.parseBoolean(properties.getProperty(ENABLE_SETTER, "true"));
-            enableToString = Boolean.parseBoolean(properties.getProperty(ENABLE_TO_STRING, "true"));
-            enableEqualsAndHashCode = Boolean.parseBoolean(properties.getProperty(ENABLE_EQUALS_AND_HASH_CODE, "true"));
-            enableAllArgsConstructor = Boolean.parseBoolean(properties.getProperty(ENABLE_ALL_ARGS_CONSTRUCTOR, "true"));
-            enableNoArgsConstructor = Boolean.parseBoolean(properties.getProperty(ENABLE_NO_ARGS_CONSTRUCTOR, "true"));
-            enableBuilder = Boolean.parseBoolean(properties.getProperty(ENABLE_BUILDER, "true"));
-        }
     }
 
     /**
@@ -106,33 +59,7 @@ public class LombokAnnotationPlugin extends PluginAdapter {
      */
     private void addLombokAnnotations(TopLevelClass topLevelClass) {
         try {
-            if (enableToString) {
-                addLombokAnnotation(topLevelClass, LOMBOK_TO_STRING, "@ToString");
-            }
-            
-            if (enableEqualsAndHashCode) {
-                addLombokAnnotation(topLevelClass, LOMBOK_EQUALS_AND_HASH_CODE, "@EqualsAndHashCode");
-            }
-            
-            if (enableGetter) {
-                addLombokAnnotation(topLevelClass, LOMBOK_GETTER, "@Getter");
-            }
-            
-            if (enableSetter) {
-                addLombokAnnotation(topLevelClass, LOMBOK_SETTER, "@Setter");
-            }
-            
-            if (enableAllArgsConstructor) {
-                addLombokAnnotation(topLevelClass, LOMBOK_ALL_ARGS_CONSTRUCTOR, "@AllArgsConstructor");
-            }
-            
-            if (enableNoArgsConstructor) {
-                addLombokAnnotation(topLevelClass, LOMBOK_NO_ARGS_CONSTRUCTOR, "@NoArgsConstructor");
-            }
-            
-            if (enableBuilder) {
-                addLombokAnnotation(topLevelClass, LOMBOK_BUILDER, "@Builder");
-            }
+            addLombokAnnotation(topLevelClass, LOMBOK_DATA, "@Data");
         } catch (Exception e) {
             // Log error but don't fail the generation process
             System.err.println("Warning: Failed to add Lombok annotations to class " 
