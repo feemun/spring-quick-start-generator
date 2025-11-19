@@ -54,19 +54,18 @@ public class VoRecordPlugin extends PluginAdapter {
         // Imports
         addImports(voContent, domainClass);
 
-        // Swagger annotation for class
+        // Class-level annotations
+        voContent.append("@Data\n");
         voContent.append("@Schema(description = \"")
                 .append(entityName)
                 .append("\")\n");
 
-        // Record declaration
-        voContent.append("public record ").append(voClassName).append("(\n");
+        // Class declaration
+        voContent.append("public class ").append(voClassName).append(" {\n\n");
 
-        // Record components (fields)
+        // Fields
         List<Field> fields = domainClass.getFields();
-        for (int i = 0; i < fields.size(); i++) {
-            Field field = fields.get(i);
-
+        for (Field field : fields) {
             // Add JSON format and DateTime format annotations for LocalDateTime fields
             if (LOCALDATETIME_TYPE.equals(field.getType().getShortName())) {
                 voContent.append("    @JsonFormat(pattern = \"yyyy-MM-dd HH:mm:ss\", timezone = \"GMT+8\")\n");
@@ -76,14 +75,15 @@ public class VoRecordPlugin extends PluginAdapter {
             // Add Swagger annotation for field
             voContent.append("    @Schema(description = \"").append(getFieldDescription(field, introspectedTable)).append("\")\n");
 
-            voContent.append("    ").append(field.getType().getShortName()).append(" ").append(field.getName());
-            if (i < fields.size() - 1) {
-                voContent.append(",");
-            }
-            voContent.append("\n");
+            // Field declaration
+            voContent.append("    private ")
+                    .append(field.getType().getShortName())
+                    .append(" ")
+                    .append(field.getName())
+                    .append(";\n\n");
         }
 
-        voContent.append(") {}\n");
+        voContent.append("}\n");
 
         // Write VO file
         writeVoFile(voContent.toString(), voClassName);
@@ -93,18 +93,17 @@ public class VoRecordPlugin extends PluginAdapter {
      * Adds necessary imports to the VO class.
      */
     private void addImports(StringBuilder content, TopLevelClass domainClass) {
-        // Check if LocalDateTime fields exist
+        // Always add Lombok and Swagger import
+        content.append("import lombok.Data;\n");
+        content.append("import ").append(SWAGGER_SCHEMA_CLASS).append(";\n");
+
+        // Add JSON/DateTime imports if LocalDateTime fields exist
         boolean hasLocalDateTime = domainClass.getFields().stream()
                 .anyMatch(field -> LOCALDATETIME_TYPE.equals(field.getType().getShortName()));
-
-        // Add JSON format and DateTime format imports if LocalDateTime fields exist
         if (hasLocalDateTime) {
             content.append("import ").append(JSON_FORMAT_CLASS).append(";\n");
             content.append("import ").append(DATETIME_FORMAT_CLASS).append(";\n");
         }
-
-        // Always add Swagger import
-        content.append("import ").append(SWAGGER_SCHEMA_CLASS).append(";\n");
 
         // Collect unique import types from fields
         domainClass.getFields().stream()
