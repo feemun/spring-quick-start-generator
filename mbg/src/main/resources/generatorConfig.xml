@@ -84,7 +84,7 @@
 <!--            <generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
 <!--        </table>-->
 
-        <table tableName="student">
+        <table tableName="ums_admin">
             <!-- Snowflake IDs are generated programmatically, no database auto-generation needed -->
         </table>
 
