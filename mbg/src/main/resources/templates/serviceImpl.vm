@@ -51,7 +51,7 @@ public class ${ServiceImplClassName} implements ${ServiceClassName} {
         PageInfo<${ModelClassName}> pageInfo = new PageInfo<>(lst);
         
         // Convert to VO list
-        List<${VoClassName}> voList = ${ModelClassName.toLowerCase()}Converter.toVoList(pageInfo.getList());
+        List<${VoClassName}> voList = ${MapstructConverterVariableName}.toVoList(pageInfo.getList());
         
         return new PageImpl<>(
             voList,
@@ -72,7 +72,7 @@ public class ${ServiceImplClassName} implements ${ServiceClassName} {
     @Override
     public ${VoClassName} selectByPrimaryKey(${primaryKeyMethodParams}) {
         ${ModelClassName} model = ${MapperVariableName}.selectByPrimaryKey(${primaryKeyServiceCallParams});
-        return model != null ? ${ModelClassName.toLowerCase()}Converter.toVo(model) : null;
+        return model != null ? ${MapstructConverterVariableName}.toVo(model) : null;
     }
 #end
 
