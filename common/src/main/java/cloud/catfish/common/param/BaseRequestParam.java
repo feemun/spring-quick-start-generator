@@ -3,7 +3,6 @@ package cloud.catfish.common.param;
 import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Max;
 
 /**
  * Base class for all RequestParam classes providing common pagination and sorting functionality.
@@ -35,16 +34,14 @@ public class BaseRequestParam {
     /**
      * Page number for pagination (starting from 1).
      */
-    @Schema(description = "Page number (starting from 1)", example = "1")
-    @Min(value = 1, message = "Page number must be greater than 0")
-    private Integer page = 1;
+    private Integer offset = 1;
     
     /**
      * Number of items per page.
      */
     @Schema(description = "Page size", example = "10")
     @Min(value = 1, message = "Page size must be greater than 0")
-    private Integer size = 10;
+    private Integer limit = 10;
     
     /**
      * Sort field and direction specification.

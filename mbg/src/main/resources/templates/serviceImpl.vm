@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import cloud.catfish.api.PageResult;
 
 import java.util.List;
 
@@ -35,9 +36,10 @@ public class ${ServiceImplClassName} implements ${ServiceClassName} {
      * @param req 查询参数，包含分页信息和查询条件
      * @return 分页查询结果，已转换为VO对象
      */
-    public Page<${VoClassName}> page(${ModelClassName}Req req) {
-        PageHelper.startPage(req.getPage(), req.getSize());
+    public PageResult<${VoClassName}> page(${ModelClassName}Req req) {
         ${ModelClassName}Example example = new ${ModelClassName}Example();
+        example.setLimit(req.getLimit());
+        example.setOffset(req.getOffset());
         example.setOrderByClause(req.getOrderByClause());
         ${ModelClassName}Example.Criteria criteria = example.createCriteria();
         
@@ -48,16 +50,9 @@ public class ${ServiceImplClassName} implements ${ServiceClassName} {
         // }
         
         List<${ModelClassName}> lst = ${MapperVariableName}.selectByExample(example);
-        PageInfo<${ModelClassName}> pageInfo = new PageInfo<>(lst);
-        
-        // Convert to VO list
-        List<${VoClassName}> voList = ${MapstructConverterVariableName}.toVoList(pageInfo.getList());
-        
-        return new PageImpl<>(
-            voList,
-            PageRequest.of(pageInfo.getPageNum() - 1, pageInfo.getPageSize()),
-            pageInfo.getTotal()
-        );
+        long total = ${MapperVariableName}.countByExample(example);
+        List<${VoClassName}> voList = ${MapstructConverterVariableName}.toVoList(lst);
+        return PageResult.of(voList, total, req.getLimit(), req.getOffset());
     }
 
 #if($hasPrimaryKey)
