@@ -61,6 +61,8 @@ import java.util.List;
 public class DomainModelPlugin extends PluginAdapter {
 
     // Configuration property keys
+    private static final String ENABLE_JSON_FORMAT = "enableJsonFormat";
+    private static final String ENABLE_DATE_TIME_FORMAT = "enableDateTimeFormat";
     private static final String GENERATE_GETTERS = "generateGetters";
     private static final String GENERATE_SETTERS = "generateSetters";
     private static final String DATE_TIME_PATTERN = "dateTimePattern";
@@ -71,6 +73,8 @@ public class DomainModelPlugin extends PluginAdapter {
     private static final String DEFAULT_TIMEZONE = "GMT+8";
     
     // Configuration fields
+    private boolean enableJsonFormat = true;
+    private boolean enableDateTimeFormat = true;
     private boolean generateGetters = true;
     private boolean generateSetters = true;
     private String dateTimePattern = DEFAULT_DATE_TIME_PATTERN;
@@ -100,6 +104,8 @@ public class DomainModelPlugin extends PluginAdapter {
      */
     private void parseConfigurationProperties() {
         if (properties != null) {
+            enableJsonFormat = Boolean.parseBoolean(properties.getProperty(ENABLE_JSON_FORMAT, "true"));
+            enableDateTimeFormat = Boolean.parseBoolean(properties.getProperty(ENABLE_DATE_TIME_FORMAT, "true"));
             generateGetters = Boolean.parseBoolean(properties.getProperty(GENERATE_GETTERS, "true"));
             generateSetters = Boolean.parseBoolean(properties.getProperty(GENERATE_SETTERS, "true"));
             dateTimePattern = properties.getProperty(DATE_TIME_PATTERN, DEFAULT_DATE_TIME_PATTERN);
@@ -112,7 +118,17 @@ public class DomainModelPlugin extends PluginAdapter {
                                      IntrospectedColumn introspectedColumn, 
                                      IntrospectedTable introspectedTable, 
                                      ModelClassType modelClassType) {
-        return super.modelFieldGenerated(field, topLevelClass, introspectedColumn, introspectedTable, modelClassType);
+        if (isDateTimeType(field.getType())) {
+            if (enableJsonFormat) {
+                topLevelClass.addImportedType(new FullyQualifiedJavaType("com.fasterxml.jackson.annotation.JsonFormat"));
+                field.addAnnotation("@JsonFormat(pattern = \"" + dateTimePattern + "\", timezone = \"" + timezone + "\")");
+            }
+            if (enableDateTimeFormat) {
+                topLevelClass.addImportedType(new FullyQualifiedJavaType("org.springframework.format.annotation.DateTimeFormat"));
+                field.addAnnotation("@DateTimeFormat(pattern = \"" + dateTimePattern + "\")");
+            }
+        }
+        return true;
     }
 
     @Override
@@ -131,6 +147,26 @@ public class DomainModelPlugin extends PluginAdapter {
                                             ModelClassType modelClassType) {
         // Return false to disable setter generation if configured
         return generateSetters;
+    }
+
+    @Override
+    public boolean modelBaseRecordClassGenerated(TopLevelClass topLevelClass, IntrospectedTable introspectedTable) {
+        FullyQualifiedJavaType lombokData = new FullyQualifiedJavaType("lombok.Data");
+        if (!topLevelClass.getImportedTypes().contains(lombokData)) {
+            topLevelClass.addImportedType(lombokData);
+            topLevelClass.addAnnotation("@Data");
+        }
+        return true;
+    }
+
+    private boolean isDateTimeType(FullyQualifiedJavaType type) {
+        String name = type.getFullyQualifiedName();
+        return name.equals("java.time.LocalDateTime")
+                || name.equals("java.time.LocalDate")
+                || name.equals("java.time.LocalTime")
+                || name.equals("java.util.Date")
+                || name.equals("java.sql.Date")
+                || name.equals("java.sql.Timestamp");
     }
 
 }

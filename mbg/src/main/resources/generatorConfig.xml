@@ -19,9 +19,6 @@
             <property name="generateSetters" value="false"/>
         </plugin>
 
-        <!-- lombok annotation Plugin -->
-        <plugin type="cloud.catfish.mbg.plugin.LombokAnnotationPlugin"/>
-
         <!-- 生成 VO 记录类 -->
         <plugin type="cloud.catfish.mbg.plugin.VoRecordPlugin"/>
 
