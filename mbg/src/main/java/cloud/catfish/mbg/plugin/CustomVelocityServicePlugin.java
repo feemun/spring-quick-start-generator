@@ -143,10 +143,7 @@ public class CustomVelocityServicePlugin extends PluginAdapter {
         StringWriter writer = new StringWriter();
         Template serviceTemplate = velocityEngine.getTemplate(CommonConstant.SERVICE_TEMPLATE_PATH);
         serviceTemplate.merge(context, writer);
-
         String content = writer.toString();
-        System.out.println("Generated service content:");
-        System.out.println(content);
 
         return content;
     }
