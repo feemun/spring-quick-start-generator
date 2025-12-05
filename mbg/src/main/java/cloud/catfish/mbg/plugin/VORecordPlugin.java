@@ -156,7 +156,7 @@ public class VORecordPlugin extends PluginAdapter {
         StringWriter writer = new StringWriter();
         writer.write(content);
         VelocityUtil.processTemplate(writer,
-                CommonConstant.MBG_MODULE_ABSOLUTE_PATH + CommonConstant.RESOURCES_RELATIVE_PATH + CommonConstant.VO_PACKAGE_RELATIVE_NAME,
+                CommonConstant.OUTPUT_ABSOLUTE_PATH,
                 className + ".java"
         );
         log.info("Generated VO: {}.java", className);

@@ -3,7 +3,7 @@ package cloud.catfish.mbg;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.xml.ConfigurationParser;
-import org.mybatis.generator.internal.DefaultShellCallback;
+import cloud.catfish.mbg.FlatDirectoryShellCallback;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class Generator {
         Configuration config = cp.parseConfiguration(is);
         is.close();
 
-        DefaultShellCallback callback = new DefaultShellCallback(overwrite);
+        FlatDirectoryShellCallback callback = new FlatDirectoryShellCallback(overwrite);
         //创建 MBG
         MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config, callback, warnings);
         //执行生成代码

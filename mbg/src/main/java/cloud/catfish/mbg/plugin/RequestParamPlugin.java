@@ -215,7 +215,7 @@ public class RequestParamPlugin extends PluginAdapter {
 
         String fileName = className + ".java";
         VelocityUtil.processTemplate(writer,
-                CommonConstant.MBG_MODULE_ABSOLUTE_PATH + CommonConstant.RESOURCES_RELATIVE_PATH + CommonConstant.REQUEST_PARAM_PACKAGE_RELATIVE_NAME,
+                CommonConstant.OUTPUT_ABSOLUTE_PATH,
                 fileName);
     }
 

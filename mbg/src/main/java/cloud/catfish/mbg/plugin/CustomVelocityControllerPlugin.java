@@ -283,7 +283,7 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
 
         String fileName = entityName + CommonConstant.CONTROLLER_SUFFIX_FILE_NAME + ".java";
         VelocityUtil.processTemplate(writer,
-                CommonConstant.MBG_MODULE_ABSOLUTE_PATH + CommonConstant.RESOURCES_RELATIVE_PATH + CommonConstant.CONTROLLER_PACKAGE_RELATIVE_NAME,
+                CommonConstant.OUTPUT_ABSOLUTE_PATH,
                 fileName);
     }
 }

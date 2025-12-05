@@ -5,15 +5,18 @@ public class CommonConstant {
     // project absolute path
     public static String PROJECT_ABSOLUTE_PATH = "C:\\Users\\feemu\\Documents\\GitHub\\spring-quick-start-generator";
 
+    // unified output absolute path for all generated files
+    public static String OUTPUT_ABSOLUTE_PATH = PROJECT_ABSOLUTE_PATH + "/generated";
+
     // module absolute path
     public static String MBG_MODULE_ABSOLUTE_PATH = PROJECT_ABSOLUTE_PATH + "/mbg";
     public static String COMMON_MODULE_ABSOLUTE_PATH = PROJECT_ABSOLUTE_PATH + "/common";
     public static String ADMIN_MODULE_ABSOLUTE_PATH = PROJECT_ABSOLUTE_PATH + "/admin";
 
-    // resources relative path
-    public static String RESOURCES_RELATIVE_PATH = "/src/main/java";
-    // source code relative path
-    public static String SOURCE_CODE_RELATIVE_PATH = "/src/main/resources";
+    // resources relative path (unused in unified output mode)
+    public static String RESOURCES_RELATIVE_PATH = "";
+    // source code relative path (unused in unified output mode)
+    public static String SOURCE_CODE_RELATIVE_PATH = "";
 
     // package name
     public static String ROOT_PACKAGE = "cloud.catfish.mbg";
@@ -29,14 +32,14 @@ public class CommonConstant {
 
     // package relative path                              RELATIVE
     public static String ROOT_RELATIVE_PATH = "/cloud/catfish/mbg";
-    public static String MAPPER_PACKAGE_RELATIVE_NAME = ROOT_RELATIVE_PATH + "/mapper";
-    public static String SERVICE_PACKAGE_RELATIVE_NAME = ROOT_RELATIVE_PATH + "/service";
-    public static String SERVICE_IMPL_PACKAGE_RELATIVE_NAME = ROOT_RELATIVE_PATH + "/service.impl";
-    public static String CONTROLLER_PACKAGE_RELATIVE_NAME = ROOT_RELATIVE_PATH + "/controller";
-    public static String CONVERTER_PACKAGE_RELATIVE_NAME = ROOT_RELATIVE_PATH + "/converter";
-    public static String REQUEST_PARAM_PACKAGE_RELATIVE_NAME = ROOT_RELATIVE_PATH + "/request";
-    public static String DOMAIN_PACKAGE_RELATIVE_NAME = ROOT_RELATIVE_PATH + "/domain";
-    public static String VO_PACKAGE_RELATIVE_NAME = ROOT_RELATIVE_PATH + "/vo";
+    public static String MAPPER_PACKAGE_RELATIVE_NAME = "";
+    public static String SERVICE_PACKAGE_RELATIVE_NAME = "";
+    public static String SERVICE_IMPL_PACKAGE_RELATIVE_NAME = "";
+    public static String CONTROLLER_PACKAGE_RELATIVE_NAME = "";
+    public static String CONVERTER_PACKAGE_RELATIVE_NAME = "";
+    public static String REQUEST_PARAM_PACKAGE_RELATIVE_NAME = "";
+    public static String DOMAIN_PACKAGE_RELATIVE_NAME = "";
+    public static String VO_PACKAGE_RELATIVE_NAME = "";
 
     // file suffix name
     public static String MAPPER_SUFFIX_FILE_NAME = "Mapper";

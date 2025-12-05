@@ -120,7 +120,7 @@ public class MapstructConverterPlugin extends PluginAdapter {
         StringWriter writer = new StringWriter();
         writer.write(content);
         VelocityUtil.processTemplate(writer,
-                CommonConstant.MBG_MODULE_ABSOLUTE_PATH + CommonConstant.RESOURCES_RELATIVE_PATH + CommonConstant.CONVERTER_PACKAGE_RELATIVE_NAME,
+                CommonConstant.OUTPUT_ABSOLUTE_PATH,
                 className + ".java"
         );
         System.out.println("Generated Converter: " + className + ".java");
