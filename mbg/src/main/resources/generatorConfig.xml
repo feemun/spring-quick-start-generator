@@ -20,7 +20,7 @@
         </plugin>
 
         <!-- 生成 VO 记录类 -->
-        <plugin type="cloud.catfish.mbg.plugin.VoRecordPlugin"/>
+        <plugin type="cloud.catfish.mbg.plugin.VORecordPlugin"/>
 
         <!-- 生成 MapStruct 转换器 -->
         <plugin type="cloud.catfish.mbg.plugin.MapstructConverterPlugin"/>

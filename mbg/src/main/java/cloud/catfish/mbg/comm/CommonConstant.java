@@ -55,5 +55,7 @@ public class CommonConstant {
     public static String SERVICE_IMPL_TEMPLATE_PATH = RESOURCES_CLASS_PATH + "/serviceImpl.vm";
     public static String CONTROLLER_TEMPLATE_PATH = RESOURCES_CLASS_PATH + "/controller.vm";
 
-
+    // 时间格式
+    public static String DEFAULT_JSON_FORMAT = "@JsonFormat(pattern = \"yyyy-MM-dd HH:mm:ss\", timezone = \"GMT+8\")";
+    public static String DEFAULT_DATE_TIME_FORMAT = "@DateTimeFormat(pattern = \"yyyy-MM-dd HH:mm:ss\")";
 }

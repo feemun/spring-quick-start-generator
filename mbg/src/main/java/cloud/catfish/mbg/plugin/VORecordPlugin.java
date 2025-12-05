@@ -2,6 +2,7 @@ package cloud.catfish.mbg.plugin;
 
 import cloud.catfish.mbg.comm.CommonConstant;
 import cloud.catfish.mbg.util.VelocityUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
@@ -11,9 +12,9 @@ import org.mybatis.generator.api.dom.java.TopLevelClass;
 
 import java.io.StringWriter;
 import java.util.List;
-import java.util.Properties;
 
-public class VoRecordPlugin extends PluginAdapter {
+@Slf4j
+public class VORecordPlugin extends PluginAdapter {
 
     // Swagger3 annotations
     private static final String SWAGGER_SCHEMA_CLASS = "io.swagger.v3.oas.annotations.media.Schema";
@@ -40,9 +41,7 @@ public class VoRecordPlugin extends PluginAdapter {
     private void generateVoRecord(TopLevelClass domainClass, IntrospectedTable introspectedTable) {
         String entityName = domainClass.getType().getShortName();
 
-        String modelClassName = entityName;
         String voClassName = entityName + CommonConstant.VO_SUFFIX_FILE_NAME;
-        String converterClassName = entityName + CommonConstant.REQUEST_SUFFIX_PARAM_FILE_NAME;
 
         StringBuilder voContent = new StringBuilder();
 
@@ -69,12 +68,14 @@ public class VoRecordPlugin extends PluginAdapter {
 
             // Add JSON format and DateTime format annotations for LocalDateTime fields
             if (LOCALDATETIME_TYPE.equals(field.getType().getShortName())) {
-                voContent.append("    @JsonFormat(pattern = \"yyyy-MM-dd HH:mm:ss\", timezone = \"GMT+8\")\n");
-                voContent.append("    @DateTimeFormat(pattern = \"yyyy-MM-dd HH:mm:ss\")\n");
+                voContent.append("    " + CommonConstant.DEFAULT_JSON_FORMAT + "\n");
+                voContent.append("    " + CommonConstant.DEFAULT_DATE_TIME_FORMAT + "\n");
             }
 
             // Add Swagger annotation for field
-            voContent.append("    @Schema(description = \"").append(getFieldDescription(field, introspectedTable)).append("\")\n");
+            voContent.append("    @Schema(description = \"")
+                    .append(getFieldDescription(field, introspectedTable))
+                    .append("\")\n");
 
             voContent.append("    ").append(field.getType().getShortName()).append(" ").append(field.getName());
             if (i < fields.size() - 1) {
@@ -158,7 +159,7 @@ public class VoRecordPlugin extends PluginAdapter {
                 CommonConstant.MBG_MODULE_ABSOLUTE_PATH + CommonConstant.RESOURCES_RELATIVE_PATH + CommonConstant.VO_PACKAGE_RELATIVE_NAME,
                 className + ".java"
         );
-        System.out.println("Generated Vo: " + className + ".java");
+        log.info("Generated VO: {}.java", className);
     }
 
 }
