@@ -13,12 +13,6 @@
         <!-- 配置生成Java文件的编码 -->
         <property name="javaFileEncoding" value="UTF-8"/>
 
-        <!-- Unified Domain Model Plugin (replaces LocalDateTime Serializable, Deserializable, and NoGetterSetter plugins) -->
-        <plugin type="cloud.catfish.mbg.plugin.DomainModelPlugin">
-            <property name="generateGetters" value="false"/>
-            <property name="generateSetters" value="false"/>
-        </plugin>
-
         <!-- 生成 VO 记录类 -->
         <plugin type="cloud.catfish.mbg.plugin.VORecordPlugin"/>
 
@@ -38,7 +32,7 @@
         <plugin type="cloud.catfish.mbg.plugin.CustomVelocityServiceImplPlugin"/>
 
         <!-- lombok custom serializable Plugin -->
-        <plugin type="cloud.catfish.mbg.plugin.CustomSerializablePlugin"/>
+        <plugin type="cloud.catfish.mbg.plugin.CustomDomainPlugin"/>
 
         <!-- batch insert Plugin -->
         <plugin type="cloud.catfish.mbg.plugin.BatchInsertPlugin"/>
