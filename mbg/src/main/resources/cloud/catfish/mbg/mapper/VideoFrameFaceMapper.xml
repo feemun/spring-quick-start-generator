@@ -79,7 +79,7 @@
   <sql id="Blob_Column_List">
     box_points, features
   </sql>
-  <select id="selectByExampleWithBLOBs" parameterType="cloud.catfish.api.domain.VideoFrameFaceExample" resultMap="ResultMapWithBLOBs">
+  <select id="selectByExampleWithBLOBs" parameterType="cloud.catfish.mbg.example.VideoFrameFaceExample" resultMap="ResultMapWithBLOBs">
     select
     <if test="distinct">
       distinct
@@ -95,7 +95,7 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByExample" parameterType="cloud.catfish.api.domain.VideoFrameFaceExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="cloud.catfish.mbg.example.VideoFrameFaceExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -127,7 +127,7 @@
     delete from video_frame_face
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="cloud.catfish.api.domain.VideoFrameFaceExample">
+  <delete id="deleteByExample" parameterType="cloud.catfish.mbg.example.VideoFrameFaceExample">
     delete from video_frame_face
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -210,7 +210,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="cloud.catfish.api.domain.VideoFrameFaceExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="cloud.catfish.mbg.example.VideoFrameFaceExample" resultType="java.lang.Long">
     select count(*) from video_frame_face
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />

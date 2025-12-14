@@ -9,7 +9,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * 应用启动入口
  * Created by macro on 2018/4/26.
  */
-@SpringBootApplication(scanBasePackages = {"cloud.catfish.admin", "cloud.catfish.common", "cloud.catfish.mbg"})
+@SpringBootApplication(scanBasePackages = {"cloud.catfish.admin",
+        "cloud.catfish.common",
+        "cloud.catfish.mbg",
+        "cloud.catfish.api"
+})
 @MapperScan({"cloud.catfish.mbg.dao", "cloud.catfish.mbg.mapper"})
 @EnableScheduling
 public class AdminApplication {

@@ -80,7 +80,7 @@
   <sql id="Blob_Column_List">
     description
   </sql>
-  <select id="selectByExampleWithBLOBs" parameterType="cloud.catfish.api.domain.VideoFrameAttachmentExample" resultMap="ResultMapWithBLOBs">
+  <select id="selectByExampleWithBLOBs" parameterType="cloud.catfish.mbg.example.VideoFrameAttachmentExample" resultMap="ResultMapWithBLOBs">
     select
     <if test="distinct">
       distinct
@@ -96,7 +96,7 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByExample" parameterType="cloud.catfish.api.domain.VideoFrameAttachmentExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="cloud.catfish.mbg.example.VideoFrameAttachmentExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -128,7 +128,7 @@
     delete from video_frame_attachment
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="cloud.catfish.api.domain.VideoFrameAttachmentExample">
+  <delete id="deleteByExample" parameterType="cloud.catfish.mbg.example.VideoFrameAttachmentExample">
     delete from video_frame_attachment
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -211,7 +211,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="cloud.catfish.api.domain.VideoFrameAttachmentExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="cloud.catfish.mbg.example.VideoFrameAttachmentExample" resultType="java.lang.Long">
     select count(*) from video_frame_attachment
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />

@@ -75,7 +75,7 @@
     id, name, stream_url, type, status, resolution, frame_rate, description, created_at, 
     updated_at
   </sql>
-  <select id="selectByExample" parameterType="cloud.catfish.api.domain.VideoExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="cloud.catfish.mbg.example.VideoExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -105,7 +105,7 @@
     delete from video
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="cloud.catfish.api.domain.VideoExample">
+  <delete id="deleteByExample" parameterType="cloud.catfish.mbg.example.VideoExample">
     delete from video
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -188,7 +188,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="cloud.catfish.api.domain.VideoExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="cloud.catfish.mbg.example.VideoExample" resultType="java.lang.Long">
     select count(*) from video
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />

@@ -75,7 +75,7 @@
   <sql id="Blob_Column_List">
     text_content, box_points
   </sql>
-  <select id="selectByExampleWithBLOBs" parameterType="cloud.catfish.api.domain.VideoFrameOcrExample" resultMap="ResultMapWithBLOBs">
+  <select id="selectByExampleWithBLOBs" parameterType="cloud.catfish.mbg.example.VideoFrameOcrExample" resultMap="ResultMapWithBLOBs">
     select
     <if test="distinct">
       distinct
@@ -91,7 +91,7 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByExample" parameterType="cloud.catfish.api.domain.VideoFrameOcrExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="cloud.catfish.mbg.example.VideoFrameOcrExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -123,7 +123,7 @@
     delete from video_frame_ocr
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="cloud.catfish.api.domain.VideoFrameOcrExample">
+  <delete id="deleteByExample" parameterType="cloud.catfish.mbg.example.VideoFrameOcrExample">
     delete from video_frame_ocr
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -180,7 +180,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="cloud.catfish.api.domain.VideoFrameOcrExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="cloud.catfish.mbg.example.VideoFrameOcrExample" resultType="java.lang.Long">
     select count(*) from video_frame_ocr
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
