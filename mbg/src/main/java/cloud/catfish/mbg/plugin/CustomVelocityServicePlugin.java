@@ -154,11 +154,12 @@ public class CustomVelocityServicePlugin extends PluginAdapter {
      * @param content   the service interface content
      * @param className the service interface class name
      */
-    private void writeServiceFile(String content, String className) {
+    private void writeServiceFile(String content, String className, IntrospectedTable introspectedTable) {
         StringWriter writer = new StringWriter();
         writer.write(content);
+        String tableDir = introspectedTable.getFullyQualifiedTable().getIntrospectedTableName();
         VelocityUtil.processTemplate(writer,
-                CommonConstant.OUTPUT_ABSOLUTE_PATH,
+                CommonConstant.OUTPUT_ABSOLUTE_PATH + "/" + tableDir,
                 className + ".java"
         );
 
@@ -238,7 +239,7 @@ public class CustomVelocityServicePlugin extends PluginAdapter {
 
         // Write service interface file
         String serviceClassName = entityName + CommonConstant.SERVICE_SUFFIX_FILE_NAME;
-        writeServiceFile(serviceContent, serviceClassName);
+        writeServiceFile(serviceContent, serviceClassName, introspectedTable);
     }
 
 }

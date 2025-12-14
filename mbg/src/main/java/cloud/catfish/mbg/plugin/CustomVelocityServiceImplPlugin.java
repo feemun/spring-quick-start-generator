@@ -81,7 +81,7 @@ public class CustomVelocityServiceImplPlugin extends PluginAdapter {
 
         // Write service implementation file
         String serviceImplClassName = entityName + CommonConstant.SERVICE_IMPL_SUFFIX_FILE_NAME;
-        writeServiceImplFile(serviceImplContent, serviceImplClassName);
+        writeServiceImplFile(serviceImplContent, serviceImplClassName, introspectedTable);
     }
 
     /**
@@ -149,11 +149,12 @@ public class CustomVelocityServiceImplPlugin extends PluginAdapter {
      * @param content   the service implementation content
      * @param className the service implementation class name
      */
-    private void writeServiceImplFile(String content, String className) {
+    private void writeServiceImplFile(String content, String className, IntrospectedTable introspectedTable) {
         StringWriter writer = new StringWriter();
         writer.write(content);
+        String tableDir = introspectedTable.getFullyQualifiedTable().getIntrospectedTableName();
         VelocityUtil.processTemplate(writer,
-                CommonConstant.OUTPUT_ABSOLUTE_PATH,
+                CommonConstant.OUTPUT_ABSOLUTE_PATH + "/" + tableDir,
                 className + ".java");
 
         System.out.println("Generated service implementation: " + className + ".java");

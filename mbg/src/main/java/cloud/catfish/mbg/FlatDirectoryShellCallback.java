@@ -12,11 +12,10 @@ public class FlatDirectoryShellCallback extends DefaultShellCallback {
 
     @Override
     public File getDirectory(String targetProject, String targetPackage) {
-        File dir = new File(CommonConstant.OUTPUT_ABSOLUTE_PATH);
+        File dir = new File(targetProject);
         if (!dir.exists()) {
             dir.mkdirs();
         }
         return dir;
     }
 }
-

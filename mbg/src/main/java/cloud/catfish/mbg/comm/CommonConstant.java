@@ -5,7 +5,6 @@ public class CommonConstant {
     // project absolute path
     public static String PROJECT_ABSOLUTE_PATH = "C:\\Users\\feemu\\Documents\\GitHub\\spring-quick-start-generator";
 
-    // unified output absolute path for all generated files
     public static String OUTPUT_ABSOLUTE_PATH = PROJECT_ABSOLUTE_PATH + "/generated";
 
     // module absolute path
@@ -13,9 +12,7 @@ public class CommonConstant {
     public static String COMMON_MODULE_ABSOLUTE_PATH = PROJECT_ABSOLUTE_PATH + "/common";
     public static String ADMIN_MODULE_ABSOLUTE_PATH = PROJECT_ABSOLUTE_PATH + "/admin";
 
-    // resources relative path (unused in unified output mode)
     public static String RESOURCES_RELATIVE_PATH = "";
-    // source code relative path (unused in unified output mode)
     public static String SOURCE_CODE_RELATIVE_PATH = "";
 
     // package name

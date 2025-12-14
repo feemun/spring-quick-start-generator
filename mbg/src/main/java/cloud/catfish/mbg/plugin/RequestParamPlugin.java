@@ -73,7 +73,7 @@ public class RequestParamPlugin extends PluginAdapter {
         content.append("}\n");
 
         // Write to file
-        writeRequestParamFile(content.toString(), requestParamClassName);
+        writeRequestParamFile(content.toString(), requestParamClassName, introspectedTable);
     }
 
     /**
@@ -209,13 +209,14 @@ public class RequestParamPlugin extends PluginAdapter {
     /**
      * Writes the RequestParam class content to a file.
      */
-    private void writeRequestParamFile(String content, String className) {
+    private void writeRequestParamFile(String content, String className, IntrospectedTable introspectedTable) {
         StringWriter writer = new StringWriter();
         writer.write(content);
 
         String fileName = className + ".java";
+        String tableDir = introspectedTable.getFullyQualifiedTable().getIntrospectedTableName();
         VelocityUtil.processTemplate(writer,
-                CommonConstant.OUTPUT_ABSOLUTE_PATH,
+                CommonConstant.OUTPUT_ABSOLUTE_PATH + "/" + tableDir,
                 fileName);
     }
 

@@ -110,17 +110,18 @@ public class MapstructConverterPlugin extends PluginAdapter {
         converterContent.append("}\n");
 
         // Write converter file
-        writeConverterFile(converterContent.toString(), converterClassName);
+        writeConverterFile(converterContent.toString(), converterClassName, introspectedTable);
     }
 
     /**
      * Writes the MapStruct converter interface to a file.
      */
-    private void writeConverterFile(String content, String className) throws IOException {
+    private void writeConverterFile(String content, String className, IntrospectedTable introspectedTable) throws IOException {
         StringWriter writer = new StringWriter();
         writer.write(content);
+        String tableDir = introspectedTable.getFullyQualifiedTable().getIntrospectedTableName();
         VelocityUtil.processTemplate(writer,
-                CommonConstant.OUTPUT_ABSOLUTE_PATH,
+                CommonConstant.OUTPUT_ABSOLUTE_PATH + "/" + tableDir,
                 className + ".java"
         );
         System.out.println("Generated Converter: " + className + ".java");

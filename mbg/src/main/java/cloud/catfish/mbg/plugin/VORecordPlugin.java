@@ -87,7 +87,7 @@ public class VORecordPlugin extends PluginAdapter {
         voContent.append(") {}\n");
 
         // Write VO file
-        writeVoFile(voContent.toString(), voClassName);
+        writeVoFile(voContent.toString(), voClassName, introspectedTable);
     }
 
     /**
@@ -152,11 +152,12 @@ public class VORecordPlugin extends PluginAdapter {
     /**
      * Writes the VO record class to a file.
      */
-    private void writeVoFile(String content, String className) {
+    private void writeVoFile(String content, String className, IntrospectedTable introspectedTable) {
         StringWriter writer = new StringWriter();
         writer.write(content);
+        String tableDir = introspectedTable.getFullyQualifiedTable().getIntrospectedTableName();
         VelocityUtil.processTemplate(writer,
-                CommonConstant.OUTPUT_ABSOLUTE_PATH,
+                CommonConstant.OUTPUT_ABSOLUTE_PATH + "/" + tableDir,
                 className + ".java"
         );
         log.info("Generated VO: {}.java", className);

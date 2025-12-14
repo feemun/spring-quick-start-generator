@@ -121,7 +121,7 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
         String controllerContent = generateControllerContent(context);
 
         // Write controller file to disk
-        writeControllerFile(controllerContent, entityName);
+        writeControllerFile(controllerContent, entityName, introspectedTable);
     }
 
     /**
@@ -277,13 +277,14 @@ public class CustomVelocityControllerPlugin extends PluginAdapter {
      * @param controllerContent the generated controller content
      * @param entityName        the entity name for file naming
      */
-    private void writeControllerFile(String controllerContent, String entityName) {
+    private void writeControllerFile(String controllerContent, String entityName, IntrospectedTable introspectedTable) {
         StringWriter writer = new StringWriter();
         writer.write(controllerContent);
 
         String fileName = entityName + CommonConstant.CONTROLLER_SUFFIX_FILE_NAME + ".java";
+        String tableDir = introspectedTable.getFullyQualifiedTable().getIntrospectedTableName();
         VelocityUtil.processTemplate(writer,
-                CommonConstant.OUTPUT_ABSOLUTE_PATH,
+                CommonConstant.OUTPUT_ABSOLUTE_PATH + "/" + tableDir,
                 fileName);
     }
 }
