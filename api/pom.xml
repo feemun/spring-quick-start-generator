@@ -6,19 +6,13 @@
         <artifactId>spring-quick-start-generator</artifactId>
         <version>1.0.0</version>
     </parent>
-    <artifactId>mbg</artifactId>
-    <name>mbg</name>
-    <version>1.0.0</version>
-
+    <artifactId>api</artifactId>
+    <name>Archetype - api</name>
+    <url>http://maven.apache.org</url>
     <dependencies>
         <dependency>
             <groupId>cloud.catfish.generator</groupId>
             <artifactId>common</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>cloud.catfish.generator</groupId>
-            <artifactId>api</artifactId>
             <version>1.0.0</version>
             <scope>compile</scope>
         </dependency>

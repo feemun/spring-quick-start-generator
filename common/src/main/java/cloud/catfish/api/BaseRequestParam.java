@@ -1,8 +1,8 @@
-package cloud.catfish.common.param;
+package cloud.catfish.api;
 
-import lombok.Data;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
+import lombok.Data;
 
 /**
  * Base class for all RequestParam classes providing common pagination and sorting functionality.

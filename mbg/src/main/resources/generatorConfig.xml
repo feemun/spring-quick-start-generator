@@ -74,7 +74,7 @@
 <!--            <generatedKey column="id" sqlStatement="MySql" identity="true"/>-->
 <!--        </table>-->
 
-        <table tableName="ip_tag_rule">
+        <table tableName="video_frame_ocr">
             <!-- Snowflake IDs are generated programmatically, no database auto-generation needed -->
         </table>
 
