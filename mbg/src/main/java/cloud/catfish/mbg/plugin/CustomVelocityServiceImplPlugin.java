@@ -1,8 +1,8 @@
 package cloud.catfish.mbg.plugin;
 
-import cloud.catfish.mbg.comm.CommonConstant;
-import cloud.catfish.mbg.util.StringHelper;
-import cloud.catfish.mbg.util.VelocityUtil;
+import cloud.catfish.comm.CommonConstant;
+import cloud.catfish.util.StringHelper;
+import cloud.catfish.util.VelocityUtil;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;

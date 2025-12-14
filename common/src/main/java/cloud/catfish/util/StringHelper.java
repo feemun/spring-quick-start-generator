@@ -1,4 +1,4 @@
-package cloud.catfish.mbg.util;
+package cloud.catfish.util;
 
 public class StringHelper {
 

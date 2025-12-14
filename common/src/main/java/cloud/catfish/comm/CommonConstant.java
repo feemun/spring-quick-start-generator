@@ -1,4 +1,4 @@
-package cloud.catfish.mbg.comm;
+package cloud.catfish.comm;
 
 public class CommonConstant {
 

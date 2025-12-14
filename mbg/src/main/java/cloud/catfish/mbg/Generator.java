@@ -2,11 +2,8 @@ package cloud.catfish.mbg;
 
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.Configuration;
-import org.mybatis.generator.config.Context;
-import org.mybatis.generator.config.TableConfiguration;
 import org.mybatis.generator.config.xml.ConfigurationParser;
-import cloud.catfish.mbg.FlatDirectoryShellCallback;
-import cloud.catfish.mbg.comm.CommonConstant;
+import cloud.catfish.comm.CommonConstant;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;

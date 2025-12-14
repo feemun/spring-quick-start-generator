@@ -1,6 +1,5 @@
 package cloud.catfish.mbg;
 
-import cloud.catfish.mbg.comm.CommonConstant;
 import org.mybatis.generator.internal.DefaultShellCallback;
 
 import java.io.File;

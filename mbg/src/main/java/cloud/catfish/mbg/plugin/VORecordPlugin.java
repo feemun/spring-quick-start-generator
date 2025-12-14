@@ -1,7 +1,7 @@
 package cloud.catfish.mbg.plugin;
 
-import cloud.catfish.mbg.comm.CommonConstant;
-import cloud.catfish.mbg.util.VelocityUtil;
+import cloud.catfish.comm.CommonConstant;
+import cloud.catfish.util.VelocityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;

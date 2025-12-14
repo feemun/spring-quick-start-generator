@@ -1,4 +1,4 @@
-package cloud.catfish.mbg.util;
+package cloud.catfish.util;
 
 import java.io.FileWriter;
 import java.io.File;

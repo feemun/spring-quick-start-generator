@@ -1,17 +1,14 @@
 package cloud.catfish.mbg.plugin;
 
-import cloud.catfish.mbg.comm.CommonConstant;
-import cloud.catfish.mbg.util.VelocityUtil;
+import cloud.catfish.comm.CommonConstant;
+import cloud.catfish.util.VelocityUtil;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
-import java.util.Properties;
 
 public class MapstructConverterPlugin extends PluginAdapter {
 

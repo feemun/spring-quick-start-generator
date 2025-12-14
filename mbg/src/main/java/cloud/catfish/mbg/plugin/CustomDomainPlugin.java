@@ -1,6 +1,6 @@
 package cloud.catfish.mbg.plugin;
 
-import cloud.catfish.mbg.comm.CommonConstant;
+import cloud.catfish.comm.CommonConstant;
 import org.mybatis.generator.api.IntrospectedTable;
 import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.IntrospectedColumn;
