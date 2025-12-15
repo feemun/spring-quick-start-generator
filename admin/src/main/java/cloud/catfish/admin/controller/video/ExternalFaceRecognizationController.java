@@ -16,7 +16,7 @@ import java.io.IOException;
 
 @Slf4j
 @RestController
-@Tag(name = "ExternalFaceRecognizationController", description = "Mock External Face Recognition APIs")
+@Tag(name = "外部人脸识别接口调用与测试", description = "Mock External Face Recognition APIs")
 @RequestMapping("/external")
 public class ExternalFaceRecognizationController {
 

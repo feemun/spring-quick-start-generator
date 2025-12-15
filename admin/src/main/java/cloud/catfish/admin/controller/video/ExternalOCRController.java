@@ -20,7 +20,7 @@ import java.io.IOException;
 
 @Slf4j
 @RestController
-@Tag(name = "ExternalController", description = "Mock External APIs")
+@Tag(name = "外部OCR接口调用与测试", description = "Mock External APIs")
 @RequestMapping("/external")
 public class ExternalOCRController {
 
