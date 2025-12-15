@@ -1,0 +1,17 @@
+{
+  "result": {
+    "faces": [
+      {
+        "bbox": [16, 75, 120, 180],
+        "label": "person_A",
+        "score": 0.9988584518432617
+      },
+      {
+        "bbox": [200, 50, 300, 160],
+        "label": "person_B",
+        "score": 0.956734
+      }
+    ],
+    "image": "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARC..."
+  }
+}
